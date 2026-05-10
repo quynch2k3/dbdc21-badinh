@@ -48,9 +48,16 @@ func main() {
 		// 1. CẤU HÌNH CORS CHUẨN (Official Echo Middleware)
 		e.Router.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 			AllowOrigins: []string{"*"},
-			AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"},
-			AllowHeaders: []string{"*"},
-			MaxAge:       86400,
+			AllowMethods: []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete, http.MethodOptions, http.MethodHead},
+			AllowHeaders: []string{
+				echo.HeaderOrigin,
+				echo.HeaderContentType,
+				echo.HeaderAccept,
+				echo.HeaderAuthorization,
+				echo.HeaderXRequestedWith,
+				"ngrok-skip-browser-warning",
+			},
+			MaxAge: 86400,
 		}))
 
 		// 2. MIDDLEWARE ĐÓNG DẤU NGROK BYPASS CHO MỌI PHẢN HỒI
@@ -106,7 +113,7 @@ func main() {
 			Path:   "/api/unit-news/:unit",
 			Handler: func(c echo.Context) error {
 				unit := c.PathParam("unit")
-				
+
 				// Truy vấn 5 bài viết mới nhất thuộc category này
 				records, err := app.Dao().FindRecordsByFilter(
 					"articles",
@@ -443,8 +450,8 @@ func main() {
 		if articlesColl.Schema.GetFieldByName("image") == nil {
 			log.Println("Đang nâng cấp bảng articles: Thêm trường 'image'...")
 			articlesColl.Schema.AddField(&schema.SchemaField{
-				Name: "image",
-				Type: schema.FieldTypeFile,
+				Name:    "image",
+				Type:    schema.FieldTypeFile,
 				Options: &schema.FileOptions{MaxSelect: 1, MaxSize: 5242880},
 			})
 		}
@@ -668,7 +675,7 @@ func main() {
 				c.Response().Header().Set("Access-Control-Expose-Headers", "Content-Range, Content-Length, Accept-Ranges")
 				c.Response().Header().Set("Accept-Ranges", "bytes")
 				c.Response().Header().Set("Cache-Control", "public, max-age=86400")
-				
+
 				return c.File(filePath)
 			},
 		})
@@ -776,9 +783,9 @@ func main() {
 
 		// Tạo bảng Thành Viên (Members) - ĐÃ HỢP NHẤT VÀO BẢNG USERS
 		/*
-		createCollection("members",
-			...
-		)
+			createCollection("members",
+				...
+			)
 		*/
 
 		// PHỤC VỤ FILE TĨNH (Cải tiến: Không hijack các route API của PocketBase)
@@ -789,11 +796,11 @@ func main() {
 			if len(path) >= 5 && (path[:5] == "/api/" || path[:3] == "/_/") {
 				return echo.ErrNotFound // Let PocketBase core handle it
 			}
-			
+
 			// Try serving from pb_public
 			return apis.StaticDirectoryHandler(os.DirFS("./pb_public"), false)(c)
 		})
-		
+
 		// === MOBILE URL ROUTE: /mobile/<page> ===
 		// Serves the same HTML but signals mobile mode via query param
 		e.Router.GET("/mobile/*", func(c echo.Context) error {

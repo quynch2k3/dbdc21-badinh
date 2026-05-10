@@ -118,9 +118,10 @@ async function loadNews(category, containerId, limit = 10) {
         if (category && category !== 'ALL' && category !== 'TRANG_CHU') {
             url += `&filter=(category='${category}')`;
         }
-        const response = await fetch(url, {
-            headers: { 'ngrok-skip-browser-warning': 'true' }
-        });
+        const targetUrl = url.includes('ngrok-skip-browser-warning')
+            ? url
+            : url + (url.includes('?') ? '&' : '?') + 'ngrok-skip-browser-warning=true';
+        const response = await fetch(targetUrl);
         if (!response.ok) throw new Error("Lỗi tải tin tức");
         const data = await response.json();
         const records = data.items || [];

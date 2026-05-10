@@ -322,7 +322,10 @@ function renderArticles(data) {
                 // Sử dụng hàm đặc biệt để vượt qua Ngrok
                 try {
                     const url = pb.getFileUrlCustom(item, item.image);
-                    const response = await fetch(url, { headers: { 'ngrok-skip-browser-warning': 'true' } });
+                    const targetUrl = url.includes('ngrok-skip-browser-warning')
+                        ? url
+                        : url + (url.includes('?') ? '&' : '?') + 'ngrok-skip-browser-warning=true';
+                    const response = await fetch(targetUrl);
                     if (response.ok) {
                         const blob = await response.blob();
                         imgEl.src = URL.createObjectURL(blob);
@@ -2369,4 +2372,4 @@ async function bulkDeleteAccounts() {
     } catch (e) {
         showToast("Lỗi xóa hàng loạt: " + e.message, "error");
     }
-}
+}

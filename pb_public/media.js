@@ -26,6 +26,11 @@ window.MediaSystem = (function() {
         return `${BACKEND_URL}/api/files/${collection}/${id}/${filename}`;
     }
 
+    function withNgrokBypass(url) {
+        if (!url || url.includes('ngrok-skip-browser-warning')) return url;
+        return url + (url.includes('?') ? '&' : '?') + 'ngrok-skip-browser-warning=true';
+    }
+
     function getVideoUrl(record, videoField) {
         if (!videoField) return '';
         if (videoField.startsWith('http://') || videoField.startsWith('https://')) return videoField;
@@ -38,7 +43,7 @@ window.MediaSystem = (function() {
         if (!imgEl || !filename) return;
         const url = getFileUrl(record, filename);
         try {
-            const resp = await fetch(url, { headers: { 'ngrok-skip-browser-warning': 'true' }, mode: 'cors' });
+            const resp = await fetch(withNgrokBypass(url), { mode: 'cors' });
             if (!resp.ok) throw new Error('HTTP ' + resp.status);
             imgEl.src = URL.createObjectURL(await resp.blob());
         } catch (e) {
@@ -132,7 +137,7 @@ window.MediaSystem = (function() {
     function handleVideoError(videoEl) {
         const src = videoEl.querySelector('source')?.src || videoEl.src;
         if (!src || src.startsWith('blob:')) return;
-        fetch(src, { headers: { 'ngrok-skip-browser-warning': 'true' }, mode: 'cors' })
+        fetch(withNgrokBypass(src), { mode: 'cors' })
             .then(r => r.blob())
             .then(blob => { videoEl.src = URL.createObjectURL(blob); videoEl.load(); })
             .catch(() => {
@@ -150,7 +155,7 @@ window.MediaSystem = (function() {
         const src = imgEl.src;
         if (!src || src.startsWith('blob:') || imgEl.dataset.retried) return;
         imgEl.dataset.retried = 'true';
-        fetch(src, { headers: { 'ngrok-skip-browser-warning': 'true' }, mode: 'cors' })
+        fetch(withNgrokBypass(src), { mode: 'cors' })
             .then(r => {
                 if (!r.ok) throw new Error('HTTP ' + r.status);
                 return r.blob();
