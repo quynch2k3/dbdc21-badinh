@@ -86,21 +86,53 @@ window.GovSecure = {
     console.log('[PB Adapter] Connected to PocketBase at:', backendUrl);
 
     // pb sẵn sàng — dispatch PBReady ngay
-    window.dispatchEvent(new Event('PBReady'));
-})();
+    // --- CHỐT CHẶN SERVICE WORKER ---
+    async function waitForServiceWorker() {
+        if (!('serviceWorker' in navigator)) return;
+        
+        const registration = await navigator.serviceWorker.getRegistration();
+        if (registration && registration.active && navigator.serviceWorker.controller) {
+            return; // Đã sẵn sàng
+        }
 
-// ============================================================
-// BƯỚC 2: Đăng ký SW ở background (không chặn pb)
-// SW sẽ intercept các request ngrok sau khi active
-// ============================================================
-(async function registerSW() {
-    if (!('serviceWorker' in navigator)) return;
-    try {
-        await navigator.serviceWorker.register('sw.js?v=V6', { updateViaCache: 'none' });
-        console.log('[PB Adapter] SW registered (background).');
-    } catch(e) {
-        console.warn('[PB Adapter] SW registration failed:', e.message);
+        console.log('[PB Adapter] Waiting for Service Worker to take control...');
+        return new Promise((resolve) => {
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log('[PB Adapter] Service Worker is now controlling the page.');
+                resolve();
+            }, { once: true });
+            
+            // Timeout sau 3 giây để tránh treo trang
+            setTimeout(resolve, 3000);
+        });
     }
+
+    // Middleware xử lý request
+    pb.beforeSend = async (url, options) => {
+        // Đợi SW sẵn sàng để xử lý CORS/Bypass
+        await waitForServiceWorker();
+
+        const urlObj = new URL(url);
+        if (urlObj.hostname.includes('ngrok')) {
+            urlObj.searchParams.set('ngrok-skip-browser-warning', 'true');
+        }
+        
+        return { url: urlObj.toString(), options };
+    };
+
+    // Khởi động SW
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('sw.js?v=V6')
+                .then(reg => {
+                    console.log('[PB Adapter] SW Registered.');
+                    // Ép SW chiếm quyền kiểm tra ngay lập tức
+                    if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                });
+        });
+    }
+    
+    window.dispatchEvent(new Event('PBReady'));
 })();
 
 // ============================================================
