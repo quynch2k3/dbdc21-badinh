@@ -39,25 +39,38 @@ async function addNgrokHeader(originalRequest) {
     const urlObj = new URL(originalRequest.url);
     const originUrl = urlObj.origin;
 
-    // Chỉ thêm bypass query param
+    // --- VŨ KHÍ CUỐI CÙNG: GIẢ LẬP OPTIONS ---
+    // Nếu trình duyệt hỏi "Mày có cho phép truy cập không?" (OPTIONS), 
+    // Service Worker tự trả lời "CÓ" luôn mà không cần gửi tới Ngrok.
+    if (originalRequest.method === 'OPTIONS') {
+        return new Response(null, {
+            status: 204,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD',
+                'Access-Control-Allow-Headers': '*',
+                'Access-Control-Max-Age': '86400'
+            }
+        });
+    }
+
+    // Chỉ thêm bypass query param cho các request thật
     if (!urlObj.searchParams.has('ngrok-skip-browser-warning')) {
         urlObj.searchParams.set('ngrok-skip-browser-warning', 'true');
     }
 
     try {
-        // KỸ THUẬT PHÁ BĂNG: Nếu chưa "warm up" origin này, thực hiện một fetch no-cors để lấy cookie
+        // Khởi tạo kết nối ban đầu để lấy Cookie (no-cors)
         if (!warmedUpUrls.has(originUrl)) {
-            console.log('[SW V6] Warming up ngrok tunnel:', originUrl);
-            await fetch(urlObj.toString(), { mode: 'no-cors', cache: 'no-cache' });
+            await fetch(urlObj.toString(), { mode: 'no-cors', cache: 'no-cache' }).catch(() => {});
             warmedUpUrls.add(originUrl);
         }
 
-        // Thực hiện request thật
         const fetchOptions = {
             method: originalRequest.method,
             headers: new Headers(originalRequest.headers),
             mode: 'cors',
-            credentials: 'omit', // Ngrok free không hỗ trợ credentials
+            credentials: 'omit',
             redirect: 'follow'
         };
 
@@ -65,27 +78,12 @@ async function addNgrokHeader(originalRequest) {
             fetchOptions.body = await originalRequest.clone().arrayBuffer();
         }
 
-        const response = await fetch(urlObj.toString(), fetchOptions);
-        
-        // Nếu vẫn gặp 503 hoặc 403 từ ngrok, thử lại một lần nữa với chế độ xóa cache
-        if (response.status === 503 || response.status === 403) {
-            console.warn('[SW V6] Ngrok blocked (503/403), retrying with bypass...');
-            return await fetch(urlObj.toString(), fetchOptions);
-        }
-
-        return response;
+        return await fetch(urlObj.toString(), fetchOptions);
     } catch (err) {
-        console.error('[SW V6] Critical Fetch Error:', err);
-        return new Response(JSON.stringify({ 
-            code: 503, 
-            message: 'Bridge Error: ' + err.message 
-        }), {
+        // Fallback CORS response
+        return new Response(JSON.stringify({ error: err.message }), {
             status: 503,
-            headers: { 
-                'Content-Type': 'application/json',
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*'
-            }
+            headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' }
         });
     }
 }

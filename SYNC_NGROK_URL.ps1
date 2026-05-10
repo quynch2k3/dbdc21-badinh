@@ -16,26 +16,20 @@ try {
 
     Write-Host "Found active tunnel: $publicUrl"
 
-    # 2. Update media.js
-    $mediaPath = "pb_public/media.js"
-    if (Test-Path $mediaPath) {
-        $content = Get-Content $mediaPath -Raw
-        $newContent = $content -replace "const NGROK_URL = 'https://[^']+';", "const NGROK_URL = '$publicUrl';"
-        Set-Content -Path $mediaPath -Value $newContent -NoNewline
-        Write-Host "Updated: $mediaPath"
+    # 2. Update ALL .js files in pb_public
+    $jsFiles = Get-ChildItem -Path "pb_public" -Filter "*.js" -Recurse
+    foreach ($file in $jsFiles) {
+        $content = Get-Content $file.FullName -Raw
+        # Regex to find any ngrok-free.dev or ngrok.io URL
+        $regex = "https?://[a-z0-9\-]+\.(ngrok-free\.dev|ngrok\.io)"
+        if ($content -match $regex) {
+            $newContent = $content -replace $regex, $publicUrl
+            Set-Content -Path $file.FullName -Value $newContent -NoNewline
+            Write-Host "Updated URL in: $($file.Name)"
+        }
     }
 
-    # 3. Update pocketbase-adapter.js
-    $adapterPath = "pb_public/pocketbase-adapter.js"
-    if (Test-Path $adapterPath) {
-        $content = Get-Content $adapterPath -Raw
-        $newContent = $content -replace ": 'https://[^']+'\);", ": '$publicUrl');"
-        Set-Content -Path $adapterPath -Value $newContent -NoNewline
-        Write-Host "Updated: $adapterPath"
-    }
-
-    # 3. Update UPDATE_HTML_VERSIONS.bat (optional but good for forcing cache)
-    # Actually, we should just run it
+    # 3. Update HTML versions
     Write-Host "Updating HTML versions to force cache refresh..."
     & ".\UPDATE_HTML_VERSIONS.bat"
 
