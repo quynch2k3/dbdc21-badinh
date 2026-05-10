@@ -106,16 +106,10 @@ echo.
 echo ====================================================
 echo  STEP 1: SYNCING NGROK URL...
 echo ====================================================
-REM Su dung call powershell de dam bao khong thoat ngang
 call powershell -ExecutionPolicy Bypass -File SYNC_NGROK_URL.ps1
-if %errorlevel% neq 0 (
-    echo.
-    echo [WARNING] Could not get ngrok URL. 
-    echo Please make sure Option [1] is running in another window!
-    echo.
-    pause
-)
-echo [OK] Sync complete. Preparing to push to GitHub...
+if errorlevel 1 echo [WARNING] Sync failed, but continuing...
+echo.
+echo [OK] Sync process finished.
 timeout /t 2 >nul
 goto PUSH_GITHUB
 
@@ -129,11 +123,8 @@ set BRANCH=main
 set USER_NAME=quynch2k3
 set USER_EMAIL=quynch2k3@example.com
 
-if not exist .git (
-    echo Initializing new Git repository...
-    git init
-    git remote add origin %REPO_URL%
-)
+if not exist .git git init
+if not exist .git git remote add origin %REPO_URL%
 
 git config user.name "%USER_NAME%"
 git config user.email "%USER_EMAIL%"
@@ -146,24 +137,16 @@ git rm --cached pb_data >nul 2>&1
 git rm --cached *.exe >nul 2>&1
 
 echo [2/3] Creating commit...
-set TIMESTAMP=%date% %time%
-git commit -m "Auto Sync: %TIMESTAMP%"
+git commit -m "Auto-sync-at-timestamp"
 
 echo [3/3] Pushing to origin...
 git push -u origin %BRANCH% --force
 
-if %errorlevel% equ 0 (
-    echo.
-    echo ====================================================
-    echo  [SUCCESS] Everything updated on GitHub!
-    echo ====================================================
-) else (
-    echo.
-    echo [ERROR] Push failed. Please check:
-    echo  1. Internet connection.
-    echo  2. GitHub Credentials (Token/Username).
-    echo  3. If any other window is locking files.
-)
+echo.
+echo ====================================================
+echo  PROCESS FINISHED. 
+echo  If you see 'Everything up-to-date' or a success msg above, it worked.
+echo ====================================================
 echo.
 echo Press any key to return to Menu...
 pause
