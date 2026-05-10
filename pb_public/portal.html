@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head> <!-- CRITICAL SECURITY SHIELD -->
+    <script src="security.js?v=ULTRA_SHIELD_V10"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cng Thng Tin K Khai Din T - DBDC S 21</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gov-blue: #003087;
+            --gov-red: #da251d;
+            --gov-gold: #ffcc00;
+            --bg-light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            font-family: 'Roboto', sans-serif;
+            color: #1e293b;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .portal-container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-top: 6px solid var(--gov-red);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* WATERMARK */
+        .portal-container::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 500px;
+            height: 500px;
+            background: url('https://lh3.googleusercontent.com/pw/AP1GczPU69TVpCvfr9Sc8Q-xfiPOKQkYoKffYiJ0rHZNcrP699bqiWJWNpR1MD7_Byewp7lIKZY_0epoQXz-k9PNj3sdk7fRgNSVwfT2tkVurGGgVYrpYSk7IYsiyksyBKqUBPJTTZbHG8tf7fgbES8MYm6m5g=w848-h859-s-no-gm?authuser=0') no-repeat center;
+            background-size: contain;
+            opacity: 0.03;
+            pointer-events: none;
+        }
+
+        /* HEADER */
+        .gov-header {
+            padding: 40px 20px;
+            text-align: center;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .header-emblem {
+            width: 80px;
+            margin-bottom: 20px;
+        }
+
+        .header-title-top {
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 5px;
+        }
+
+        .header-title-main {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--gov-blue);
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .header-line {
+            width: 100px;
+            height: 2px;
+            background: var(--gov-red);
+            margin: 0 auto 20px;
+        }
+
+        .unit-badge {
+            display: inline-block;
+            background: var(--gov-blue);
+            color: #fff;
+            padding: 8px 25px;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* FORM SECTIONS */
+        .portal-body {
+            padding: 50px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .section-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gov-blue);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: #0f172a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 12px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-label span {
+            color: var(--gov-red);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px 12px 40px;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1e293b;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--gov-blue);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(0, 48, 135, 0.05);
+        }
+
+        /* AVATAR UPLOAD */
+        .avatar-upload-area {
+            display: flex;
+            gap: 30px;
+            padding: 30px;
+            background: #f8fafc;
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            transition: all 0.2s;
+        }
+
+        .avatar-upload-area:hover {
+            border-color: var(--gov-blue);
+            background: #f1f5f9;
+        }
+
+        .avatar-preview-box {
+            width: 120px;
+            height: 160px;
+            background: #fff;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .avatar-preview-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* TABLE STYLING */
+        .work-table-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .work-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .work-table th {
+            background: #f1f5f9;
+            padding: 12px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: 800;
+            color: #64748b;
+            text-transform: uppercase;
+            border-bottom: 1.5px solid #e2e8f0;
+        }
+
+        .work-table td {
+            padding: 8px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .td-input {
+            width: 100%;
+            border: none !important;
+            background: transparent !important;
+            padding: 8px !important;
+            font-size: 13px !important;
+            outline: none !important;
+        }
+
+        /* SUBMIT BUTTON */
+        .submit-bar {
+            margin-top: 50px;
+            position: sticky;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-gov-main {
+            width: 100%;
+            padding: 20px;
+            background: var(--gov-blue);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            transition: all 0.3s;
+            box-shadow: 0 10px 15px -3px rgba(0, 48, 135, 0.3);
+        }
+
+        .btn-gov-main:hover {
+            background: #001a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 48, 135, 0.4);
+        }
+
+        .btn-gov-main:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* SUCCESS SCREEN */
+        #success-screen {
+            display: none;
+            padding: 100px 50px;
+            text-align: center;
+        }
+
+        .success-seal {
+            width: 120px;
+            margin: 0 auto 30px;
+        }
+
+        /* MOBILE OPTIMIZATION */
+        @media (max-width: 640px) {
+            body {
+                padding: 0;
+            }
+
+            .portal-container {
+                border-top: none;
+            }
+
+            .portal-body {
+                padding: 25px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .avatar-upload-area {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="portal-container" id="form-container">
+        <!-- Header will be injected by shared-ui.js -->
+        <main class="portal-body">
+            <div
+                style="background: #fff9db; padding: 20px; border-left: 4px solid var(--gov-gold); margin-bottom: 40px; border-radius: 4px;">
+                <p style="font-size: 13px; color: #856404; line-height: 1.6;"> <i class="fa-solid fa-shield-halved"></i>
+                    <b>BO MT HNH CHNH:</b> Mi thng tin Anh/Ch cung cp s duc m ha du cui v ch s dng cho mc dch qun l ni b
+                    ca don v. Vui lng k khai trung thc v dy d cc trung c du <span style="color:red">*</span>. </p>
+            </div>
+            <form id="public-form"> <input type="hidden" id="f-org"> <!-- SECTION 1: AVATAR -->
+                <div class="section-container" id="sec-avatar">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fa-solid fa-camera"></i></div>
+                        <div class="section-title">01. Hnh nh h so din t</div>
+                    </div>
+                    <div class="avatar-upload-area">
+                        <div class="avatar-preview-box"> <img id="avatar-preview"
+                                src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-High-Quality-Image.png">
+                        </div>
+                        <div style="flex:1">
+                            <h4 style="font-size:14px; margin-bottom:5px">nh cuẩn dung thnh vin <span
+                                    style="color:red">*</span></h4>
+                            <p style="font-size:12px; color:#64748b; margin-bottom:15px">Cun nh th 4x6, nn trng hoc
+                                xanh, nhn thng, trang phc lch s.</p> <button type="button" class="form-control"
+                                style="width:auto; background:#1e293b; color:#fff; cursor:pointer; padding-left:15px;"
+                                onclick="document.getElementById('f-file').click()"> <i class="fa-solid fa-upload"></i>
+                                CHN NH T THIT B </button> <input type="file" id="f-file" style="display:none"
+                                accept="image/*" onchange="handleFile(this)">
+                        </div>
+                    </div>
+                </div> <!-- SECTION 2: IDENTITY -->
+                <div class="section-container">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fa-solid fa-user-shield"></i></div>
+                        <div class="section-title">02. Thng tin dnh danh & Nhn thn</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:25px"> <label class="form-label">H v tn khai sinh
+                            <span>*</span></label>
+                        <div class="input-wrapper"> <i class="fa-solid fa-font"></i> <input type="text" id="f-name"
+                                class="form-control" required placeholder="VD: NGUYN VAN A"
+                                style="text-transform:uppercase; font-weight:900;"> </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"> <label class="form-label">Ngy thng nam sinh <span>*</span></label>
+                            <div class="input-wrapper"> <i class="fa-solid fa-calendar-day"></i> <input type="date"
+                                    id="f-dob" class="form-control" required> </div>
+                        </div>
+                        <div class="form-group"> <label class="form-label">Gii tnh <span>*</span></label>
+                            <div class="input-wrapper"> <i class="fa-solid fa-venus-mars"></i> <select id="f-gender"
+                                    class="form-control" style="padding-left:40px">
+                                    <option value="Nam">Nam</option>
+                                    <option value="N">N</option>
+                                </select> </div>
+                        </div>
+                        <div class="form-group"> <label class="form-label">S din thoi lin lc <span>*</span></label>
+                            <div class="input-wrapper"> <i class="fa-solid fa-phone"></i> <input type="tel"
+                                    id="f-phone" class="form-control" required placeholder="09xxxxxxxx"> </div>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group"> <label class="form-label">S CCCD / Dnh danh <span>*</span></label>
+                            <div class="input-wrapper"> <i class="fa-solid fa-id-card"></i> <input type="text"
+                                    id="f-id-num" class="form-control" required placeholder="12 ch s"> </div>
+                        </div>
+                        <div class="form-group dynamic-field" data-field="id_date"> <label class="form-label">Ngy cp
+                                CCCD</label>
+                            <div class="input-wrapper"> <i class="fa-solid fa-calendar-check"></i> <input type="date"
+                                    id="f-id-date" class="form-control"> </div>
+                        </div>
+                        <div class="form-group dynamic-field" data-field="id_place"> <label class="form-label">Noi cp
+                                CCCD</label>
+                            <div class="input-wrapper"> <i class="fa-solid fa-map-location-dot"></i> <input type="text"
+                                    id="f-id-place" class="form-control" placeholder="Cc CSQLHC v trt t x hi"> </div>
+                        </div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group dynamic-field" data-field="hometown"> <label class="form-label">Qu
+                                qun</label>
+                            <div class="input-wrapper"> <i class="fa-solid fa-earth-asia"></i> <input type="text"
+                                    id="f-hometown" class="form-control" placeholder="X, Huyn, Tnh"> </div>
+                        </div>
+                        <div class="form-group dynamic-field" data-field="academic_level"> <label
+                                class="form-label">Trnh d hc vn</label>
+                            <div class="input-wrapper"> <i class="fa-solid fa-graduation-cap"></i> <input type="text"
+                                    id="f-edu" class="form-control" placeholder="Di hc, Thc si..."> </div>
+                        </div>
+                        <div class="form-group dynamic-field" data-field="health_status"> <label class="form-label">Nhm
+                                mu</label>
+                            <div class="input-wrapper"> <i class="fa-solid fa-droplet"></i> <input type="text"
+                                    id="f-blood" class="form-control" placeholder="A, B, O, AB"> </div>
+                        </div>
+                    </div>
+                </div> <!-- SECTION 3: ADDRESS -->
+                <div class="section-container" id="sec-address">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fa-solid fa-house-chimney"></i></div>
+                        <div class="section-title">03. Thng tin cu tr</div>
+                    </div>
+                    <div class="form-group" style="margin-bottom:25px"> <label class="form-label">Da ch dang k tung tr /
+                            Tm tr <span>*</span></label>
+                        <div class="input-wrapper"> <i class="fa-solid fa-location-dot"></i> <input type="text"
+                                id="f-address" class="form-control" placeholder="S nh, Ng, Ph..."> </div>
+                    </div>
+                    <div class="form-grid" id="row-owner">
+                        <div class="form-group dynamic-field" data-field="residence_type"> <label
+                                class="form-label">Loi hnh cu tr</label> <select id="f-res-type" class="form-control"
+                                style="padding-left:40px">
+                                <option value="Tung tr">Tung tr</option>
+                                <option value="Tm tr">Tm tr</option>
+                                <option value="Luu tr">Luu tr</option>
+                            </select> </div>
+                        <div class="form-group dynamic-field" data-field="house_owner_name"> <label class="form-label">H
+                                tn ch h</label> <input type="text" id="f-owner-name" class="form-control"
+                                style="padding-left:15px"> </div>
+                        <div class="form-group dynamic-field" data-field="house_owner_relation"> <label
+                                class="form-label">Quan h vi ch h</label> <input type="text" id="f-relation"
+                                class="form-control" style="padding-left:15px"> </div>
+                    </div>
+                </div> <!-- SECTION 4: WORK HISTORY -->
+                <div class="section-container" id="sec-work">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fa-solid fa-briefcase"></i></div>
+                        <div class="section-title">04. Qu trnh hc tp & Cng tc</div>
+                    </div>
+                    <div class="form-group dynamic-field" data-field="work_employer"> <label class="form-label">Co quan
+                            / Noi lm vic hin nay</label>
+                        <div class="input-wrapper"> <i class="fa-solid fa-building"></i> <input type="text" id="f-work"
+                                class="form-control" placeholder="Tn cng ty / Don v"> </div>
+                    </div>
+                    <div class="dynamic-field" data-field="work_employer"
+                        style="margin-top:20px; flex-direction:column"> <label class="form-label"
+                            style="margin-bottom:10px">TM TT DIN BIN QU TRNH CNG TC (T TRUC DN NAY)</label>
+                        <div class="work-table-container">
+                            <table class="work-table">
+                                <thead>
+                                    <tr>
+                                        <th style="width:100px">T nam</th>
+                                        <th style="width:100px">Dn nam</th>
+                                        <th>Ni dung chi tit</th>
+                                        <th style="width:40px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="work-rows">
+                                    <tr>
+                                        <td><input type="text" class="w-from td-input" placeholder="2015"></td>
+                                        <td><input type="text" class="w-to td-input" placeholder="2020"></td>
+                                        <td><input type="text" class="w-text td-input"
+                                                placeholder="Hc ti cuyn ngnh..."></td>
+                                        <td style="text-align:center"><button type="button"
+                                                onclick="this.parentElement.parentElement.remove()"
+                                                style="color:red; background:none; border:none; cursor:pointer;"><i
+                                                    class="fa-solid fa-trash"></i></button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div> <button type="button" onclick="addWorkRow()"
+                            style="margin-top:15px; background:#e2e8f0; border:none; padding:10px 20px; border-radius:6px; font-size:12px; font-weight:700; cursor:pointer;">
+                            <i class="fa-solid fa-plus"></i> THM MC THI GIAN </button>
+                    </div>
+                </div> <!-- SECTION 5: POLITICAL -->
+                <div class="section-container" id="sec-political">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fa-solid fa-flag"></i></div>
+                        <div class="section-title">05. Thng tin Don th & Chnh tr</div>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group dynamic-field" data-field="join_date"> <label class="form-label">Ngy vo
+                                Don TNCS HCM</label> <input type="date" id="f-join-date" class="form-control"
+                                style="padding-left:15px"> </div>
+                        <div class="form-group dynamic-field" data-field="party_join_date_official"> <label
+                                class="form-label">Ngy vo Dng CSVN (Chnh thc)</label> <input type="date"
+                                id="f-party-date" class="form-control" style="padding-left:15px"> </div>
+                        <div class="form-group dynamic-field" data-field="political_level"> <label class="form-label">L
+                                lun cuẩnh tr</label> <input type="text" id="f-political" class="form-control"
+                                style="padding-left:15px" placeholder="So cp, Trung cp..."> </div>
+                    </div>
+                </div> <!-- SECTION 6: BIOGRAPHY -->
+                <div class="section-container" id="sec-bio">
+                    <div class="section-header">
+                        <div class="section-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                        <div class="section-title">06. Tiu s & Qu trnh hot dng</div>
+                    </div>
+                    <div class="form-group dynamic-field" data-field="biography_self" style="margin-bottom:25px"> <label
+                            class="form-label">1. Tm tt tiu s bn thn</label> <textarea id="f-bio-self"
+                            class="form-control" style="height:150px; padding:15px"
+                            placeholder="Nu tm tt t khi sinh ra, hc tp v cng tc..."></textarea> </div>
+                    <div class="form-group dynamic-field" data-field="biography_family" style="margin-bottom:25px">
+                        <label class="form-label">2. Tnh hnh kinh t, cuẩnh tr ca gia dnh</label> <textarea
+                            id="f-bio-family" class="form-control" style="height:120px; padding:15px"
+                            placeholder="Thng tin v B, M, V/Chng, Con..."></textarea> </div>
+                    <div class="form-grid">
+                        <div class="form-group dynamic-field" data-field="awards"> <label class="form-label">Khen tung /
+                                Danh hiu</label> <textarea id="f-awards" class="form-control"
+                                style="height:80px; padding:15px"></textarea> </div>
+                        <div class="form-group dynamic-field" data-field="disciplinary"> <label class="form-label">K lut
+                                (nu c)</label> <textarea id="f-disciplin" class="form-control"
+                                style="height:80px; padding:15px"></textarea> </div>
+                    </div>
+                </div>
+                <div class="submit-bar"> <button type="submit" id="btn-submit" class="btn-gov-main"> <i
+                            class="fa-solid fa-paper-plane"></i> GI BN K KHAI DIN T NGAY </button>
+                    <p style="text-align:center; font-size:11px; color:#94a3b8; margin-top:15px;"> H thng s t dng di
+                        chiu thng tin v phn hi kt qu sau khi duyt. </p>
+                </div>
+            </form>
+        </main>
+    </div> <!-- SUCCESS SCREEN -->
+    <div class="portal-container" id="success-screen">
+        <div class="gov-header"> <img
+                src=""
+                class="success-seal" id="success-seal-img">
+            <h1 style="color:var(--gov-blue); font-weight:900; font-size:30px">GI THNH CNG</h1>
+            <div class="header-line"></div>
+            <p style="font-size:18px; line-height:1.6; color:#475569; max-width:600px; margin:0 auto"> Bn k khai ca
+                Anh/Ch d duc h thng **Da bn dn cu s 21** tip nhn an ton. Chng ti s tin hnh thm dnh v luu tr vo h so din
+                t cuẩnh thc. </p> <button onclick="location.reload()"
+                style="margin-top:40px; padding:15px 40px; border:2px solid var(--gov-blue); background:none; color:var(--gov-blue); font-weight:700; cursor:pointer; border-radius:8px">QUAY
+                LI TRANG CH</button>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=FIXED_V2"></script>
+    <script src="shared-ui.js?v=V1.21"></script>
+    <script>
+        // Sync Success Seal
+        window.addEventListener('SharedUIReady', (e) => {
+            const config = e.detail;
+            const seal = document.getElementById('success-seal-img');
+            if (seal) seal.src = config.logo;
+        });
+
+        // OBFUSCATED UNIT CODES 
+        const D_MAP = {
+            'A01': 'CB',
+            'A02': 'MT',
+            'A03': 'TN',
+            'A04': 'PN',
+            'A05': 'CCB',
+            'A06': 'NCT',
+            'A07': 'KH'
+        };
+        const ORG_MAP = {
+            'CB': 'Chi bộ số 21',
+            'MT': 'Mặt trận Tổ quốc',
+            'TN': 'Chi đoàn Thanh niên',
+            'PN': 'Hội Phụ nữ',
+            'CCB': 'Hội Cựu chiến binh',
+            'NCT': 'Hội Người cao tuổi',
+            'KH': 'Ban Khuyến học'
+        };
+        const params = new URLSearchParams(window.location.search);
+        // Supports both old unit= and new ref= codes 
+        let rawUnit = params.get('unit') || D_MAP[params.get('ref')] || 'ALL';
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            document.getElementById('f-org').value = rawUnit;
+            try {
+                const configKey = `form_cfg_${rawUnit}`;
+                const s = await pb.collection('settings').getList(1, 1, {
+                    filter: `key="${configKey}"`
+                });
+                applyConfig(s.items[0] ? JSON.parse(s.items[0].value || '[]') : []);
+            } catch (e) {
+                applyConfig([]);
+            }
+        });
+
+        function applyConfig(visible) {
+            // Default essential fields always show 
+            visible.forEach(id => {
+                const els = document.querySelectorAll(`[data-field="${id}"]`);
+                els.forEach(el => el.style.display = 'flex');
+                // Related grouping 
+                const groups = {
+                    'id_date': ['id_place'],
+                    'ethnicity': ['religion'],
+                    'academic_level': ['it_level'],
+                    'awards': ['disciplinary'],
+                    'health_status': ['blood_type'],
+                    'residence_type': ['house_owner_name', 'house_owner_relation']
+                };
+                if (groups[id]) groups[id].forEach(gid => {
+                    const gels = document.querySelectorAll(`[data-field="${gid}"]`);
+                    gels.forEach(gel => gel.style.display = 'flex');
+                });
+            });
+            // Hide empty sections 
+            const sections = ['sec-address', 'sec-work', 'sec-political', 'sec-bio'];
+            sections.forEach(sid => {
+                const s = document.getElementById(sid);
+                if (s && !s.querySelector('.dynamic-field[style*="display: flex"]')) {
+                    s.style.display = 'none';
+                }
+            });
+        }
+
+        function addWorkRow() {
+            const row = `<tr> <td><input type="text" class="w-from td-input" placeholder="2015"></td> <td><input type="text" class="w-to td-input" placeholder="2020"></td> <td><input type="text" class="w-text td-input" placeholder="..."></td> <td style="text-align:center"><button type="button" onclick="this.parentElement.parentElement.remove()" style="color:red; background:none; border:none; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td> </tr>`;
+            document.getElementById('work-rows').insertAdjacentHTML('beforeend', row);
+        }
+
+        let avatarBlob = null;
+
+        function handleFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                document.getElementById('avatar-preview').src = e.target.result;
+                avatarBlob = file;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        document.getElementById('public-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ĐANG MÃ HÓA & GỬI DỮ LIỆU...`;
+            btn.disabled = true;
+            const fd = new FormData();
+            fd.append('name', document.getElementById('f-name').value.toUpperCase());
+            fd.append('dob', document.getElementById('f-dob').value);
+            fd.append('gender', document.getElementById('f-gender').value);
+            fd.append('phone', document.getElementById('f-phone').value);
+            fd.append('id_number', document.getElementById('f-id-num').value);
+            fd.append('address', document.getElementById('f-address').value);
+            fd.append('organization', rawUnit);
+            const map = {
+                'id_date': 'f-id-date',
+                'id_place': 'f-id-place',
+                'hometown': 'f-hometown',
+                'residence_type': 'f-res-type',
+                'house_owner_name': 'f-owner-name',
+                'house_owner_relation': 'f-relation',
+                'join_date': 'f-join-date',
+                'party_join_date_official': 'f-party-date',
+                'political_level': 'f-political',
+                'academic_level': 'f-edu',
+                'work_employer': 'f-work',
+                'biography_self': 'f-bio-self',
+                'biography_family': 'f-bio-family',
+                'awards': 'f-awards',
+                'disciplinary': 'f-disciplin'
+            };
+            for (let [field, id] of Object.entries(map)) {
+                const el = document.getElementById(id);
+                if (el && el.value) fd.append(field, el.value);
+            }
+            const history = [];
+            document.querySelectorAll('#work-rows tr').forEach(row => {
+                const f = row.querySelector('.w-from').value;
+                const t = row.querySelector('.w-to').value;
+                const txt = row.querySelector('.w-text').value;
+                if (f || t || txt) history.push({
+                    from: f,
+                    to: t,
+                    text: txt
+                });
+            });
+            fd.append('work_history_json', JSON.stringify(history));
+            if (avatarBlob) fd.append('avatar', avatarBlob);
+            try {
+                await pb.collection('members').create(fd);
+                document.getElementById('form-container').style.display = 'none';
+                document.getElementById('success-screen').style.display = 'block';
+                window.scrollTo(0, 0);
+            } catch (err) {
+                alert("LỖI GỬI DỮ LIỆU: " + err.message);
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> GỬI BẢN KÊ KHAI ĐIỆN TỬ NGAY`;
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+
+</html>

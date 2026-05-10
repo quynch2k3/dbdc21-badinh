@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <script src="security.js?v=ULTRA_SHIELD_V10"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="qt-page-meta-title">Đang tải... - Địa Bàn Dân Cư Số 21</title>
+    
+    <link rel="stylesheet" href="retro.css?v=V1.1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+        }
+
+        .article-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+        }
+
+        .article-content img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            padding: 5px;
+            margin: 15px 0;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 10px 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            border-bottom: 1px dashed #ddd;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+
+        .sidebar-link:hover {
+            background: #eef4fb;
+            padding-left: 18px;
+        }
+
+        .sidebar-link:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SHARED HEADER -->
+    <div id="shared-header"></div>
+
+    <div class="main-wrapper">
+        <div class="page-content">
+            <div class="grid-layout">
+                <div class="left-col">
+                    <fieldset class="section-box">
+                        <span class="section-title" id="page-display-title">NỘI DUNG TRANG</span>
+                        <div id="page-content-container" class="article-content" style="min-height: 400px; padding: 15px;">
+                            <div style="text-align:center; padding:50px; color:#666;">
+                                <i class="fa-solid fa-spinner fa-spin" style="font-size:30px; margin-bottom:15px;"></i>
+                                <p>Đang tải nội dung...</p>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div class="right-col">
+                    <fieldset class="section-box">
+                        <span class="section-title">ĐIỀU HÀNH TÁC NGHIỆP</span>
+                        <div style="padding: 5px;">
+                            <a href="chi-bo.html" class="sidebar-link">Chi Bộ Đảng Số 21</a>
+                            <a href="mat-tran-to-quoc.html" class="sidebar-link">Mặt Trận Tổ Quốc</a>
+                            <a href="hoi-phu-nu.html" class="sidebar-link">Hội Phụ Nữ</a>
+                            <a href="hoi-cuu-chien-binh.html" class="sidebar-link">Hội Cựu Chiến Binh</a>
+                            <a href="doan-thanh-nien.html" class="sidebar-link">Đoàn Thanh Niên</a>
+                            <a href="hoi-nguoi-cao-tuoi.html" class="sidebar-link">Hội Người Cao Tuổi</a>
+                            <a href="ban-khuyen-hoc.html" class="sidebar-link">Ban Khuyến Học</a>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="section-box" style="margin-top:20px;">
+                        <span class="section-title">THÔNG BÁO</span>
+                        <marquee direction="up" scrollamount="2" height="100">
+                            Hệ thống thông tin Địa bàn dân cư số 21 luôn cập nhật tin tức mới nhất phục vụ nhân dân.
+                        </marquee>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+
+    <!-- SHARED FOOTER -->
+    <div id="shared-footer"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=V10_ULTIMATE"></script>
+    <script src="shared-ui.js?v=V1.0"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadDynamicPage();
+            
+            // Check user name for header
+            if (pb.authStore.model) {
+                const user = pb.authStore.model;
+                document.getElementById('nav-user-name').innerText = (user.name || user.username || 'Người dùng').toUpperCase();
+            }
+        });
+
+        async function loadDynamicPage() {
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('slug');
+            const titleEl = document.getElementById('page-display-title');
+            const contentEl = document.getElementById('page-content-container');
+
+            if (!slug) {
+                contentEl.innerHTML = '<p style="text-align:center; color:#888;">Không tìm thấy mã trang.</p>';
+                return;
+            }
+
+            try {
+                // Using SDK for security and consistency
+                const record = await pb.collection('pages').getFirstListItem(`slug="${slug}"`);
+                document.title = record.title + ' - Địa Bàn Dân Cư Số 21';
+                titleEl.innerText = record.title.toUpperCase();
+                contentEl.innerHTML = record.content || '<p style="color:#888; font-style:italic;">Nội dung đang được cập nhật...</p>';
+            } catch (e) {
+                console.error('Page Load Error:', e);
+                contentEl.innerHTML = '<div style="text-align:center; padding:40px; color:#ef4444;"><i class="fa-solid fa-triangle-exclamation" style="font-size:30px;"></i><p style="margin-top:15px;">Trang không tồn tại hoặc lỗi kết nối.</p><a href="index.html">Quay về trang chủ</a></div>';
+            }
+        }
+
+        async function logout() {
+            pb.authStore.clear();
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>

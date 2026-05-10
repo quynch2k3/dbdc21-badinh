@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Công cụ Giả lập Dữ liệu Cán bộ</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --gov-blue: #1e3a8a;
+            --gov-gold: #d97706;
+            --gov-red: #a00018;
+            --bg-gray: #f1f5f9;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gray);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .tool-container {
+            background: #fff;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            border-top: 5px solid var(--gov-blue);
+        }
+
+        .header {
+            background: var(--gov-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .form-body {
+            padding: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            font-size: 13px;
+            color: #334155;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        input[type="number"], 
+        input[type="text"], 
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-run {
+            background: var(--gov-blue);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            text-transform: uppercase;
+        }
+
+        .btn-run:hover {
+            background: #1e40af;
+        }
+
+        .btn-run:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        #log-container {
+            margin-top: 20px;
+            background: #1e293b;
+            color: #38bdf8;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 12px;
+            height: 150px;
+            overflow-y: auto;
+            border: 1px solid #334155;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 2px;
+        }
+
+        .log-success { color: #4ade80; }
+        .log-error { color: #f87171; }
+        .log-info { color: #fbbf24; }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            overflow: hidden;
+            display: none;
+        }
+
+        #progress-fill {
+            height: 100%;
+            background: var(--gov-gold);
+            width: 0%;
+            transition: width 0.3s;
+        }
+    </style>
+</head>
+<body>
+
+<div class="tool-container">
+    <div class="header">
+        <h1><i class="fa-solid fa-users-gear"></i> Giả lập Đăng ký Cán bộ</h1>
+        <p>Hệ thống tạo dữ liệu mẫu cho quy trình phê duyệt & phân quyền</p>
+    </div>
+
+    <div class="form-body">
+        <div class="form-group">
+            <label>Số lượng tài khoản cần tạo</label>
+            <input type="number" id="gen-count" value="5" min="1" max="50">
+        </div>
+
+        <div class="form-group">
+            <label>Danh sách Đơn vị (cách nhau bằng dấu phẩy)</label>
+            <textarea id="gen-orgs" rows="3">CÔNG AN PHƯỜNG, ĐỘI QLHC, TỔ DÂN PHỐ 21, ĐOÀN THANH NIÊN, HỘI PHỤ NỮ</textarea>
+        </div>
+
+        <label>Trạng thái ngẫu nhiên muốn tạo</label>
+        <div class="form-group status-grid">
+            <div class="checkbox-group">
+                <input type="checkbox" id="status-pending" checked>
+                <label style="margin:0; font-size:11px;">Chờ phê duyệt</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="status-locked" checked>
+                <label style="margin:0; font-size:11px;">Bị khóa</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="status-approved" checked>
+                <label style="margin:0; font-size:11px;">Đã duyệt</label>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="status-random" checked>
+                <label style="margin:0; font-size:11px;">Ngẫu nhiên hoàn toàn</label>
+            </div>
+        </div>
+
+        <div class="progress-bar" id="progress-bar">
+            <div id="progress-fill"></div>
+        </div>
+
+        <button class="btn-run" id="btn-start" onclick="startSimulation()">
+            <i class="fa-solid fa-play"></i> Bắt đầu giả lập
+        </button>
+
+        <div id="log-container">
+            <div class="log-entry">Sẵn sàng. Vui lòng cấu hình và nhấn Bắt đầu.</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const pb = new PocketBase('http://127.0.0.1:8090');
+
+    function log(msg, type = '') {
+        const container = document.getElementById('log-container');
+        const div = document.createElement('div');
+        div.className = 'log-entry ' + (type ? 'log-' + type : '');
+        const time = new Date().toLocaleTimeString();
+        div.innerHTML = `[${time}] ${msg}`;
+        container.appendChild(div);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    async function startSimulation() {
+        const count = parseInt(document.getElementById('gen-count').value);
+        const orgsInput = document.getElementById('gen-orgs').value;
+        const orgs = orgsInput.split(',').map(s => s.trim()).filter(s => s);
+        
+        const btn = document.getElementById('btn-start');
+        const progress = document.getElementById('progress-bar');
+        const fill = document.getElementById('progress-fill');
+
+        if (orgs.length === 0) {
+            alert("Vui lòng nhập ít nhất một đơn vị!");
+            return;
+        }
+
+        btn.disabled = true;
+        progress.style.display = 'block';
+        fill.style.width = '0%';
+        log(`🚀 Bắt đầu tạo ${count} tài khoản...`, 'info');
+
+        const firstNames = ["Nguyễn", "Trần", "Lê", "Phạm", "Hoàng", "Phan", "Vũ", "Đặng"];
+        const lastNames = ["Văn Anh", "Thanh Hải", "Minh Đức", "Thị Lan", "Thanh Tùng", "Hoài Nam", "Kim Liên", "Quốc Huy"];
+
+        for (let i = 0; i < count; i++) {
+            const name = firstNames[Math.floor(Math.random() * firstNames.length)] + " " + 
+                         lastNames[Math.floor(Math.random() * lastNames.length)] + " " + (i + 1);
+            
+            const email = `sim_${Date.now()}_${i}@badinh.gov.vn`;
+            const org = orgs[Math.floor(Math.random() * orgs.length)];
+
+            // Logic trạng thái
+            let approved = true;
+            let verified = false;
+
+            const checkPending = document.getElementById('status-pending').checked;
+            const checkLocked = document.getElementById('status-locked').checked;
+            const checkApproved = document.getElementById('status-approved').checked;
+
+            const types = [];
+            if (checkPending) types.push('pending');
+            if (checkLocked) types.push('locked');
+            if (checkApproved) types.push('approved');
+
+            const selectedType = types[Math.floor(Math.random() * types.length)] || 'approved';
+
+            if (selectedType === 'pending') {
+                approved = false;
+                verified = false;
+            } else if (selectedType === 'locked') {
+                approved = false;
+                verified = true;
+            } else {
+                approved = true;
+                verified = false;
+            }
+
+            const data = {
+                "email": email,
+                "password": "password123",
+                "passwordConfirm": "password123",
+                "name": name,
+                "organization": org,
+                "approved": approved,
+                "verified": verified,
+                "position": "Cán bộ giả lập"
+            };
+
+            try {
+                await pb.collection('users').create(data);
+                const statusText = approved ? "Đã duyệt" : (verified ? "Bị khóa" : "Chờ duyệt");
+                log(`✅ Thành công: ${name} (${statusText})`, 'success');
+            } catch (err) {
+                log(`❌ Thất bại: ${name} - ${err.message}`, 'error');
+            }
+
+            const percent = ((i + 1) / count) * 100;
+            fill.style.width = percent + '%';
+        }
+
+        log("✨ HOÀN TẤT GIẢ LẬP!", 'info');
+        btn.disabled = false;
+        
+        // Nhắc admin reload trang nếu đang mở
+        log("💡 Vui lòng tải lại trang Admin để thấy dữ liệu mới.", 'info');
+    }
+</script>
+
+</body>
+</html>

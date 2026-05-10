@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="security.js?v=V7_FINAL"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CÁC ĐOÀN THỂ - ĐỊA BÀN DÂN CƯ SỐ 21</title>
+    <link rel="stylesheet" href="retro.css?v=V1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 20px 0;
+        }
+
+        .group-card {
+            background: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .group-card:hover {
+            border-color: #2b579a;
+            background: #f8fbff;
+        }
+
+        .group-logo {
+            height: 80px;
+            width: auto;
+            margin-bottom: 15px;
+            object-fit: contain;
+        }
+
+        .group-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2b579a;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .group-desc {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .btn-view {
+            display: inline-block;
+            padding: 6px 15px;
+            background: #2b579a;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .btn-view:hover {
+            background: #1a3a6b;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SHARED HEADER -->
+    <div id="shared-header"></div>
+
+    <div class="main-wrapper">
+        <div class="page-content">
+            <fieldset class="retro-fieldset">
+                <legend>DANH SÁCH TỔ CHỨC ĐOÀN THỂ</legend>
+                <p style="margin-bottom: 20px; line-height: 1.6; color: #444;">Hệ thống các đoàn thể tại Tổ dân phố số
+                    21 đóng vai trò nòng cốt trong việc tập hợp, đoàn kết nhân dân, thực hiện thắng lợi các nhiệm vụ
+                    chính trị và xây dựng đời sống văn hóa tại khu dân cư.</p>
+
+                <div class="group-grid">
+                    <!-- Chi Bộ -->
+                    <div class="group-card">
+                        <img src="https://dangcongsan.vn/upload/2006988/20250619/logo-flag_6305d_4eea1.png"
+                            class="group-logo">
+                        <div class="group-name">CHI BỘ ĐẢNG SỐ 21</div>
+                        <p class="group-desc">Hạt nhân lãnh đạo chính trị, chỉ đạo toàn diện các hoạt động của hệ thống
+                            chính trị tại cơ sở.</p>
+                        <a href="chi-bo.html" class="btn-view">XEM CHI TIẾT</a>
+                    </div>
+
+                    <!-- MTTQ -->
+                    <div class="group-card">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Bi%E1%BB%83u_tr%C6%B0ng_M%E1%BA%B7t_tr%E1%BA%ADn_T%E1%BB%95_qu%E1%BB%91c_Vi%E1%BB%87t_Nam.svg"
+                            class="group-logo">
+                        <div class="group-name">MẶT TRẬN TỔ QUỐC</div>
+                        <p class="group-desc">Xây dựng khối đại đoàn kết toàn dân, thực hiện các phong trào thi đua yêu
+                            nước.</p>
+                        <a href="mat-tran-to-quoc.html" class="btn-view">XEM CHI TIẾT</a>
+                    </div>
+
+                    <!-- Phụ Nữ -->
+                    <div class="group-card">
+                        <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/06/Logo-Hoi-Lien-Hiep-Phu-Nu-Viet-Nam.png"
+                            class="group-logo">
+                        <div class="group-name">HỘI PHỤ NỮ</div>
+                        <p class="group-desc">Bảo vệ quyền và lợi ích cho phụ nữ, phát huy vai trò của phụ nữ trong gia
+                            đình.</p>
+                        <a href="hoi-phu-nu.html" class="btn-view">XEM CHI TIẾT</a>
+                    </div>
+
+                    <!-- CCB -->
+                    <div class="group-card">
+                        <img src="https://cdn.haitrieu.com/wp-content/uploads/2022/08/logo-hoi-cuu-chien-binh-viet-nam.png"
+                            class="group-logo">
+                        <div class="group-name">HỘI CỰU CHIẾN BINH</div>
+                        <p class="group-desc">Phát huy bản chất "Bộ đội Cụ Hồ", gương mẫu trong các hoạt động địa
+                            phương.</p>
+                        <a href="hoi-cuu-chien-binh.html" class="btn-view">XEM CHI TIẾT</a>
+                    </div>
+
+                    <!-- Thanh Niên -->
+                    <div class="group-card">
+                        <img src="https://cdn.haitrieu.com/wp-content/uploads/2021/11/Logo-Doan-Thanh-NIen-Cong-San-Ho-Chi-Minh-1.png"
+                            class="group-logo">
+                        <div class="group-name">ĐOÀN THANH NIÊN</div>
+                        <p class="group-desc">Lực lượng xung kích, sáng tạo, đi đầu trong các phong trào hành động cách
+                            mạng.</p>
+                        <a href="doan-thanh-nien.html" class="btn-view">XEM CHI TIẾT</a>
+                    </div>
+
+                    <!-- Khuyến Học -->
+                    <div class="group-card">
+                        <img src="https://lh3.googleusercontent.com/pw/AP1GczPU69TVpCvfr9Sc8Q-xfiPOKQkYoKffYiJ0rHZNcrP699bqiWJWNpR1MD7_Byewp7lIKZY_0epoQXz-k9PNj3sdk7fRgNSVwfT2tkVurGGgVYrpYSk7IYsiyksyBKqUBPJTTZbHG8tf7fgbES8MYm6m5g=w848-h859-s-no-gm?authuser=0"
+                            class="group-logo">
+                        <div class="group-name">BAN KHUYẾN HỌC</div>
+                        <p class="group-desc">Khuyến khích phong trào học tập, tôn vinh và khen thưởng học sinh xuất
+                            sắc.</p>
+                        <a href="ban-khuyen-hoc.html" class="btn-view">XEM CHI TIẾT</a>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+
+    </div>
+
+    <!-- SHARED FOOTER -->
+    <div id="shared-footer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=V10_ULTIMATE"></script>
+    <script src="shared-ui.js?v=V1.0"></script>
+</body>
+
+</html>

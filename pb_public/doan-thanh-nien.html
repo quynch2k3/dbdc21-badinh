@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <script src="security.js?v=V1.16"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ĐOÀN THANH NIÊN - Địa bàn dân cư số 21</title>
+    
+    <link rel="stylesheet" href="retro.css?v=V1.20">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .grid-layout { display: grid; grid-template-columns: 2.2fr 1fr; gap: 30px; }
+        .sidebar-link { display: block; padding: 10px 15px; color: #334155; text-decoration: none; border-bottom: 1px solid #f1f5f9; font-size: 14px; font-weight: 500; transition: all 0.2s; }
+        .sidebar-link:hover { background: #f8fafc; color: #2b579a; padding-left: 20px; }
+    </style>
+</head>
+<body>
+
+    <!-- SHARED HEADER -->
+    <div id="shared-header"></div>
+
+    <div class="main-wrapper">
+        <div class="page-content">
+            <div class="grid-layout">
+                <div class="left-col">
+                    <div class="box-header">
+                        <h2 class="section-title-retro">TIN TỨC & HOẠT ĐỘNG ĐOÀN THANH NIÊN</h2>
+                    </div>
+                    <div id="category-news-list">
+                        <div style="padding: 40px; text-align: center; color: #94a3b8;">
+                            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                            <p>Đang tải dữ liệu...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <div class="box-header">
+                        <h2 class="section-title-retro">ĐIỀU HÀNH TÁC NGHIỆP</h2>
+                    </div>
+                    <div style="margin-bottom: 25px; border: 1px solid var(--border-legacy); border-top:none;">
+                        <a href="chi-bo.html" class="sidebar-link">Chi Bộ Đảng Số 21</a>
+                        <a href="mat-tran-to-quoc.html" class="sidebar-link">Mặt Trận Tổ Quốc</a>
+                        <a href="hoi-phu-nu.html" class="sidebar-link">Hội Phụ Nữ</a>
+                        <a href="hoi-cuu-chien-binh.html" class="sidebar-link">Hội Cựu Chiến Binh</a>
+                        <a href="doan-thanh-nien.html" class="sidebar-link" style="background:#f1f5f9; font-weight:bold; color:var(--text-navy);">Đoàn Thanh Niên</a>
+                        <a href="hoi-nguoi-cao-tuoi.html" class="sidebar-link">Hội Người Cao Tuổi</a>
+                        <a href="ban-khuyen-hoc.html" class="sidebar-link">Ban Khuyến Học</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHARED FOOTER -->
+    <div id="shared-footer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=V1.20"></script>
+    <script src="shared-ui.js?v=V1.20"></script>
+    <script src="cms.js?v=V1.20"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.loadNews) {
+                loadNews('TN', 'category-news-list', 12);
+            }
+        });
+        window.addEventListener('SharedUIReady', () => {
+            document.title = "CHI ĐOÀN THANH NIÊN SỐ 21 - ĐBDC SỐ 21";
+        });
+    </script>
+</body>
+</html>

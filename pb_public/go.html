@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuyển hướng an toàn - TDP 21 Ba Đình</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="security.js?v=ULTRA_SHIELD_V10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=FIXED_V2"></script>
+    <style>
+        :root {
+            --gov-blue: #002060;
+            --gov-blue-mid: #003087;
+            --gov-blue-lt: #e8f0fb;
+            --gov-red: #c8001e;
+            --gov-gold: #c8900a;
+            --text-dark: #0d1b2a;
+            --text-body: #2c3e50;
+            --text-muted: #5a6a7e;
+            --border: #c5cdd8;
+            --bg: #f0f2f5;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Be Vietnam Pro', 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text-body);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-size: 13.5px;
+        }
+
+        .gov-top-bar {
+            width: 100%;
+            max-width: 700px;
+            background: var(--gov-blue);
+            color: #fff;
+            padding: 10px 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-radius: 3px 3px 0 0;
+        }
+
+        .redirect-card {
+            background: #fff;
+            width: 100%;
+            max-width: 700px;
+            border: 1px solid var(--border);
+            border-top: none;
+            border-bottom: 4px solid var(--gov-red);
+            border-radius: 0 0 3px 3px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 22px 28px 18px;
+            border-bottom: 1px solid #e4e8f0;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .emblem { height: 64px; width: 64px; object-fit: contain; }
+        .sys-name { font-size: 16px; font-weight: 800; color: var(--gov-blue); text-transform: uppercase; }
+        .sys-sub { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+
+        .card-body { padding: 22px 28px 24px; }
+        .status-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gov-blue-mid); animation: pulse-dot 1.5s infinite; }
+        @keyframes pulse-dot { 0% { opacity: 1; } 50% { opacity: 0.35; } 100% { opacity: 1; } }
+
+        .progress-bar-wrap { background: #e8edf5; border: 1px solid var(--border); border-radius: 2px; height: 8px; margin-bottom: 18px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--gov-blue), #0056cc); width: 0%; transition: width 0.4s ease; }
+
+        .security-table { width: 100%; border: 1px solid var(--border); border-collapse: collapse; margin-bottom: 20px; font-size: 12.5px; }
+        .security-table caption { background: var(--gov-blue); color: #fff; text-align: left; padding: 7px 14px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .security-table td { padding: 9px 14px; border-bottom: 1px solid #edf0f5; }
+
+        .action-row { display: flex; align-items: center; justify-content: space-between; background: var(--gov-blue-lt); padding: 14px 18px; border-left: 4px solid var(--gov-blue); gap: 14px; }
+        .btn-redirect { background: var(--gov-blue); color: #fff; padding: 11px 22px; border: none; border-radius: 2px; font-weight: 700; cursor: pointer; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <div class="gov-top-bar">
+        <div class="site-label"><i class="fa-solid fa-shield-halved"></i> Cổng Chuyển Tiếp An Toàn - Địa Bàn 21</div>
+        <div class="secure-badge"><i class="fa-solid fa-lock"></i> HTTPS</div>
+    </div>
+    <div class="redirect-card">
+        <div class="card-header">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczPU69TVpCvfr9Sc8Q-xfiPOKQkYoKffYiJ0rHZNcrP699bqiWJWNpR1MD7_Byewp7lIKZY_0epoQXz-k9PNj3sdk7fRgNSVwfT2tkVurGGgVYrpYSk7IYsiyksyBKqUBPJTTZbHG8tf7fgbES8MYm6m5g=w848-h859-s-no-gm?authuser=0" class="emblem" id="dynamic-logo">
+            <div class="header-text">
+                <div class="sys-name" id="dynamic-sys-name">HỆ THỐNG TRUY CẬP AN TOÀN</div>
+                <div class="sys-sub" id="dynamic-sys-sub">ĐỊA BÀN DÂN CƯ SỐ 21 - PHƯỜNG BA ĐÌNH</div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div id="redirect-ui">
+                <div class="status-row"><div class="status-dot"></div><span id="status-text">Đang xác thực liên kết...</span></div>
+                <div class="link-title" id="link-title" style="font-size: 18px; font-weight: 800; margin-bottom: 10px;">Đang quét mã bảo mật...</div>
+                <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progress-fill"></div></div>
+                <table class="security-table">
+                    <caption>PHÂN TÍCH AN TOÀN</caption>
+                    <tbody>
+                        <tr><td>Địa chỉ IP</td><td id="cell-ip">...</td></tr>
+                        <tr><td>Nhà mạng</td><td id="cell-isp">...</td></tr>
+                        <tr><td>Vị trí</td><td id="cell-geo">...</td></tr>
+                        <tr><td>Trạng thái</td><td id="cell-status">Đang kiểm tra...</td></tr>
+                    </tbody>
+                </table>
+                <div class="action-row" id="action-row" style="display:none;">
+                    <span>Sẵn sàng chuyển hướng sau <b id="timer-text">5</b> giây...</span>
+                    <button class="btn-redirect" onclick="doRedirect()">TIẾP TỤC NGAY</button>
+                </div>
+            </div>
+            <div id="error-ui" style="display:none; text-align:center;">
+                <h3 style="color:var(--gov-red);">Liên kết không hợp lệ</h3>
+                <a href="index.html" class="btn-redirect" style="margin-top:10px; display:inline-block;">VỀ TRANG CHỦ</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        let targetUrl = "index.html";
+        function setProgress(pct) { document.getElementById('progress-fill').style.width = pct + '%'; }
+        
+        async function initRedirect() {
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('s') || params.get('gateway_token');
+            if (!slug) { showError(); return; }
+            
+            setProgress(30);
+            try {
+                const items = await pb.collection('redirects').getList(1, 1, { filter: `slug = "${slug}"` });
+                if (!items.items.length) { showError(); return; }
+                
+                const record = items.items[0];
+                targetUrl = record.target_url;
+                document.getElementById('link-title').textContent = record.title || "Tài liệu hệ thống";
+                updateBranding(targetUrl);
+                
+                setProgress(100);
+                document.getElementById('status-text').textContent = "Liên kết an toàn";
+                document.getElementById('cell-status').textContent = "HỢP LỆ";
+                startCountdown();
+            } catch (e) { showError(); }
+        }
+
+        function updateBranding(url) {
+            const u = url.toLowerCase();
+            const logoEl = document.getElementById('dynamic-logo');
+            const nameEl = document.getElementById('dynamic-sys-name');
+            
+            if (u.includes('chi-bo.html')) {
+                logoEl.src = "logo-chibo-new-v2.png";
+                nameEl.textContent = "CHI BỘ ĐỊA BÀN SỐ 21";
+            } else if (u.includes('hoi-phu-nu.html')) {
+                logoEl.src = "https://cdn.haitrieu.com/wp-content/uploads/2022/06/Logo-Hoi-Lien-Hiep-Phu-Nu-Viet-Nam.png";
+                nameEl.textContent = "HỘI PHỤ NỮ ĐỊA BÀN 21";
+            } else if (u.includes('doan-thanh-nien.html')) {
+                logoEl.src = "https://upload.wikimedia.org/wikipedia/vi/0/09/Huy_Hi%E1%BB%87u_%C4%90o%C3%A0n.png";
+                nameEl.textContent = "ĐOÀN THANH NIÊN SỐ 21";
+            }
+        }
+
+        function startCountdown() {
+            let count = 5;
+            document.getElementById('action-row').style.display = 'flex';
+            const timer = setInterval(() => {
+                count--;
+                document.getElementById('timer-text').textContent = count;
+                if (count <= 0) { clearInterval(timer); doRedirect(); }
+            }, 1000);
+        }
+
+        function doRedirect() { window.location.href = targetUrl; }
+        function showError() { document.getElementById('redirect-ui').style.display='none'; document.getElementById('error-ui').style.display='block'; }
+        
+        document.addEventListener('DOMContentLoaded', initRedirect);
+    </script>
+</body>
+</html>

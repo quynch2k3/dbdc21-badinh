@@ -1,0 +1,10 @@
+version: "2"
+tunnels:
+  pocketbase:
+    proto: http
+    addr: 8090
+    host_header: "localhost:8090"
+    inspect: false
+    request_header:
+      add:
+        - "ngrok-skip-browser-warning: true"

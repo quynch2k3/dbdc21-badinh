@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập hệ thống - TDP21 Ba Đình</title>
+    <style>
+        body, html { margin: 0; padding: 0; background-color: #fcfcfc; font-family: Arial, sans-serif; color: #333; }
+        .retro-header { background-color: #e3edf7; border-bottom: 1px solid #b3cce6; padding: 15px 20px; position: absolute; top: 0; left: 0; right: 0; }
+        .retro-header h1 { margin: 0; color: #003399; font-size: 26px; font-weight: normal; }
+        .retro-footer { background-color: #e3edf7; border-top: 1px solid #b3cce6; height: 30px; margin-top: 50px; }
+        .login-wrapper { display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 100px 0 50px; }
+        .retro-login-box { width: 480px; font-size: 13px; }
+        .retro-fieldset { border: 1px solid #ccc; background: #fdfdfd; padding: 25px 30px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 4px; }
+        .retro-legend { color: #008000; font-weight: bold; font-size: 13px; padding: 0 5px; }
+        .retro-form-table { width: 100%; border-collapse: collapse; }
+        .retro-form-table td { padding: 6px 0; vertical-align: middle; }
+        .retro-label { color: #333; width: 130px; font-weight: bold; }
+        .retro-input { width: 100%; border: 1px solid #999; padding: 5px 8px; box-sizing: border-box; height: 28px; font-size: 13px; }
+        .retro-btn { background: #f0f0f0; border: 1px solid #777; padding: 6px 15px; cursor: pointer; margin-top: 15px; font-weight: bold; font-family: inherit; }
+        .retro-btn:hover { background: #e0e0e0; }
+        .auth-links { margin-top: 15px; text-align: center; }
+        .auth-links a { color: #003399; font-size: 12px; text-decoration: none; }
+        .auth-links a:hover { text-decoration: underline; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .error-item { margin: 2px 0; padding-left: 15px; position: relative; }
+        .error-item::before { content: "•"; position: absolute; left: 5px; }
+
+        /* CLASSIC SYSTEM MODAL - MATCHING LOGIN FORM */
+        .status-modal-overlay {
+            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); 
+            z-index: 10000; display: none;
+            align-items: center; justify-content: center;
+        }
+        .status-modal {
+            background: white; width: 450px; border-radius: 0; 
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2); text-align: center;
+            border: 1px solid #aaa; font-family: Tahoma, Arial, sans-serif;
+            animation: none; /* No modern animation */
+        }
+        
+        .modal-classic-header { 
+            padding: 10px; background: #f0f4f8; 
+            border-bottom: 1px dotted #666; text-align: left;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .modal-classic-header span {
+            color: #003399; font-size: 13px; font-weight: bold;
+        }
+        
+        .status-modal-body { padding: 25px; text-align: center; }
+        .status-modal-title { 
+            font-size: 16px; font-weight: bold; color: #008000; 
+            margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;
+        }
+        .status-modal-msg { 
+            font-size: 13px; color: #000; line-height: 1.6; margin-bottom: 20px;
+            padding: 10px; background: #e8f0fe; border: 1px solid #ccd;
+        }
+        .btn-modal-close { 
+            background: #f0f0f0; color: #000; border: 1px solid #707070; 
+            padding: 8px 25px; cursor: pointer; transition: 0.1s;
+            font-size: 13px; width: auto; font-family: Tahoma, Arial, sans-serif;
+        }
+        .btn-modal-close:hover { background: #e5e5e5; border-color: #000; }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="retro-header">
+        <h1>CỔNG QUẢN TRỊ NỘI BỘ (TDP21)</h1>
+    </div>
+
+    <div class="login-wrapper">
+        <div class="retro-login-box">
+            <!-- VIEW: LOGIN -->
+            <fieldset id="view-login" class="retro-fieldset">
+                <legend class="retro-legend">Đăng nhập hệ thống</legend>
+                <table class="retro-form-table">
+                    <tr>
+                        <td class="retro-label">Tài khoản:</td>
+                        <td><input type="text" id="login-email" class="retro-input" placeholder="Email hoặc Tên người dùng"></td>
+                    </tr>
+                    <tr>
+                        <td class="retro-label">Mật khẩu:</td>
+                        <td><input type="password" id="login-pass" class="retro-input"></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="padding-top: 10px;">
+                            <div id="gov-shield-widget" style="border:1px solid #ddd; padding:12px; display:flex; align-items:center; gap:12px; cursor:pointer;" onclick="verifyShield()">
+                                <div id="shield-checkbox" style="width:20px; height:20px; border:2px solid #2b579a; border-radius:3px; display:flex; align-items:center; justify-content:center;">
+                                    <div id="shield-spinner" style="width:12px; height:12px; border:2px solid #ccc; border-top-color:#2b579a; border-radius:50%; display:none; animation:spin 0.8s linear infinite;"></div>
+                                    <i id="shield-check" class="fa-solid fa-check" style="display:none; color:#16a34a; font-size:13px;"></i>
+                                </div>
+                                <span id="shield-text" style="font-size:13px; color:#444; font-weight:500;">Xác minh danh tính Cán bộ</span>
+                            </div>
+                            <input type="hidden" id="shield-verified" value="0">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: center;">
+                            <button class="retro-btn" onclick="attemptLogin()" style="width: 100%; border-color: #2b579a; color: #2b579a;">ĐĂNG NHẬP</button>
+                        </td>
+                    </tr>
+                </table>
+                <div id="login-error-box" class="error-box"></div>
+                <div class="auth-links"><a href="#" onclick="toggleView('register')">[ Mở tài khoản cán bộ mới ]</a></div>
+            </fieldset>
+
+            <!-- VIEW: REGISTER -->
+            <fieldset id="view-register" class="retro-fieldset" style="display: none;">
+                <legend class="retro-legend">Mở tài khoản Cán bộ mới</legend>
+                <table class="retro-form-table">
+                    <tr><td class="retro-label">Họ và tên:</td><td><input type="text" id="reg-name" class="retro-input" placeholder="Nguyễn Văn A"></td></tr>
+                    <tr><td class="retro-label">Tên người dùng:</td><td><input type="text" id="reg-username" class="retro-input" placeholder="canbo_to21"></td></tr>
+                    <tr><td class="retro-label">Email:</td><td><input type="email" id="reg-email" class="retro-input" placeholder="canbo@example.com"></td></tr>
+                    <tr><td class="retro-label">Số điện thoại:</td><td><input type="text" id="reg-phone" class="retro-input" placeholder="0912.xxx.xxx"></td></tr>
+                    <tr><td class="retro-label">Chức vụ:</td><td><input type="text" id="reg-position" class="retro-input" placeholder="Ví dụ: Cán bộ tổ 21"></td></tr>
+                    
+                    <tr>
+                        <td class="retro-label">Ảnh đại diện:</td>
+                        <td>
+                            <div style="display: flex; gap: 5px; flex-direction: column;">
+                                <input type="file" id="reg-avatar-file" style="font-size: 11px;" accept="image/*">
+                                <div style="font-size: 10px; color: #666;">Hoặc dán URL ảnh:</div>
+                                <input type="text" id="reg-avatar-url" class="retro-input" placeholder="https://example.com/photo.jpg" style="height: 22px; font-size: 11px;">
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr><td class="retro-label">Mật khẩu:</td><td><input type="password" id="reg-pass" class="retro-input"></td></tr>
+                    <tr><td class="retro-label">Xác nhận MK:</td><td><input type="password" id="reg-pass2" class="retro-input"></td></tr>
+                    
+                    <tr>
+                        <td colspan="2" style="text-align: center;">
+                            <button class="retro-btn" onclick="attemptRegister()" style="width: 100%; border-color: #16a34a; color: #16a34a;">HOÀN TẤT ĐĂNG KÝ</button>
+                            <button class="retro-btn" onclick="toggleView('login')" style="width: 100%; margin-top: 5px;">QUAY LẠI ĐĂNG NHẬP</button>
+                        </td>
+                    </tr>
+                </table>
+                <div id="reg-error-box" class="error-box"></div>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="retro-footer"></div>
+
+    <!-- CLASSIC STATUS MODAL -->
+    <div id="status-modal-overlay" class="status-modal-overlay">
+        <div class="status-modal">
+            <div class="modal-classic-header">
+                <i class="fa-solid fa-circle-info" style="color:#003399"></i>
+                <span>Thông báo hệ thống</span>
+            </div>
+            <div class="status-modal-body">
+                <div id="modal-title" class="status-modal-title">Trạng thái phê duyệt tài khoản</div>
+                <div id="modal-msg" class="status-modal-msg">Tài khoản cán bộ của bạn hiện đang trong danh sách Chờ phê duyệt. <br><br>Vui lòng liên hệ bộ phận kỹ thuật để được kích hoạt.</div>
+                <button class="btn-modal-close" onclick="closeStatusModal()">ĐÓNG THÔNG BÁO</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=V1.30"></script>
+    <script>
+        function toggleView(v) { 
+            document.getElementById('view-login').style.display = v==='login'?'block':'none';
+            document.getElementById('view-register').style.display = v==='register'?'block':'none';
+            hideErrors();
+            
+            // Cập nhật URL mà không cần tải lại trang
+            if (window.history.pushState) {
+                window.history.pushState(null, null, '#' + v);
+            } else {
+                window.location.hash = v;
+            }
+        }
+
+        window.addEventListener('hashchange', () => {
+            const hash = window.location.hash.substring(1);
+            if (hash === 'register' || hash === 'login') {
+                toggleView(hash);
+            }
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const params = new URLSearchParams(window.location.search);
+            const hash = window.location.hash.substring(1);
+            
+            // Tự động mở đúng màn hình dựa trên URL Hash
+            if (hash === 'register') {
+                toggleView('register');
+            } else {
+                toggleView('login');
+            }
+
+            if (params.get('status') === 'pending') {
+                showStatusModal(
+                    "THÔNG BÁO PHÊ DUYỆT", 
+                    "Tài khoản cán bộ của bạn hiện đang trong danh sách Chờ phê duyệt. Theo quy định bảo mật, mọi tài khoản mới cần được xác minh danh tính bởi Ban Quản trị trước khi truy cập trung tâm điều hành. Vui lòng liên hệ bộ phận kỹ thuật để được kích hoạt.",
+                    "pending"
+                );
+            }
+        });
+
+        function hideErrors() {
+            document.getElementById('login-error-box').style.display = 'none';
+            document.getElementById('reg-error-box').style.display = 'none';
+        }
+
+        function showError(boxId, message, details = null) {
+            const box = document.getElementById(boxId);
+            box.style.display = 'block';
+            let html = `<b><i class="fa-solid fa-circle-exclamation"></i> Lỗi: ${message}</b>`;
+            if (details) {
+                html += '<div style="margin-top:5px;">';
+                for (const [key, val] of Object.entries(details)) {
+                    html += `<div class="error-item">${key}: ${val.message || val}</div>`;
+                }
+                html += '</div>';
+            }
+            box.innerHTML = html;
+        }
+        
+        function verifyShield() {
+            if (document.getElementById('shield-verified').value === "1") return;
+            document.getElementById('shield-spinner').style.display = 'block';
+            document.getElementById('shield-text').innerText = "Đang xác minh...";
+            setTimeout(() => {
+                document.getElementById('shield-spinner').style.display = 'none';
+                document.getElementById('shield-check').style.display = 'block';
+                document.getElementById('shield-text').innerText = "Đã xác minh Cán bộ";
+                document.getElementById('shield-text').style.color = "#16a34a";
+                document.getElementById('shield-verified').value = "1";
+            }, 1000);
+        }
+
+        async function attemptLogin() {
+            hideErrors();
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+            if (document.getElementById('shield-verified').value !== "1") { alert("Vui lòng hoàn tất xác minh Cán bộ!"); return; }
+            if (!email || !pass) { showError('login-error-box', 'Vui lòng nhập đầy đủ thông tin.'); return; }
+
+            try {
+                let authData;
+                try { 
+                    authData = await pb.admins.authWithPassword(email, pass);
+                } catch(e) { 
+                    authData = await pb.collection('users').authWithPassword(email, pass);
+                }
+                
+                const user = authData.record || authData.admin; // admin doesn't have .record
+                
+                // Kiểm tra trạng thái khóa hoặc phê duyệt (chỉ dành cho users, admin luôn được duyệt)
+                if (authData.record) {
+                    if (authData.record.verified) { // Tận dụng trường verified làm cờ khóa
+                        pb.authStore.clear();
+                        showStatusModal(
+                            "TÀI KHOẢN BỊ KHÓA", 
+                            "Rất tiếc, tài khoản Cán bộ của bạn đã bị khóa bởi Quản trị viên hệ thống do vi phạm quy định hoặc lý do bảo mật. Vui lòng liên hệ trực tiếp Ban Quản trị để biết thêm chi tiết và yêu cầu mở khóa.",
+                            "error"
+                        );
+                        return;
+                    }
+                    if (!authData.record.approved) {
+                        pb.authStore.clear();
+                        showStatusModal(
+                            "TÀI KHOẢN CHỜ DUYỆT", 
+                            "Chào cán bộ, tài khoản của bạn đang trong danh sách chờ phê duyệt. Vui lòng liên hệ Quản trị viên hệ thống để được kích hoạt quyền truy cập.",
+                            "pending"
+                        );
+                        return;
+                    }
+                }
+
+                window.location.href = 'admin.html';
+            } catch(e) { 
+                showError('login-error-box', "Tài khoản hoặc mật khẩu không chính xác.");
+            }
+        }
+
+        function showStatusModal(title, msg, type) {
+            let iconHtml = '';
+            let titleColor = '#003399'; // default blue
+            
+            if (type === 'success') {
+                iconHtml = '<i class="fa-solid fa-circle-check"></i>';
+                titleColor = '#16a34a';
+            } else if (type === 'error') {
+                iconHtml = '<i class="fa-solid fa-circle-xmark"></i>';
+                titleColor = '#dc2626';
+            } else if (type === 'pending' || type === 'warning') {
+                iconHtml = '<i class="fa-solid fa-circle-exclamation"></i>';
+                titleColor = '#d97706';
+            } else {
+                iconHtml = '<i class="fa-solid fa-circle-info"></i>';
+            }
+
+            const titleEl = document.getElementById('modal-title');
+            titleEl.innerHTML = `<div style="font-size: 48px; margin-bottom: 12px; line-height: 1;">${iconHtml}</div><div>${title}</div>`;
+            titleEl.style.color = titleColor;
+            titleEl.style.textAlign = 'center';
+            titleEl.style.borderBottom = 'none'; // Bỏ gạch chân cho đẹp hơn khi icon nằm trên
+            
+            document.getElementById('modal-msg').innerText = msg;
+            document.getElementById('status-modal-overlay').style.display = 'flex';
+        }
+
+        function closeStatusModal() {
+            document.getElementById('status-modal-overlay').style.display = 'none';
+            // Dọn sạch URL: Xóa ?status=pending mà không cần tải lại trang
+            if (window.history.pushState) {
+                const newurl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.history.pushState({path:newurl}, '', newurl);
+            }
+        }
+
+        async function attemptRegister() {
+            hideErrors();
+            const name = document.getElementById('reg-name').value;
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const phone = document.getElementById('reg-phone').value;
+            const position = document.getElementById('reg-position').value;
+            const pass = document.getElementById('reg-pass').value;
+            const pass2 = document.getElementById('reg-pass2').value;
+            const avatarUrl = document.getElementById('reg-avatar-url').value;
+            const avatarFile = document.getElementById('reg-avatar-file').files[0];
+
+            if (!name || !username || !email || !pass) {
+                showError('reg-error-box', 'Vui lòng điền đủ Họ tên, Username, Email và Mật khẩu.');
+                return;
+            }
+
+            if (pass !== pass2) {
+                showError('reg-error-box', 'Mật khẩu xác nhận không khớp.');
+                return;
+            }
+
+            try {
+                // Use FormData if we have a file, otherwise object
+                const formData = new FormData();
+                formData.append('name', name);
+                formData.append('username', username);
+                formData.append('email', email);
+                formData.append('phone', phone);
+                formData.append('position', position);
+                formData.append('password', pass);
+                formData.append('passwordConfirm', pass2);
+                formData.append('emailVisibility', true);
+
+                if (avatarFile) {
+                    formData.append('avatar', avatarFile);
+                } else if (avatarUrl) {
+                    // Note: PocketBase doesn't support direct URL to avatar field via FormData easily 
+                    // unless we fetch it. For now, we'll just try to append it or leave it.
+                    // If you have a 'avatar_url' field in schema, we could use that.
+                }
+
+                await pb.collection('users').create(formData);
+                await pb.collection('users').authWithPassword(email, pass);
+                window.location.href = 'admin.html';
+            } catch(e) { 
+                console.error(e);
+                const data = e.data?.data || null;
+                showError('reg-error-box', e.message || "Không thể tạo tài khoản.", data);
+            }
+        }
+    </script>
+</body>
+</html>

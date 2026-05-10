@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <script src="security.js?v=V7_FINAL"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TRA CỨU Ý KIẾN PHẢN ÁNH - ĐỊA BÀN DÂN CƯ SỐ 21</title>
+    <link rel="stylesheet" href="retro.css?v=V1.33">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .tra-cuu-wrapper {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 30px;
+        }
+
+        .result-card {
+            background: #fff;
+            border: 1px solid var(--border-legacy);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-header {
+            background: #f8fafc;
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border-legacy);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .result-body {
+            padding: 15px;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 2px;
+        }
+
+        .status-waiting { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+        .status-done { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+
+        .admin-response {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f7ff;
+            border: 1px solid #cce3ff;
+            border-left: 4px solid #2b579a;
+        }
+
+        .reply-box {
+            margin-top: 15px;
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- SHARED HEADER -->
+    <div id="shared-header"></div>
+
+    <div class="main-wrapper">
+        <div class="page-content">
+            <div class="box-header">
+                <h2 class="section-title-retro">TRA CỨU TIẾN ĐỘ XỬ LÝ PHẢN ÁNH</h2>
+            </div>
+
+            <div class="tra-cuu-wrapper">
+                <div class="left-col">
+                    <fieldset class="retro-fieldset">
+                        <legend>NHẬP THÔNG TIN TRA CỨU</legend>
+                        <div style="padding: 20px;">
+                            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">
+                                <i class="fa-solid fa-circle-info"></i> Vui lòng nhập đúng Số điện thoại hoặc Email bạn đã sử dụng khi gửi ý kiến.
+                            </p>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="text" id="search-contact" 
+                                    style="flex: 1; padding: 12px; border: 1px solid var(--border-legacy); font-size: 15px; outline: none;" 
+                                    placeholder="Ví dụ: 0912345678 hoặc email@example.com">
+                                <button onclick="searchFeedback()" id="btn-search" 
+                                    style="padding: 0 25px; background: #2b579a; color: #fff; border: none; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-magnifying-glass"></i> TRA CỨU
+                                </button>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <div id="loading-state" style="display: none; text-align: center; padding: 40px;">
+                        <i class="fa-solid fa-spinner fa-spin" style="font-size: 30px; color: #2b579a; margin-bottom: 10px;"></i>
+                        <p style="color: #666;">Đang tìm kiếm dữ liệu...</p>
+                    </div>
+
+                    <div id="search-results" style="margin-top: 30px; display: none;">
+                        <div class="box-header" style="border-bottom: 2px solid #2b579a; margin-bottom: 20px;">
+                            <h3 style="font-size: 16px; color: #2b579a; font-weight: 900; margin: 0;">KẾT QUẢ TÌM KIẾM</h3>
+                        </div>
+                        <div id="results-list"></div>
+                    </div>
+                </div>
+
+                <div class="right-col">
+                    <div class="box-header">
+                        <h2 class="section-title-retro">LIÊN KẾT NHANH</h2>
+                    </div>
+                    <div style="border: 1px solid var(--border-legacy); border-top: none; margin-bottom: 25px;">
+                        <a href="lien-he.html" class="sidebar-link"><i class="fa-solid fa-pen-to-square"></i> Gửi ý kiến mới</a>
+                        <a href="index.html" class="sidebar-link"><i class="fa-solid fa-house"></i> Quay về trang chủ</a>
+                        <a href="tin-tuc.html" class="sidebar-link"><i class="fa-solid fa-newspaper"></i> Xem tin tức</a>
+                    </div>
+
+                    <div style="background: #fff8e1; border: 1px solid #ffe082; padding: 15px; border-radius: 4px; font-size: 13px; line-height: 1.6;">
+                        <strong style="color: #795548; display: block; margin-bottom: 5px;"><i class="fa-solid fa-shield-halved"></i> Bảo mật thông tin</strong>
+                        Dữ liệu cá nhân của bạn được bảo vệ theo tiêu chuẩn bảo mật của hệ thống quản lý địa bàn dân cư. Chỉ bạn mới có thể xem kết quả khi nhập đúng thông tin định danh.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHARED FOOTER -->
+    <div id="shared-footer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=V1.33"></script>
+    <script src="shared-ui.js?v=V1.33"></script>
+    <script>
+        async function searchFeedback() {
+            const contact = document.getElementById('search-contact').value.trim();
+            if (!contact) {
+                alert('Vui lòng nhập thông tin liên hệ!');
+                return;
+            }
+
+            const btn = document.getElementById('btn-search');
+            const loading = document.getElementById('loading-state');
+            const resultsContainer = document.getElementById('search-results');
+            const list = document.getElementById('results-list');
+
+            btn.disabled = true;
+            loading.style.display = 'block';
+            resultsContainer.style.display = 'none';
+
+            try {
+                // FIX: Tìm kiếm linh hoạt, nếu lỗi 400 (do thiếu trường contact) thì thử tìm theo email
+                let records = [];
+                try {
+                    records = await pb.collection('feedback').getFullList({
+                        filter: `contact = '${contact}' || email = '${contact}'`,
+                        sort: '-created'
+                    });
+                } catch (err) {
+                    if (err.status === 400) {
+                        records = await pb.collection('feedback').getFullList({
+                            filter: `email = '${contact}'`,
+                            sort: '-created'
+                        });
+                    } else {
+                        throw err;
+                    }
+                }
+
+                if (records.length === 0) {
+                    list.innerHTML = `
+                        <div style="background:#fff3cd; color:#856404; padding:30px; border:1px solid #ffeeba; border-radius:4px; text-align:center;">
+                            <i class="fa-solid fa-face-frown" style="font-size: 40px; margin-bottom: 10px; display: block;"></i>
+                            Không tìm thấy ý kiến nào khớp với thông tin: <b>${contact}</b>
+                        </div>`;
+                } else {
+                    list.innerHTML = records.map(item => {
+                        const date = new Date(item.created).toLocaleDateString('vi-VN', {
+                            hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric'
+                        });
+                        const isDone = item.status === 'DONE' || item.status === 'COMPLETED';
+                        
+                        return `
+                            <div class="result-card">
+                                <div class="result-header">
+                                    <span style="font-size: 12px; color: #64748b;"><i class="fa-regular fa-clock"></i> Gửi ngày: ${date}</span>
+                                    <span class="status-badge ${isDone ? 'status-done' : 'status-waiting'}">
+                                        ${isDone ? 'Đã xử lý' : 'Đang chờ xử lý'}
+                                    </span>
+                                </div>
+                                <div class="result-body">
+                                    <div style="font-weight: bold; color: #334155; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">NỘI DUNG PHẢN ÁNH:</div>
+                                    <div style="font-size: 14px; line-height: 1.6; color: #1e293b; text-align: justify;">${item.content || item.message || ''}</div>
+                                    
+                                    ${item.response ? `
+                                        <div class="admin-response">
+                                            <div style="font-weight: 900; color: #2b579a; font-size: 12px; margin-bottom: 8px; text-transform: uppercase;">
+                                                <i class="fa-solid fa-reply-all"></i> Phản hồi từ Ban Quản Trị:
+                                            </div>
+                                            <div style="font-size: 14px; color: #1e3a8a; line-height: 1.6;">${item.response}</div>
+                                        </div>
+                                    ` : `
+                                        <div style="margin-top: 15px; padding: 10px; border: 1px dashed #cbd5e1; color: #64748b; font-size: 13px; font-style: italic; text-align: center;">
+                                            Chưa có phản hồi từ Ban Quản Trị. Vui lòng quay lại sau.
+                                        </div>
+                                    `}
+                                    
+                                    ${item.citizen_reply ? `
+                                        <div style="margin-top: 10px; padding: 10px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; font-size: 13px;">
+                                            <b style="color: #92400e;">Ý kiến bổ sung của bạn:</b> ${item.citizen_reply}
+                                        </div>
+                                    ` : (isDone ? `
+                                        <div class="reply-box">
+                                            <textarea id="reply-${item.id}" placeholder="Bạn có muốn phản hồi lại ý kiến này không? Nhập nội dung tại đây..." 
+                                                style="width: 100%; border: 1px solid #ddd; padding: 10px; font-size: 13px; height: 60px; outline: none;"></textarea>
+                                            <button onclick="sendReply('${item.id}')" 
+                                                style="margin-top: 5px; background: #f59e0b; color: #fff; border: none; padding: 5px 15px; font-size: 12px; font-weight: bold; cursor: pointer;">
+                                                GỬI PHẢN HỒI LẠI
+                                            </button>
+                                        </div>
+                                    ` : '')}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+                resultsContainer.style.display = 'block';
+            } catch (error) {
+                console.error("Search Error:", error);
+                alert('Lỗi: Không thể kết nối với máy chủ!');
+            } finally {
+                btn.disabled = false;
+                loading.style.display = 'none';
+            }
+        }
+
+        async function sendReply(id) {
+            const text = document.getElementById('reply-' + id).value.trim();
+            if (!text) return;
+
+            try {
+                await pb.collection('feedback').update(id, { citizen_reply: text });
+                alert('Phản hồi của bạn đã được gửi đi!');
+                searchFeedback();
+            } catch (error) {
+                alert('Lỗi không thể gửi phản hồi!');
+            }
+        }
+    </script>
+</body>
+</html>

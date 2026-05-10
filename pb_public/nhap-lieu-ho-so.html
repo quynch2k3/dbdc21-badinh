@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="security.js?v=ULTRA_SHIELD_V10"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Nhập Liệu Hồ Sơ Cuyên Sâu - ĐBDC Số 21</title>
+    <link rel="stylesheet" href="style.css?v=ULTRA_SHIELD_V11">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --tdp-blue: #003087;
+            --tdp-deep: #001a4a;
+            --tdp-red: #da251d;
+            --tdp-gold: #ffcc00;
+        }
+
+        body {
+            background: #f1f3f5;
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 50px;
+        }
+
+        .entry-container {
+            max-width: 1100px;
+            margin: 30px auto;
+            background: #fff;
+            border: 1px solid #000;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .entry-header {
+            background: var(--tdp-blue);
+            color: #fff;
+            padding: 25px 40px;
+            border-bottom: 5px solid var(--tdp-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .entry-header h1 {
+            font-size: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 900;
+            margin: 0;
+        }
+
+        .form-content {
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 900;
+            color: var(--tdp-blue);
+            border-bottom: 2px solid #000;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 800;
+            color: #000;
+            text-transform: uppercase;
+        }
+
+        .form-input {
+            padding: 12px 15px;
+            border: 1px solid #000;
+            border-radius: 0;
+            font-size: 15px;
+            background: #fff;
+            color: #000;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--tdp-red);
+            background: #fffcfc;
+        }
+
+        .form-input::placeholder {
+            color: #999;
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        .avatar-upload-box {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 30px;
+            background: #f8fafc;
+            border: 1px solid #ddd;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .upload-preview {
+            width: 160px;
+            height: 220px;
+            border: 1px solid #000;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .upload-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sticky-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-top: 2px solid #000;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            z-index: 1000;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-gov {
+            padding: 12px 30px;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: 1px solid #000;
+            border-radius: 0;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .btn-save {
+            background: var(--tdp-blue);
+            color: #fff;
+            border-color: var(--tdp-blue);
+        }
+
+        .btn-save:hover {
+            background: var(--tdp-deep);
+            opacity: 0.9;
+        }
+
+        .btn-close {
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-close:hover {
+            background: #eee;
+        }
+
+        textarea.form-input {
+            height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        /* PHÂN CÁCH MẦU CHO APP */
+        .badge-essential {
+            color: var(--tdp-red);
+            font-weight: bold;
+        }
+
+        .work-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .work-table th {
+            background: #f8fafc;
+            border: 1px solid #000;
+            padding: 10px;
+            font-size: 11px;
+            text-align: left;
+        }
+
+        .work-table td {
+            border: 1px solid #000;
+            padding: 5px;
+        }
+
+        .btn-add-row {
+            background: #fff;
+            border: 1px dashed var(--tdp-blue);
+            color: var(--tdp-blue);
+            width: 100%;
+            padding: 10px;
+            cursor: pointer;
+            font-weight: 800;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .btn-del-row {
+            background: none;
+            border: none;
+            color: var(--tdp-red);
+            cursor: pointer;
+            padding: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="entry-container">
+        <header class="entry-header">
+            <div>
+                <h1><i class="fa-solid fa-file-pen"></i> BẢN THẢO CHI TIẾT HỒ SƠ THÀNH VIÊN</h1>
+                <div style="font-size:12px; margin-top:5px; opacity:0.8">Chế độ nhập liệu cuyên sâu - Dữ liệu được bảo
+                    mật tối đa</div>
+            </div>
+            <div style="text-align:right; display:flex; flex-direction:column; align-items:flex-end; gap:10px">
+                <div id="status-tag"
+                    style="background:#fff; color:var(--tdp-blue); padding:5px 15px; font-weight:900; font-size:12px;">
+                    ĐANG TẠO MỚI</div> <label
+                    style="background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 4px; display: flex; align-items: center; gap: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.3);">
+                    <input type="checkbox" id="f-allow-lookup" style="width:16px; height:16px; cursor:pointer"> <span
+                        style="font-size:11px; font-weight:bold; letter-spacing:0.5px">CHO PHÉP TỰ TRA CỨU</span>
+                </label>
+            </div>
+        </header>
+        <main class="form-content">
+            <form id="member-form"> <input type="hidden" id="f-id">
+                <div class="section-title"><i class="fa-solid fa-user-tie"></i> THÔNG TIN CƠ BẢN & ĐỊNH DANH</div>
+                <div class="avatar-upload-box">
+                    <div class="upload-preview"> <img id="avatar-preview"
+                            src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-High-Quality-Image.png">
+                    </div>
+                    <div>
+                        <div class="form-group" style="margin-bottom:15px"> <label class="form-label">Họ và tên thành
+                                viên <span class="badge-essential">*</span></label> <input type="text" id="f-name"
+                                class="form-input" required placeholder="VD: NGUYỄN VĂN A"
+                                style="font-weight:700; font-size:18px; text-transform:uppercase;"> </div>
+                        <div class="form-grid" style="margin-bottom:15px">
+                            <div class="form-group"> <label class="form-label">Tên gọi khác / Bí danh</label> <input
+                                    type="text" id="f-alias" class="form-input"> </div>
+                            <div class="form-group"> <label class="form-label">Giới tính</label> <select id="f-gender"
+                                    class="form-input">
+                                    <option value="Nam">Nam</option>
+                                    <option value="Nữ">Nữ</option>
+                                </select> </div>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:flex-end">
+                            <div class="form-group" style="flex:1"> <label class="form-label">Liên kết ảnh hồ sơ
+                                    (URL)</label> <input type="text" id="f-avatar" class="form-input"
+                                    placeholder="Dán link ảnh tại đây..." onchange="updatePreview()"> </div>
+                            <div class="form-group"> <label class="form-label">&nbsp;</label> <button type="button"
+                                    class="btn-gov" onclick="document.getElementById('f-file').click()"
+                                    style="background:var(--tdp-gold); color:#000; font-weight:700"> <i
+                                        class="fa-solid fa-upload"></i> TẢI LÊN ẢNH </button> <input type="file"
+                                    id="f-file" style="display:none" accept="image/*" onchange="handleFileUpload(this)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Ngày sinh</label> <input type="date" id="f-dob"
+                            class="form-input"> </div>
+                    <div class="form-group">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px">
+                            <div class="form-group"> <label class="form-label">Dân tộc</label> <input type="text"
+                                    id="f-ethnicity" class="form-input" placeholder="Kinh"> </div>
+                            <div class="form-group"> <label class="form-label">Tôn giáo</label> <input type="text"
+                                    id="f-religion" class="form-input" placeholder="Không"> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom:25px"> <label class="form-label">Quê quán (Nguyên
+                        quán)</label> <input type="text" id="f-hometown" class="form-input"
+                        placeholder="Xã/Phường, Quận/Huyện, Tỉnh/Thành phố..."> </div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Số CCCD / Định danh</label> <input type="text"
+                            id="f-id-num" class="form-input" placeholder="12 số"> </div>
+                    <div class="form-group">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px">
+                            <div class="form-group"> <label class="form-label">Ngày cấp</label> <input type="date"
+                                    id="f-id-date" class="form-input"> </div>
+                            <div class="form-group"> <label class="form-label">Nơi cấp</label> <input type="text"
+                                    id="f-id-place" class="form-input"> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Số điện thoại liên lạc</label> <input type="tel"
+                            id="f-phone" class="form-input"> </div>
+                    <div class="form-group"> <label class="form-label">Tổ chức trực tuộc</label> <select id="f-org"
+                            class="form-input">
+                            <option value="CHI_BO">Chi Bộ Số 21</option>
+                            <option value="MTTQ">Mặt Trận Tổ Quốc</option>
+                            <option value="DOAN_TN">Đoàn Thanh Niên</option>
+                            <option value="PHU_NU">Hội Phụ Nữ</option>
+                            <option value="CCB">Hội Cựu Chiến Binh</option>
+                            <option value="NCT">Hội Người Cao Tuổi</option>
+                            <option value="KHUYEN_HOC">Ban Kuyến Học</option>
+                        </select> </div>
+                </div>
+                <div class="form-group"> <label class="form-label">Chức vụ trong tổ chức</label> <input type="text"
+                        id="f-pos" class="form-input" placeholder="VD: Bí thư chi bộ, Thành viên..."> </div>
+                <div class="section-title"><i class="fa-solid fa-flag"></i> LỊCH SỬ CHÍNH TRỊ</div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Ngày vào Đoàn TNCS</label> <input type="date"
+                            id="f-doan-date" class="form-input"> </div>
+                    <div class="form-group"> <label class="form-label">Ngày vào Đảng Cộng Sản</label> <input
+                            type="date" id="f-dang-date" class="form-input"> </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Trình độ Lý luận chính trị</label> <input
+                            type="text" id="f-political" class="form-input" placeholder="Sơ cấp, Trung cấp, Cao cấp">
+                    </div>
+                    <div class="form-group"> <label class="form-label">Người giới thiệu vào Đảng</label> <input
+                            type="text" id="f-introducer" class="form-input"> </div>
+                </div>
+                <div class="section-title"><i class="fa-solid fa-graduation-cap"></i> TRÌNH ĐỘ CHUYÊN MÔN</div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Trình độ học vấn cao nhất</label> <input
+                            type="text" id="f-edu" class="form-input" placeholder="VD: Thạc sĩ Kinh tế"> </div>
+                    <div class="form-group">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px">
+                            <div class="form-group"> <label class="form-label">Ngoại ngữ</label> <input type="text"
+                                    id="f-lang" class="form-input"> </div>
+                            <div class="form-group"> <label class="form-label">Tin học</label> <input type="text"
+                                    id="f-it" class="form-input"> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section-title"><i class="fa-solid fa-house-user"></i> CƯ TRÚ & GIA ĐÌNH</div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Loại hình cư trú</label> <select id="f-res-type"
+                            class="form-input">
+                            <option value="Thường trú">Thường trú</option>
+                            <option value="Tạm trú">Tạm trú</option>
+                        </select> </div>
+                    <div class="form-group">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px">
+                            <div class="form-group"> <label class="form-label">Họ tên chủ hộ</label> <input type="text"
+                                    id="f-owner" class="form-input"> </div>
+                            <div class="form-group"> <label class="form-label">Quan hệ với chủ hộ</label> <input
+                                    type="text" id="f-owner-rel" class="form-input"> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group"> <label class="form-label">Địa chỉ thường trú / tạm trú đầy đủ</label> <input
+                        type="text" id="f-address" class="form-input"> </div>
+                <div class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> QUÁ TRÌNH CÔNG TÁC CHI TIẾT
+                </div>
+                <div style="margin-bottom:20px">
+                    <table class="work-table" id="work-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 150px;">TỪ NGÀY</th>
+                                <th style="width: 150px;">ĐẾN NGÀY</th>
+                                <th>NỘI DUNG CÔNG TÁC, CHỨC VỤ, ĐƠN VỊ</th>
+                                <th style="width: 40px;"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="work-body"> <!-- Rows dynamic --> </tbody>
+                    </table> <button type="button" class="btn-add-row" onclick="addWorkRow()"><i
+                            class="fa-solid fa-plus"></i> THÊM MỐC THỜI GIAN CÔNG TÁC</button>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Tóm tắt tiểu sử bản thân <span
+                                style="font-size:10px; color:var(--tdp-blue)">(Nhập theo dòng "YYYY - YYYY: Nội dung" để
+                                tự động dựng Timeline)</span></label> <textarea id="f-bio-self" class="form-input"
+                            placeholder="VD:&#10;2010 - 2015: Học tập tại trường...&#10;2015 - Nay: Công tác tại địa bàn..."></textarea>
+                    </div>
+                    <div class="form-group"> <label class="form-label">Thông tin gia đình (Bố, mẹ, anh chị
+                            em...)</label> <textarea id="f-bio-family" class="form-input"
+                            placeholder="VD:&#10;- Bố: Nguyễn Văn A (Sinh năm 1960), Nghề nghiệp...&#10;- Mẹ: Trần Thị B..."></textarea>
+                    </div>
+                </div>
+                <div class="section-title"><i class="fa-solid fa-shield-halved"></i> KHEN THƯỞNG, KỶ LUẬT & KHÁC</div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Hình thức Khen thưởng</label> <textarea
+                            id="f-awards" class="form-input" style="height:60px"></textarea> </div>
+                    <div class="form-group"> <label class="form-label">Hình thức Kỷ luật (nếu có)</label> <textarea
+                            id="f-disciplinary" class="form-input" style="height:60px"></textarea> </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group"> <label class="form-label">Tình trạng sức khỏe / Nhóm máu</label>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px"> <input type="text"
+                                id="f-health" class="form-input" placeholder="VD: Tốt"> <input type="text" id="f-blood"
+                                class="form-input" placeholder="Nhóm máu"> </div>
+                    </div>
+                    <div class="form-group"> <label class="form-label">Thông tin Ngân hàng (Lương/Phụ cấp)</label>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px"> <input type="text"
+                                id="f-bank" class="form-input" placeholder="Tên NH"> <input type="text" id="f-acc"
+                                class="form-input" placeholder="Số TK"> </div>
+                    </div>
+                </div>
+                <div class="form-group"> <label class="form-label">Ghi chú nội bộ (Bảo mật)</label> <textarea
+                        id="f-private-notes" class="form-input"
+                        style="height:60px; border-color:var(--tdp-gold)"></textarea> </div>
+                <div style="height:80px"></div> <!-- Spacer for footer -->
+            </form>
+        </main>
+        <footer class="sticky-footer"> <button type="button" class="btn-gov btn-close" onclick="window.close()"><i
+                    class="fa-solid fa-xmark"></i> HỦY BỎ & ĐÓNG</button> <button type="button"
+                class="btn-gov btn-save" onclick="saveData()"><i class="fa-solid fa-floppy-disk"></i> LƯU DỮ LIỆU HỒ
+                SƠ</button> </footer>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=FIXED_V2"></script>
+    <script>
+        /* Extract parameters and ID */
+        const params = new URLSearchParams(window.location.search);
+        let memberId = params.get('id');
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            console.log("Nhap Lieu Ho So Initializing...");
+            /* Decode SECURE_ ID if present */
+            if (memberId && !memberId.startsWith('NEW_')) {
+                memberId = pb.parseSecureId(memberId);
+                console.log("Decoded Member ID:", memberId);
+            }
+            if (memberId && !memberId.startsWith('NEW_')) {
+                const statusTag = document.getElementById('status-tag');
+                if (statusTag) statusTag.innerText = "CHẾ ĐỘ CHỈNH SỬA";
+                loadMemberData(memberId);
+            } else {
+                console.log("No ID found, creating new dossier.");
+                addWorkRow(); /* Initial empty row */
+            }
+        });
+
+        async function loadMemberData(id) {
+            try {
+                console.log("Loading member data for ID:", id);
+                /* Note: We use 'users' collection for deep profiles in this version */
+                const m = await pb.collection('users').getOne(id);
+                if (!m) {
+                    alert("KHÔNG TÌM THẤY HỒ SƠ: ID này không tồn tại hoặc đã bị xóa khỏi hệ thống.");
+                    window.close();
+                    return;
+                }
+                
+                document.getElementById('f-id').value = m.id;
+                document.getElementById('f-name').value = m.name || '';
+                document.getElementById('f-avatar').value = m.avatar || '';
+                document.getElementById('f-alias').value = m.alias || '';
+                document.getElementById('f-org').value = m.organization || 'CHI_BO';
+                document.getElementById('f-pos').value = m.position || '';
+                document.getElementById('f-phone').value = m.phone || '';
+                document.getElementById('f-gender').value = m.gender || 'Nam';
+                document.getElementById('f-doan-date').value = m.join_date || '';
+                document.getElementById('f-dang-date').value = m.party_join_date_official || '';
+                document.getElementById('f-political').value = m.political_level || '';
+                document.getElementById('f-introducer').value = m.party_introducer || '';
+                document.getElementById('f-id-num').value = m.id_number || '';
+                document.getElementById('f-id-date').value = m.id_date || '';
+                document.getElementById('f-id-place').value = m.id_place || '';
+                document.getElementById('f-dob').value = m.dob || '';
+                document.getElementById('f-ethnicity').value = m.ethnicity || 'Kinh';
+                document.getElementById('f-religion').value = m.religion || 'Không';
+                document.getElementById('f-hometown').value = m.hometown || '';
+                document.getElementById('f-address').value = m.address || '';
+                document.getElementById('f-res-type').value = m.residence_type || 'Thường trú';
+                document.getElementById('f-owner').value = m.house_owner_name || '';
+                document.getElementById('f-owner-rel').value = m.house_owner_relation || '';
+                document.getElementById('f-edu').value = m.academic_level || '';
+                document.getElementById('f-lang').value = m.foreign_language || '';
+                document.getElementById('f-it').value = m.it_level || '';
+                document.getElementById('f-bio-self').value = m.biography_self || '';
+                document.getElementById('f-bio-family').value = m.biography_family || '';
+                document.getElementById('f-awards').value = m.awards || '';
+                document.getElementById('f-disciplinary').value = m.disciplinary || '';
+                document.getElementById('f-health').value = m.health_status || '';
+                document.getElementById('f-blood').value = m.blood_type || '';
+                document.getElementById('f-bank').value = m.bank_name || '';
+                document.getElementById('f-acc').value = m.bank_account || '';
+                document.getElementById('f-private-notes').value = m.private_notes || '';
+                const allowLookup = document.getElementById('f-allow-lookup');
+                if (allowLookup) allowLookup.checked = m.allow_self_lookup === true;
+
+                const workBody = document.getElementById('work-body');
+                workBody.innerHTML = '';
+                try {
+                    const history = JSON.parse(m.work_history_json || '[]');
+                    if (history.length > 0) {
+                        history.forEach(item => addWorkRow(item.from, item.to, item.text));
+                    } else {
+                        addWorkRow();
+                    }
+                } catch (e) {
+                    addWorkRow('', '', m.work_history_json || '');
+                }
+                updatePreview();
+                console.log("Member data loaded successfully.");
+            } catch (e) {
+                alert("LỖI KẾT NỐI HỆ THỐNG: " + e.message);
+                console.error(e);
+            }
+        }
+
+        function addWorkRow(from = '', to = '', text = '') {
+            const tbody = document.getElementById('work-body');
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" class="form-input w-from" value="${from}" placeholder="MM/YYYY" style="padding: 5px; width: 100%; border: none;"></td>
+                <td><input type="text" class="form-input w-to" value="${to}" placeholder="MM/YYYY" style="padding: 5px; width: 100%; border: none;"></td>
+                <td><input type="text" class="form-input w-text" value="${text}" placeholder="Nội dung công tác..." style="padding: 5px; width: 100%; border: none;"></td>
+                <td style="text-align:center"><button type="button" class="btn-del-row" onclick="this.closest('tr').remove()"><i class="fa-solid fa-trash-can"></i></button></td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        let avatarBlob = null;
+        function updatePreview() {
+            const url = document.getElementById('f-avatar').value;
+            if (!url) return;
+            document.getElementById('avatar-preview').src = url;
+            if (url.startsWith('http')) {
+                fetch(url).then(r => r.blob()).then(b => { avatarBlob = b; }).catch(e => console.warn(e));
+            }
+        }
+
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (!file) return;
+            if (file.size > 5 * 1024 * 1024) { alert("FILE QUÁ LỚN: Tối đa 5MB"); input.value = ""; return; }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = new Image();
+                img.onload = function () {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width, height = img.height;
+                    const MAX = 800;
+                    if (width > height && width > MAX) { height *= MAX / width; width = MAX; }
+                    else if (height > MAX) { width *= MAX / height; height = MAX; }
+                    canvas.width = width; canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, width, height);
+                    const base64 = canvas.toDataURL('image/jpeg', 0.8);
+                    document.getElementById('avatar-preview').src = base64;
+                    document.getElementById('f-avatar').value = "(Ảnh đã tải lên)";
+                    const byteString = atob(base64.split(',')[1]);
+                    const ab = new ArrayBuffer(byteString.length);
+                    const ia = new Uint8Array(ab);
+                    for (let i = 0; i < byteString.length; i++) ia[i] = byteString.charCodeAt(i);
+                    avatarBlob = new Blob([ab], { type: 'image/jpeg' });
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function saveData() {
+            const editId = document.getElementById('f-id').value;
+            const history = [];
+            document.querySelectorAll('#work-body tr').forEach(tr => {
+                const f = tr.querySelector('.w-from').value;
+                const t = tr.querySelector('.w-to').value;
+                const txt = tr.querySelector('.w-text').value;
+                if (f || t || txt) history.push({ from: f, to: t, text: txt });
+            });
+            const formData = new FormData();
+            formData.append('name', document.getElementById('f-name').value);
+            formData.append('alias', document.getElementById('f-alias').value);
+            formData.append('phone', document.getElementById('f-phone').value);
+            formData.append('organization', document.getElementById('f-org').value);
+            formData.append('position', document.getElementById('f-pos').value);
+            formData.append('gender', document.getElementById('f-gender').value);
+            formData.append('join_date', document.getElementById('f-doan-date').value);
+            formData.append('party_join_date_official', document.getElementById('f-dang-date').value);
+            formData.append('political_level', document.getElementById('f-political').value);
+            formData.append('party_introducer', document.getElementById('f-introducer').value);
+            formData.append('id_number', document.getElementById('f-id-num').value);
+            formData.append('id_date', document.getElementById('f-id-date').value);
+            formData.append('id_place', document.getElementById('f-id-place').value);
+            formData.append('dob', document.getElementById('f-dob').value);
+            formData.append('hometown', document.getElementById('f-hometown').value);
+            formData.append('address', document.getElementById('f-address').value);
+            formData.append('residence_type', document.getElementById('f-res-type').value);
+            formData.append('house_owner_name', document.getElementById('f-owner').value);
+            formData.append('house_owner_relation', document.getElementById('f-owner-rel').value);
+            formData.append('academic_level', document.getElementById('f-edu').value);
+            formData.append('foreign_language', document.getElementById('f-lang').value);
+            formData.append('it_level', document.getElementById('f-it').value);
+            formData.append('biography_self', document.getElementById('f-bio-self').value);
+            formData.append('biography_family', document.getElementById('f-bio-family').value);
+            formData.append('work_history_json', JSON.stringify(history));
+            formData.append('awards', document.getElementById('f-awards').value);
+            formData.append('disciplinary', document.getElementById('f-disciplinary').value);
+            formData.append('health_status', document.getElementById('f-health').value);
+            formData.append('blood_type', document.getElementById('f-blood').value);
+            formData.append('bank_name', document.getElementById('f-bank').value);
+            formData.append('bank_account', document.getElementById('f-acc').value);
+            formData.append('private_notes', document.getElementById('f-private-notes').value);
+            formData.append('allow_self_lookup', document.getElementById('f-allow-lookup').checked);
+            if (avatarBlob) formData.append('avatar', avatarBlob, 'avatar.jpg');
+            if (!document.getElementById('f-name').value) return alert("Vui lòng nhập họ tên!");
+            try {
+                if (editId) await pb.collection('users').update(editId, formData);
+                else await pb.collection('users').create(formData);
+                alert("LƯU HỒ SƠ THÀNH CÔNG!");
+                if (window.opener) window.opener.location.reload();
+                window.close();
+            } catch (e) { alert("Lỗi: " + e.message); }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <script src="security.js?v=ULTRA_SHIELD_V10"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Kê Khai Thông Tin Điện Tử - TDP21</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root { --tdp-blue: #003087; --tdp-red: #da251d; --tdp-gold: #ffcc00; }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        body { background: #f1f5f9; font-family: 'Roboto', sans-serif; color: #1e293b; margin: 0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        .main-wrapper { max-width: 1000px; margin: 20px auto; background: #fff; border: 1px solid #ddd; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .form-banner { background: var(--tdp-blue); color: #fff; padding: 20px; text-align: center; border-bottom: 5px solid var(--tdp-gold); }
+        .form-content { padding: 40px; }
+        .section-title { font-size: 15px; font-weight: 900; color: #000; border-bottom: 1px solid #000; padding-bottom: 8px; margin-bottom: 25px; margin-top: 40px; display: flex; align-items: center; gap: 10px; text-transform: uppercase; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .form-group { display: flex; flex-direction: column; gap: 8px; }
+        .form-label { font-size: 13px; font-weight: 800; color: #000; text-transform: uppercase; }
+        .badge-req { color: var(--tdp-red); }
+        .form-input { padding: 12px; border: 1px solid #ddd; font-size: 14px; outline: none; background: #fff; transition: all 0.2s; font-family: inherit; }
+        .form-input:focus { border-color: var(--tdp-blue); background: #f8fafc; }
+        .form-input::placeholder { font-style: italic; color: #999; }
+        .avatar-section { background: #f8fafc; border: 1px solid #ddd; padding: 25px; display: flex; gap: 30px; margin-bottom: 30px; }
+        .preview-circle { width: 135px; height: 180px; border: 1px solid #ddd; background: #fff; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .preview-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-submit { background: var(--tdp-blue); color: #fff; border: none; padding: 20px; width: 100%; font-weight: 900; font-size: 18px; text-transform: uppercase; cursor: pointer; margin-top: 40px; letter-spacing: 1px; transition: all 0.2s; }
+        .btn-submit:hover { background: #001a4a; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+        textarea.form-input { height: 100px; resize: vertical; }
+        .dynamic-field { display: none; }
+        .section-container { display: none; }
+        .success-page { display: none; text-align: center; padding: 100px 40px; }
+        @media (max-width: 600px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .avatar-section { flex-direction: column; align-items: center; } .main-wrapper { border: none; margin: 0; } }
+    </style>
+</head>
+<body>
+    <div class="main-wrapper" id="form-container">
+        <!-- Header will be injected by shared-ui.js -->
+        <div class="form-banner">
+            <div style="font-weight: 900; font-size: 16px; text-transform: uppercase;">BIỂU MẪU KÊ KHAI THÔNG TIN</div>
+            <div id="unit-name" style="font-size: 13px; margin-top: 5px; color: var(--tdp-gold);">Đơn vị tiếp nhận: Đang xác định...</div>
+        </div>
+        <main class="form-content">
+            <div style="background: #fff9db; padding: 15px; border: 1px solid #fcc419; font-size: 13px; margin-bottom: 30px;">
+                <i class="fa-solid fa-circle-info"></i> <b>LƯU Ý:</b> Anh/Chị vui lòng nhập đầy đủ các thông tin có dấu <span class="badge-req">*</span>. Thông tin này sẽ được bảo mật tuyệt đối.
+            </div>
+            <form id="public-form">
+                <input type="hidden" id="f-org">
+                <div class="section-container" id="sec-avatar" style="display:block">
+                    <div class="section-title"><i class="fa-solid fa-camera"></i> 01. Ảnh hồ sơ điện tử</div>
+                    <div class="avatar-section">
+                        <div class="preview-circle">
+                            <img id="avatar-preview" src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-High-Quality-Image.png">
+                        </div>
+                        <div style="flex:1">
+                            <label class="form-label">Chọn ảnh chân dung <span class="badge-req">*</span></label>
+                            <p style="font-size: 12px; color: #666; margin: 5px 0 15px;">Vui lòng chọn ảnh chụp thẳng, rõ mặt, trang phục trang trọng.</p>
+                            <button type="button" class="form-input" style="background:#000; color:#fff; cursor:pointer; width:auto; padding:8px 25px;" onclick="document.getElementById('f-file').click()">
+                                <i class="fa-solid fa-upload"></i> TẢI ẢNH LÊN
+                            </button>
+                            <input type="file" id="f-file" style="display:none" accept="image/*" onchange="handleFile(this)">
+                        </div>
+                    </div>
+                </div>
+                <div class="section-container" style="display:block">
+                    <div class="section-title"><i class="fa-solid fa-user-check"></i> 02. Thông tin định danh cơ bản</div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label class="form-label">Họ và tên thành viên <span class="badge-req">*</span></label>
+                        <input type="text" id="f-name" class="form-input" required placeholder="VD: NGUYỄN VĂN A" style="font-weight: 900; text-transform: uppercase;">
+                    </div>
+                    <div class="grid-3">
+                        <div class="form-group"> <label class="form-label">Ngày sinh <span class="badge-req">*</span></label> <input type="date" id="f-dob" class="form-input" required> </div>
+                        <div class="form-group"> <label class="form-label">Giới tính <span class="badge-req">*</span></label> <select id="f-gender" class="form-input"> <option value="Nam">Nam</option> <option value="Nữ">Nữ</option> </select> </div>
+                        <div class="form-group"> <label class="form-label">Số điện thoại <span class="badge-req">*</span></label> <input type="tel" id="f-phone" class="form-input" required placeholder="09xxxxxxxx"> </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group dynamic-field" data-field="alias"> <label class="form-label">Tên gọi khác / Bí danh</label> <input type="text" id="f-alias" class="form-input"> </div>
+                        <div class="form-group"> <label class="form-label">Số CCCD/Mã định danh <span class="badge-req">*</span></label> <input type="text" id="f-id-num" class="form-input" required placeholder="12 chữ số"> </div>
+                    </div>
+                    <div class="grid-3">
+                        <div class="form-group dynamic-field" data-field="id_date"> <label class="form-label">Ngày cấp CCCD</label> <input type="date" id="f-id-date" class="form-input"> </div>
+                        <div class="form-group dynamic-field" data-field="id_place"> <label class="form-label">Nơi cấp CCCD</label> <input type="text" id="f-id-place" class="form-input"> </div>
+                        <div class="form-group dynamic-field" data-field="ethnicity"> <label class="form-label">Dân tộc</label> <input type="text" id="f-ethnicity" class="form-input" placeholder="Kinh"> </div>
+                    </div>
+                    <div class="grid-3">
+                        <div class="form-group dynamic-field" data-field="religion"> <label class="form-label">Tôn giáo</label> <input type="text" id="f-religion" class="form-input" placeholder="Không"> </div>
+                        <div class="form-group dynamic-field" data-field="hometown"> <label class="form-label">Quê quán</label> <input type="text" id="f-hometown" class="form-input" placeholder="Tỉnh/Thành phố"> </div>
+                        <div class="form-group dynamic-field" data-field="health_status"> <label class="form-label">Nhóm máu</label> <input type="text" id="f-blood" class="form-input" placeholder="A, B, O, AB"> </div>
+                    </div>
+                </div>
+                <div class="section-container" id="sec-address">
+                    <div class="section-title"><i class="fa-solid fa-house"></i> 03. Thông tin cư trú</div>
+                    <div class="form-group" style="margin-bottom: 20px;"> <label class="form-label">Địa chỉ thường trú / Tạm trú <span class="badge-req">*</span></label> <input type="text" id="f-address" class="form-input" placeholder="Số nhà, ngõ, phố..."> </div>
+                    <div class="grid-3">
+                        <div class="form-group dynamic-field" data-field="residence_ttype"> <label class="form-label">Loại hình cư trú</label> <select id="f-res-ttype" class="form-input"> <option value="Thường trú">Thường trú</option> <option value="Tạm trú">Tạm trú</option> </select> </div>
+                        <div class="form-group dynamic-field" data-field="house_owner_name"> <label class="form-label">Họ tên chủ hộ</label> <input type="text" id="f-owner-name" class="form-input"> </div>
+                        <div class="form-group dynamic-field" data-field="house_owner_relation"> <label class="form-label">Quan hệ với chủ hộ</label> <input type="text" id="f-relation" class="form-input"> </div>
+                    </div>
+                </div>
+                <div class="section-container" id="sec-political">
+                    <div class="section-title"><i class="fa-solid fa-flag"></i> 04. Thông tin đoàn thể & chính trị</div>
+                    <div class="grid-2">
+                        <div class="form-group dynamic-field" data-field="join_date"> <label class="form-label">Ngày vào Đoàn</label> <input type="date" id="f-join-date" class="form-input"> </div>
+                        <div class="form-group dynamic-field" data-field="party_join_date_official"> <label class="form-label">Ngày vào Đảng</label> <input type="date" id="f-party-date" class="form-input"> </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group dynamic-field" data-field="political_level"> <label class="form-label">Lý luận chính trị</label> <input type="text" id="f-political" class="form-input" placeholder="Sơ cấp, Trung cấp..."> </div>
+                        <div class="form-group dynamic-field" data-field="party_introducer"> <label class="form-label">Người giới thiệu vào Đảng</label> <input type="text" id="f-introducer" class="form-input"> </div>
+                    </div>
+                </div>
+                <div class="section-container" id="sec-edu">
+                    <div class="section-title"><i class="fa-solid fa-graduation-cap"></i> 05. Trình độ & Công tác</div>
+                    <div class="grid-3">
+                        <div class="form-group dynamic-field" data-field="academic_level"> <label class="form-label">Trình độ học vấn</label> <input type="text" id="f-edu" class="form-input" placeholder="12/12, Đại học"> </div>
+                        <div class="form-group dynamic-field" data-field="it_level"> <label class="form-label">Cuyên môn / IT</label> <input type="text" id="f-it" class="form-input" placeholder="Kỹ sư, Cử nhân"> </div>
+                        <div class="form-group dynamic-field" data-field="foreign_language"> <label class="form-label">Ngoại ngữ</label> <input type="text" id="f-lang" class="form-input"> </div>
+                    </div>
+                    <div class="form-group dynamic-field" data-field="work_employer"> <label class="form-label">Cơ quan / Nơi làm việc hiện nay</label> <input type="text" id="f-work" class="form-input"> </div>
+                    <div class="form-group dynamic-field" data-field="work_employer"> <label class="form-label">TÓM TẮT QUÁ TRÌNH CÔNG TÁC CHI TIẾT</label> <div style="background:#f8fafc; border:1px solid #ddd; padding:15px;"> <table style="width:100%; border-collapse:collapse; margin-bottom:10px;" id="work-table"> <thead> <tr style="font-size:11px; font-weight:900; background:#eee;"> <th style="border:1px solid #ddd; padding:5px;">Từ năm</th> <th style="border:1px solid #ddd; padding:5px;">Đến năm</th> <th style="border:1px solid #ddd; padding:5px;">Nội dung công tác</th> <th style="border:1px solid #ddd; padding:5px; width:40px;"></th> </tr> </thead> <tbody id="work-rows"> <tr> <td style="border:1px solid #ddd;"><input type="text" class="w-from" style="width:100%; border:none; padding:8px;"></td> <td style="border:1px solid #ddd;"><input type="text" class="w-to" style="width:100%; border:none; padding:8px;"></td> <td style="border:1px solid #ddd;"><input type="text" class="w-text" style="width:100%; border:none; padding:8px;"></td> <td style="border:1px solid #ddd; text-align:center;"><button type="button" onclick="this.parentElement.parentElement.remove()" style="color:red; background:none; border:none; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td> </tr> </tbody> </table> <button type="button" onclick="addWorkRow()" style="background:#000; color:#fff; border:none; padding:8px 15px; font-size:11px; cursor:pointer; font-weight:700;">+ THÊM MỐC THỜI GIAN</button> </div> </div>
+                </div>
+                <div class="section-container" id="sec-bio">
+                    <div class="section-title"><i class="fa-solid fa-pen-nib"></i> 06. TÓM TẮT TIỂU SỬ & QUÁ TRÌNH BẢN THÂN</div>
+                    <div class="form-group dynamic-field" data-field="biography_self" style="margin-bottom: 25px;"> <label class="form-label">1. Quá trình hoạt động, công tác của bản thân</label> <textarea id="f-bio-self" class="form-input" style="height:180px" placeholder="..."></textarea> </div>
+                    <div class="form-group dynamic-field" data-field="biography_family" style="margin-bottom: 25px;"> <label class="form-label">2. Tình hình kinh tế, chính trị của gia đình</label> <textarea id="f-bio-family" class="form-input" style="height:150px" placeholder="..."></textarea> </div>
+                    <div class="grid-2">
+                        <div class="form-group dynamic-field" data-field="awards"> <label class="form-label">3. Khen thưởng / Danh hiệu</label> <textarea id="f-awards" class="form-input" style="height:100px"></textarea> </div>
+                        <div class="form-group dynamic-field" data-field="disciplinary"> <label class="form-label">4. Kỷ luật</label> <textarea id="f-disciplin" class="form-input" style="height:100px"></textarea> </div>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit"> <i class="fa-solid fa-check-double"></i> GỬI BẢN KÊ KHAI ĐIỆN TỬ </button>
+            </form>
+        </main>
+    </div>
+    <div class="success-page" id="success-screen">
+        <div style="font-size: 80px; color: #16a34a; margin-bottom: 30px;"><i class="fa-solid fa-circle-check"></i></div>
+        <h1 style="font-weight: 900; color: var(--tdp-blue);">GỬI THÀNH CÔNG</h1>
+        <p style="font-size: 18px; color: #444; max-width: 600px; margin: 20px auto;">Cảm ơn Anh/Chị đã hoàn thành bản kê khai thông tin.</p>
+        <button onclick="location.reload()" style="background:#000; color:#fff; border:none; padding:12px 35px; cursor:pointer; font-weight:900;">QUAY LẠI</button>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=FIXED_V2"></script>
+    <script src="shared-ui.js?v=V1.21"></script>
+    <script>
+        const ORG_MAP = { 'CB': 'CHI BỘ SỐ 21', 'MT': 'MẶT TRẬN TỔ QUỐC', 'TN': 'ĐOÀN THANH NIÊN', 'PN': 'HỘI PHỤ NỮ', 'CCB': 'HỘI CỰU CHIẾN BINH', 'NCT': 'HỘI NGƯỜI CAO TUỔI', 'KH': 'BAN KHUYẾN HỌC' };
+        const params = new URLSearchParams(window.location.search);
+        const unit = params.get('unit') || 'ALL';
+        const formId = params.get('form');
+        let avatarBlob = null;
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            document.getElementById('f-org').value = unit;
+            try {
+                let configData = null;
+                if (formId) {
+                    try {
+                        const r = await pb.collection('form_configs').getOne(formId);
+                        configData = JSON.parse(r.config_json || '{}');
+                        document.getElementById('f-org').value = r.unit_code;
+                    } catch(e) { }
+                }
+                if (!configData) {
+                    const configKey = `form_cfg_${unit}`;
+                    const s = await pb.collection('settings').getList(1, 1, { filter: `key="${configKey}"` });
+                    if (s.items[0]) configData = JSON.parse(s.items[0].value || '{}');
+                }
+                if (configData) applyConfig(configData.fields || []);
+                else applyConfig(['id_date', 'hometown', 'academic_level', 'work_employer']);
+                
+                const currentOrg = document.getElementById('f-org').value;
+                document.getElementById('unit-name').innerText = `Đơn vị tiếp nhận: ${ORG_MAP[currentOrg] || "ĐỊA BÀN DÂN CƯ SỐ 21"}`;
+            } catch(e) { applyConfig([]); }
+        });
+
+        function applyConfig(visible) {
+            visible.forEach(id => {
+                const els = document.querySelectorAll(`[data-field="${id}"]`);
+                els.forEach(el => el.style.display = 'flex');
+            });
+            const sections = ['sec-address', 'sec-political', 'sec-edu', 'sec-bio'];
+            sections.forEach(sid => {
+                const s = document.getElementById(sid);
+                if (s && s.querySelector('.dynamic-field[style*="display: flex"]')) s.style.display = 'block';
+            });
+        }
+
+        function addWorkRow() {
+            const row = `<tr> <td style="border:1px solid #ddd;"><input type="text" class="w-from" style="width:100%; border:none; padding:8px;"></td> <td style="border:1px solid #ddd;"><input type="text" class="w-to" style="width:100%; border:none; padding:8px;"></td> <td style="border:1px solid #ddd;"><input type="text" class="w-text" style="width:100%; border:none; padding:8px;"></td> <td style="border:1px solid #ddd; text-align:center;"><button type="button" onclick="this.parentElement.parentElement.remove()" style="color:red; background:none; border:none; cursor:pointer;"><i class="fa-solid fa-trash"></i></button></td> </tr>`;
+            document.getElementById('work-rows').insertAdjacentHTML('beforeend', row);
+        }
+
+        function handleFile(input) {
+            const file = input.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (e) => { document.getElementById('avatar-preview').src = e.target.result; avatarBlob = file; };
+            reader.readAsDataURL(file);
+        }
+
+        document.getElementById('public-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('.btn-submit');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> ĐANG GỬI...`;
+            btn.disabled = true;
+            const fd = new FormData();
+            fd.append('name', document.getElementById('f-name').value.toUpperCase());
+            fd.append('dob', document.getElementById('f-dob').value);
+            fd.append('gender', document.getElementById('f-gender').value);
+            fd.append('phone', document.getElementById('f-phone').value);
+            fd.append('id_number', document.getElementById('f-id-num').value);
+            fd.append('address', document.getElementById('f-address').value);
+            fd.append('organization', unit);
+            if (avatarBlob) fd.append('avatar', avatarBlob);
+            try {
+                await pb.collection('members').create(fd);
+                document.getElementById('form-container').style.display = 'none';
+                document.getElementById('success-screen').style.display = 'block';
+                window.scrollTo(0,0);
+            } catch (err) {
+                alert("LỖI: " + err.message);
+                btn.innerHTML = `<i class="fa-solid fa-check-double"></i> GỬI BẢN KÊ KHAI`;
+                btn.disabled = false;
+            }
+        };
+    </script>
+</body>
+</html>

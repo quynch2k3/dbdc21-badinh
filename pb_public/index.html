@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <script src="security.js?v=V1.16"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CỔNG THÔNG TIN ĐỊA BÀN DÂN CƯ SỐ 21 - Phường Ba Đình</title>
+    
+    <link rel="stylesheet" href="retro.css?v=V1.20">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .grid-layout { display: grid; grid-template-columns: 2.2fr 1fr; gap: 30px; }
+        .sidebar-link { display: block; padding: 10px 15px; color: #334155; text-decoration: none; border-bottom: 1px solid #f1f5f9; font-size: 14px; font-weight: 500; transition: all 0.2s; }
+        .sidebar-link:hover { background: #f8fafc; color: #2b579a; padding-left: 20px; }
+        .org-news-box { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; background: #fff; border: 1px solid #f1f5f9; transition: all 0.3s; }
+        .org-news-box:hover { box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); } /* Removed hover lift */
+        .org-header { padding: 10px 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; border-bottom-right-radius: 20px; }
+        .org-header img.org-logo-small { height: 24px; width: auto; margin-right: 10px; border-radius: 2px; background: #fff; padding: 2px; }
+        .org-header-title-wrap { display: flex; align-items: center; }
+        .btn-view-more { color: rgba(255,255,255,0.9); font-size: 10px; text-decoration: none; border: 1px solid rgba(255,255,255,0.3); padding: 2px 8px; border-radius: 10px; transition: all 0.2s; }
+        .btn-view-more:hover { background: rgba(255,255,255,0.2); color: #fff; }
+        
+        /* Pagination Styling (Retro Premium) */
+        .pagination-container { display: flex; justify-content: center; gap: 8px; margin-top: 25px; padding-top: 15px; border-top: 1px dashed #e2e8f0; }
+        .page-btn { padding: 6px 12px; border: 1px solid var(--border-legacy); background: #fff; color: var(--text-navy); cursor: pointer; font-weight: bold; font-size: 13px; transition: all 0.2s; border-radius: 4px; }
+        .page-btn:hover { background: #f1f5f9; border-color: var(--menu-bg); }
+        .page-btn.active { background: var(--menu-bg); color: #fff; border-color: var(--menu-bg); }
+        .page-info { align-self: center; font-size: 12px; color: #64748b; margin: 0 10px; }
+    </style>
+</head>
+<body>
+
+    <!-- SHARED HEADER -->
+    <div id="shared-header"></div>
+
+    <div class="main-wrapper">
+        <div class="page-content">
+            <!-- MARQUEE -->
+            <div style="background: #fff8e1; border: 1px solid #ffe082; padding: 8px 15px; margin-bottom: 20px; font-weight: bold; color: #795548; display: flex; align-items: center; gap: 10px; border-radius: 4px;">
+                <i class="fa-solid fa-bullhorn" style="color: #f57c00;"></i>
+                <marquee id="main-marquee" scrollamount="4">Chào mừng quý khách đến với cổng thông tin điện tử Địa bàn dân cư số 21...</marquee>
+            </div>
+
+            <div class="grid-layout">
+                <!-- CỘT TRÁI: TIN TỨC CHÍNH -->
+                <div class="left-col">
+                    <div class="box-header">
+                        <h2 class="section-title-retro">TIN TỨC - SỰ KIỆN MỚI NHẤT</h2>
+                        <a href="tin-tuc.html" style="font-size: 11px; color: #666; text-decoration:none; font-weight: bold;">XEM TẤT CẢ <i class="fa-solid fa-angles-right"></i></a>
+                    </div>
+                    
+                    <div id="qt-homepage-news">
+                        <div style="padding: 40px; text-align: center; color: #94a3b8;">
+                            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                            <p>Đang tải tin tức...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CỘT PHẢI: TIỆN ÍCH -->
+                <div class="right-col">
+                    <div class="box-header">
+                        <h2 class="section-title-retro">ĐIỀU HÀNH TÁC NGHIỆP</h2>
+                    </div>
+                    <div style="margin-bottom: 25px; border: 1px solid var(--border-legacy); border-top:none;">
+                        <a href="chi-bo.html" class="sidebar-link">Chi Bộ Đảng Số 21</a>
+                        <a href="mat-tran-to-quoc.html" class="sidebar-link">Mặt Trận Tổ Quốc</a>
+                        <a href="hoi-phu-nu.html" class="sidebar-link">Hội Phụ Nữ</a>
+                        <a href="hoi-cuu-chien-binh.html" class="sidebar-link">Hội Cựu Chiến Binh</a>
+                        <a href="doan-thanh-nien.html" class="sidebar-link">Đoàn Thanh Niên</a>
+                        <a href="hoi-nguoi-cao-tuoi.html" class="sidebar-link">Hội Người Cao Tuổi</a>
+                        <a href="ban-khuyen-hoc.html" class="sidebar-link">Ban Khuyến Học</a>
+                    </div>
+
+                    <div class="box-header">
+                        <h2 class="section-title-retro">THÔNG BÁO QUAN TRỌNG</h2>
+                    </div>
+                    <div style="margin-bottom: 25px; border: 1px solid var(--border-legacy); border-top:none; padding: 10px;">
+                        <div style="height: 250px; overflow: hidden; position: relative;">
+                            <marquee direction="up" scrollamount="2" height="250" onmouseover="this.stop()" onmouseout="this.start()" id="qt-marquee">
+                                <div style="padding: 10px; text-align: center; color: #999;">Đang tải thông báo...</div>
+                            </marquee>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TIN TỨC CÁC ĐOÀN THỂ (V1.20) -->
+    <div class="main-wrapper" style="margin-top: 30px; margin-bottom: 50px;">
+        <div class="page-content">
+            <div class="box-header" style="margin-bottom: 20px;">
+                <h2 class="section-title-retro">TIN TỨC CÁC ĐOÀN THỂ</h2>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px;">
+                <!-- CHI BỘ -->
+                <div class="org-news-box">
+                    <div class="org-header" style="background: linear-gradient(135deg, #1e3a8a, #3b82f6); color: #fff;">
+                        <span class="org-header-title-wrap"><img id="logo-cb" class="org-logo-small" src="" alt=""> CHI BỘ ĐẢNG</span>
+                        <a href="chi-bo.html" class="btn-view-more">XEM THÊM</a>
+                    </div>
+                    <div id="news-cb" style="padding: 12px; min-height: 180px;"></div>
+                </div>
+
+                <!-- MẶT TRẬN -->
+                <div class="org-news-box">
+                    <div class="org-header" style="background: linear-gradient(135deg, #9a3412, #f97316); color: #fff;">
+                        <span class="org-header-title-wrap"><img id="logo-mt" class="org-logo-small" src="" alt=""> MẶT TRẬN TỔ QUỐC</span>
+                        <a href="mat-tran-to-quoc.html" class="btn-view-more">XEM THÊM</a>
+                    </div>
+                    <div id="news-mt" style="padding: 12px; min-height: 180px;"></div>
+                </div>
+
+                <!-- PHỤ NỮ -->
+                <div class="org-news-box">
+                    <div class="org-header" style="background: linear-gradient(135deg, #9d174d, #db2777); color: #fff;">
+                        <span class="org-header-title-wrap"><img id="logo-phunu" class="org-logo-small" src="" alt=""> HỘI PHỤ NỮ</span>
+                        <a href="hoi-phu-nu.html" class="btn-view-more">XEM THÊM</a>
+                    </div>
+                    <div id="news-phunu" style="padding: 12px; min-height: 180px;"></div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin-top: 25px;">
+                <!-- THANH NIÊN -->
+                <div class="org-news-box">
+                    <div class="org-header" style="background: linear-gradient(135deg, #0369a1, #0ea5e9); color: #fff;">
+                        <span class="org-header-title-wrap"><img id="logo-tn" class="org-logo-small" src="" alt=""> ĐOÀN THANH NIÊN</span>
+                        <a href="doan-thanh-nien.html" class="btn-view-more">XEM THÊM</a>
+                    </div>
+                    <div id="news-tn" style="padding: 12px; min-height: 180px;"></div>
+                </div>
+
+                <!-- CỰU CHIẾN BINH -->
+                <div class="org-news-box">
+                    <div class="org-header" style="background: linear-gradient(135deg, #166534, #22c55e); color: #fff;">
+                        <span class="org-header-title-wrap"><img id="logo-ccb" class="org-logo-small" src="" alt=""> CỰU CHIẾN BINH</span>
+                        <a href="hoi-cuu-chien-binh.html" class="btn-view-more">XEM THÊM</a>
+                    </div>
+                    <div id="news-ccb" style="padding: 12px; min-height: 180px;"></div>
+                </div>
+
+                <!-- NGƯỜI CAO TUỔI -->
+                <div class="org-news-box">
+                    <div class="org-header" style="background: linear-gradient(135deg, #78350f, #d97706); color: #fff;">
+                        <span class="org-header-title-wrap"><img id="logo-nct" class="org-logo-small" src="" alt=""> NGƯỜI CAO TUỔI</span>
+                        <a href="hoi-nguoi-cao-tuoi.html" class="btn-view-more">XEM THÊM</a>
+                    </div>
+                    <div id="news-nct" style="padding: 12px; min-height: 180px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHARED FOOTER -->
+    <div id="shared-footer"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="media.js?v=V2.2"></script>
+    <script src="pocketbase-adapter.js?v=V1.60"></script>
+    <script src="shared-ui.js?v=V2.2"></script>
+    <script src="cms.js?v=V2.2"></script>
+<script>
+    function slugify(text) {
+        if (!text) return "";
+        return text.toString().toLowerCase()
+            .replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ặ|ẵ|â|ấ|ầ|ẩ|ậ|ẫ/g, "a")
+            .replace(/é|è|ẻ|ẹ|ẽ|ê|ế|ề|ể|ệ|ễ/g, "e")
+            .replace(/i|í|ì|ỉ|ị|ĩ/g, "i")
+            .replace(/ó|ò|ỏ|ọ|õ|ô|ố|ồ|ổ|ộ|ỗ|ơ|ớ|ờ|ở|ợ|ỡ/g, "o")
+            .replace(/ú|ù|ủ|ụ|ũ|ư|ứ|ừ|ử|ự|ữ/g, "u")
+            .replace(/ý|ỳ|ỷ|ỵ|ỹ/g, "y")
+            .replace(/đ/g, "d")
+            .replace(/\s+/g, '-')
+            .replace(/[^\w\-]+/g, '')
+            .replace(/\-\-+/g, '-')
+            .replace(/^-+/, '')
+            .replace(/-+$/, '');
+    }
+
+    window.loadNews = async function(category, containerId, limit = 10, page = 1, isCompact = false, shouldScroll = false) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+
+        // Auto-scroll to top of content for main news list (V1.24)
+        if (shouldScroll && !isCompact && containerId === 'qt-homepage-news') {
+             const header = container.previousElementSibling;
+             if (header) {
+                 header.scrollIntoView({ behavior: 'smooth', block: 'start' });
+             } else {
+                 window.scrollTo({ top: 0, behavior: 'smooth' });
+             }
+        }
+        // Update URL if not compact (V1.23)
+        if (!isCompact && containerId === 'qt-homepage-news') {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            window.history.pushState({}, '', url);
+        }
+        
+        try {
+            let filter = '';
+            if (category && category !== 'ALL' && category !== 'TRANG_CHU') {
+                filter = `category = "${category}"`;
+            }
+            
+            const resultList = await pb.collection('articles').getList(page, limit, {
+                sort: '-publish_date,-created',
+                filter: filter,
+                requestKey: null // Disable auto-cancellation for concurrent calls (V1.21)
+            });
+
+            const data = resultList.items;
+            if (data.length === 0) {
+                container.innerHTML = '<div style="padding:15px; color:#999; font-size:12px;">Chưa có tin bài mới.</div>';
+                return;
+            }
+
+            let html = '';
+            data.forEach(item => {
+                const displayDate = item.publish_date || item.created;
+                const date = new Date(displayDate).toLocaleDateString('vi-VN');
+                const cat = item.category || 'TIN_TUC';
+                const slug = slugify(item.title);
+                const token = GovSecure.encodeToken(item.id, cat);
+                
+                if (isCompact) {
+                    html += `
+                        <div style="padding: 8px 0; border-bottom: 1px dashed #edf2f7; display: flex; gap: 8px; align-items: flex-start;">
+                            <i class="fa-solid fa-chevron-right" style="font-size: 10px; color: #cbd5e1; margin-top: 4px;"></i>
+                            <div style="flex: 1;">
+                                <a href="bai-viet.html?token=${token}&slug=${slug}" style="font-size: 13px; color: #334155; text-decoration: none; font-weight: 500; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4;">${item.title}</a>
+                                <div style="font-size: 11px; color: #94a3b8; margin-top: 3px;">
+                                    <i class="fa-regular fa-calendar"></i> ${date}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    const summary = item.summary || (item.content ? item.content.replace(/<[^>]*>/g, '').substring(0, 160) + '...' : '');
+                    let finalImage = item.image;
+                    if (!finalImage && item.content) {
+                        const imgMatch = item.content.match(/<img[^>]+src="([^">]+)"/);
+                        if (imgMatch && imgMatch[1]) finalImage = imgMatch[1];
+                    }
+                    const imgId = `img-${item.id}-${Math.floor(Math.random()*1000)}`;
+                    
+                    html += `
+                        <div class="news-item-horizontal">
+                            <div class="news-item-img">
+                                <img id="${imgId}" src="https://placehold.co/600x400/f1f5f9/64748b?text=..." alt="${item.title}" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <div class="news-item-content">
+                                <a href="bai-viet.html?token=${token}&slug=${slug}" class="news-item-title" style="font-size: 15px;">${item.title}</a>
+                                <p class="news-item-summary" style="font-size: 12px;">${summary}</p>
+                                <div class="news-item-meta" style="font-size: 11px;">
+                                    <span><i class="fa-regular fa-calendar-days"></i> ${date}</span>
+                                    <span style="margin-left:15px;"><i class="fa-solid fa-user-pen"></i> ${item.author || 'Ban biên tập'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    setTimeout(() => {
+                        const el = document.getElementById(imgId);
+                        if (el && window.pb && pb.loadSecureImage) {
+                            pb.loadSecureImage(el, item, finalImage);
+                        }
+                    }, 100);
+                }
+            });
+
+            container.innerHTML = html;
+
+            // Render Pagination (V1.22)
+            if (!isCompact && resultList.totalPages > 1) {
+                const paginationHtml = `
+                    <div class="pagination-container">
+                        <span class="page-info">Trang ${page} / ${resultList.totalPages}</span>
+                        ${page > 1 ? `<button class="page-btn" onclick="loadNews('${category}', '${containerId}', ${limit}, ${page - 1}, false, true)"><i class="fa-solid fa-chevron-left"></i></button>` : ''}
+                        ${window.renderPageNumbers(resultList.totalPages, page, category, containerId, limit)}
+                        ${page < resultList.totalPages ? `<button class="page-btn" onclick="loadNews('${category}', '${containerId}', ${limit}, ${page + 1}, false, true)"><i class="fa-solid fa-chevron-right"></i></button>` : ''}
+                    </div>
+                `;
+                container.insertAdjacentHTML('beforeend', paginationHtml);
+            }
+        } catch (e) {
+            console.error("LoadNews Error:", e);
+            container.innerHTML = '<div style="color:red; padding:10px;">Lỗi kết nối.</div>';
+        }
+    };
+    
+    // Helper to render smart page numbers (V1.22)
+    window.renderPageNumbers = function(total, current, cat, containerId, limit) {
+        let html = '';
+        for (let i = 1; i <= total; i++) {
+            if (i === 1 || i === total || (i >= current - 1 && i <= current + 1)) {
+                html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="loadNews('${cat}', '${containerId}', ${limit}, ${i}, false, true)">${i}</button>`;
+            } else if (i === current - 2 || i === current + 2) {
+                html += `<span style="padding: 5px; color: #94a3b8;">...</span>`;
+            }
+        }
+        return html;
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const runInit = () => {
+            if (typeof pb === 'undefined') return;
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialPage = parseInt(urlParams.get('page')) || 1;
+            loadNews('TRANG_CHU', 'qt-homepage-news', 8, initialPage);
+            
+            // Load org news in compact mode
+            loadNews('CB', 'news-cb', 4, 1, true);
+            loadNews('MT', 'news-mt', 4, 1, true);
+            loadNews('PHU_NU', 'news-phunu', 4, 1, true);
+            loadNews('TN', 'news-tn', 4, 1, true);
+            loadNews('CCB', 'news-ccb', 4, 1, true);
+            loadNews('NCT', 'news-nct', 4, 1, true);
+        };
+
+        if (typeof pb !== 'undefined') runInit();
+        else window.addEventListener('PBReady', runInit, { once: true });
+
+        // Load logos from SharedUI (V1.25)
+        const loadOrgLogos = () => {
+            if (window.SharedUI && SharedUI.getBrandingByCat) {
+                const map = { 'CB': 'logo-cb', 'MT': 'logo-mt', 'PHU_NU': 'logo-phunu', 'TN': 'logo-tn', 'CCB': 'logo-ccb', 'NCT': 'logo-nct' };
+                for (const [cat, id] of Object.entries(map)) {
+                    const logoEl = document.getElementById(id);
+                    if (logoEl) logoEl.src = SharedUI.getBrandingByCat(cat).logo;
+                }
+            }
+        };
+
+        if (window.SharedUI && window.SharedUI.PAGE_CONFIG) loadOrgLogos();
+        else window.addEventListener('SharedUIReady', loadOrgLogos);
+    });
+</script>
+</body>
+</html>

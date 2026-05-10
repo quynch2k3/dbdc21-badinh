@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="security.js?v=V7_FINAL"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIÊN HỆ - ĐỊA BÀN DÂN CƯ SỐ 21</title>
+    <link rel="stylesheet" href="retro.css?v=V1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .contact-form {
+            padding: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #2b579a;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-family: Tahoma, sans-serif;
+            font-size: 14px;
+        }
+
+        .btn-submit {
+            background: #2b579a;
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            border-bottom: 3px solid #1a3a6b;
+        }
+
+        .btn-submit:hover {
+            background: #1a3a6b;
+            transform: translateY(1px);
+            border-bottom-width: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SHARED HEADER -->
+    <div id="shared-header"></div>
+
+    <div class="main-wrapper">
+        <div class="page-content">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                <fieldset class="retro-fieldset">
+                    <legend>THÔNG TIN LIÊN HỆ</legend>
+                    <div style="padding: 15px; line-height: 1.8;">
+                        <p><strong><i class="fa-solid fa-building"></i> TRỤ SỞ:</strong> Nhà Sinh Hoạt Cộng Đồng Số 21
+                        </p>
+                        <p><strong><i class="fa-solid fa-location-dot"></i> ĐỊA CHỈ:</strong> Phường Ba Đình, Hà Nội</p>
+                        <p><strong><i class="fa-solid fa-phone"></i> ĐIỆN THOẠI:</strong> 024.3xxx.xxxx</p>
+                        <p><strong><i class="fa-solid fa-envelope"></i> EMAIL:</strong> tdp21-badinh@hanoi.gov.vn</p>
+                        <hr style="border: none; border-top: 1px dashed #ccc; margin: 20px 0;">
+                        <p style="font-style: italic; color: #666;">Mọi đóng góp ý kiến và phản ánh của công dân xin vui
+                            lòng điền vào biểu mẫu bên cạnh hoặc liên hệ trực tiếp tại trụ sở.</p>
+                    </div>
+                </fieldset>
+
+                <fieldset class="retro-fieldset">
+                    <legend>GỬI Ý KIẾN / PHẢN ÁNH</legend>
+                    <form class="contact-form" id="feedback-form">
+                        <div class="form-group">
+                            <label>Họ và tên:</label>
+                            <input type="text" id="fb-name" required placeholder="Nhập họ và tên...">
+                        </div>
+                        <div class="form-group">
+                            <label>Số điện thoại / Email:</label>
+                            <input type="text" id="fb-contact" required placeholder="Nhập thông tin liên hệ...">
+                        </div>
+                        <div class="form-group">
+                            <label>Nội dung ý kiến:</label>
+                            <textarea id="fb-content" rows="5" required
+                                placeholder="Nhập nội dung phản ánh..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit" id="btn-send">GỬI Ý KIẾN</button>
+                    </form>
+                    <div style="text-align: center; margin-top: 15px; padding-top: 15px; border-top: 1px dashed #ccc;">
+                        <a href="tra-cuu.html" style="color: #2b579a; font-size: 13px; font-weight: bold; text-decoration: none;">
+                            <i class="fa-solid fa-magnifying-glass"></i> TRA CỨU KẾT QUẢ PHẢN HỒI Ý KIẾN
+                        </a>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHARED FOOTER -->
+    <div id="shared-footer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=V1.33"></script>
+    <script src="shared-ui.js?v=V1.33"></script>
+    <script>
+        document.getElementById('feedback-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-send');
+            btn.disabled = true;
+            btn.innerText = 'ĐANG GỬI...';
+
+            const contactValue = document.getElementById('fb-contact').value;
+            const data = {
+                name: document.getElementById('fb-name').value,
+                contact: contactValue,
+                email: contactValue, // Lưu vào cả 2 trường để đảm bảo tương thích
+                content: document.getElementById('fb-content').value,
+                status: 'NEW'
+            };
+
+            try {
+                if (typeof pb === 'undefined') throw new Error("Chưa nạp được hệ thống kết nối.");
+                
+                try {
+                    // Thử gửi với đầy đủ các trường mới
+                    await pb.collection('feedback').create(data);
+                } catch (err) {
+                    // Nếu lỗi 400 (do backend chưa cập nhật trường contact), thử gửi vào trường email
+                    if (err.status === 400) {
+                        const fallbackData = {
+                            name: data.name,
+                            email: data.contact, 
+                            content: data.content,
+                            status: 'NEW'
+                        };
+                        await pb.collection('feedback').create(fallbackData);
+                    } else {
+                        throw err;
+                    }
+                }
+                
+                alert('Cảm ơn bạn đã gửi ý kiến. Chúng tôi đã tiếp nhận và sẽ phản hồi sớm nhất!');
+                document.getElementById('feedback-form').reset();
+            } catch (error) {
+                console.error("Feedback Error:", error);
+                alert('Lỗi: Không thể gửi ý kiến. Vui lòng kiểm tra kết nối máy chủ!');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'GỬI Ý KIẾN';
+            }
+        });
+    </script>
+</body>
+
+</html>

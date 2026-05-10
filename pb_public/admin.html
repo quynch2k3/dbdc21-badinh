@@ -1,0 +1,1602 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="security.js?v=ULTRA_SHIELD_V10"></script>
+    <title>QUẢN TRỊ HỆ THỐNG - Địa bàn dân cư số 21</title>
+    <link rel="stylesheet" href="retro.css?v=V1.1">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
+    <!-- Google API scripts removed: now using server-side import via Go backend -->
+
+    <style>
+        /* PREVENT FLICKER - HIDE CONTENT BY DEFAULT */
+        .admin-layout {
+            display: none;
+            min-height: 100vh;
+        }
+
+        .loading-screen {
+            position: fixed;
+            inset: 0;
+            background: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 100000;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #ddd;
+            border-top-color: #2b579a;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .admin-sidebar {
+            width: 240px;
+            background: #2b579a;
+            color: white;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            border-right: 2px solid #1a3a6e;
+        }
+
+        .admin-sidebar .menu-item {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .admin-sidebar .menu-item:hover,
+        .admin-sidebar .menu-item.active {
+            background: #1a3a6e;
+            color: #ffcc00;
+        }
+
+        .admin-main {
+            flex: 1;
+            background: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .admin-header {
+            background: #d9e9f6;
+            padding: 10px 25px;
+            border-bottom: 2px solid #a3c1e8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-content-area {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2b579a;
+            text-align: center;
+        }
+
+        /* TRADITIONAL GOVERNMENT TABLE STYLE */
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: #fff;
+            border: 1px solid #a3c1e8;
+        }
+
+        .admin-table th {
+            background: #d9e9f6;
+            color: #1a3a6e;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 12px;
+            border: 1px solid #a3c1e8;
+        }
+
+        .admin-table tr {
+            transition: background 0.1s;
+        }
+
+        .admin-table tr:nth-child(even) {
+            background: #f9fbff;
+        }
+
+        .admin-table tr:hover {
+            background: #fff9e6;
+        }
+
+        .admin-table td {
+            padding: 10px 15px;
+            vertical-align: middle;
+            border: 1px solid #e2e8f0;
+            color: #333;
+        }
+
+        .article-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .article-thumb {
+            width: 50px;
+            height: 35px;
+            border-radius: 2px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            flex-shrink: 0;
+        }
+
+        .article-title {
+            font-weight: bold;
+            color: #1a3a6e;
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.3;
+        }
+
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 0;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            display: inline-block;
+            border: 1px solid transparent;
+        }
+
+        .status-active {
+            background: #f0fdf4;
+            color: #166534;
+            border-color: #bbf7d0;
+        }
+
+        .status-draft {
+            background: #f8fafc;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+
+        .btn-action {
+            width: 30px;
+            height: 30px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 0 2px;
+            background: #fff;
+            font-size: 13px;
+        }
+
+        .btn-edit {
+            color: #1a3a6e;
+            border-color: #1a3a6e;
+        }
+
+        .btn-edit:hover {
+            background: #1a3a6e;
+            color: #fff;
+        }
+
+        .btn-delete {
+            color: #cc0000;
+            border-color: #cc0000;
+        }
+
+        .btn-delete:hover {
+            background: #cc0000;
+            color: #fff;
+        }
+
+        /* FIX NHÁY TRANG - FADE IN ANIMATION */
+        .tab-view {
+            display: none;
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .tab-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Sidebar Toggle */
+        .admin-layout.collapsed .admin-sidebar {
+            width: 60px;
+            overflow: hidden;
+        }
+
+        .admin-layout.collapsed .admin-sidebar .menu-item span {
+            display: none;
+        }
+
+        .admin-layout.collapsed .admin-sidebar .menu-item i {
+            margin-right: 0;
+            font-size: 18px;
+        }
+
+        .admin-layout.collapsed .admin-sidebar .sidebar-branding {
+            display: none;
+        }
+
+        .toggle-sidebar-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            color: #1a3a6e;
+            cursor: pointer;
+            padding: 5px 10px;
+            margin-right: 15px;
+            transition: 0.2s;
+        }
+
+        .toggle-sidebar-btn:hover {
+            color: #2b579a;
+            transform: scale(1.1);
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* PROFESSIONAL SUCCESS/ERROR MODAL */
+        /* CLASSIC SYSTEM MODAL - MATCHING IMAGE 2 (LOGIN PAGE STYLE) */
+        .status-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-modal {
+            background: white;
+            width: 450px;
+            border-radius: 0;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            border: 1px solid #aaa;
+            font-family: Tahoma, Arial, sans-serif;
+            animation: none;
+        }
+
+        .modal-classic-header {
+            padding: 10px;
+            background: #f0f4f8;
+            border-bottom: 1px dotted #666;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-classic-header span {
+            color: #1e3a8a;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .status-modal-body {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .status-modal-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #16a34a;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .status-modal-msg {
+            font-size: 13px;
+            color: #000;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e8f0fe;
+            border: 1px solid #ccd;
+            text-align: center;
+        }
+
+        .btn-modal-close {
+            background: #f0f0f0;
+            color: #000;
+            border: 1px solid #707070;
+            padding: 8px 25px;
+            cursor: pointer;
+            transition: 0.1s;
+            font-size: 13px;
+            width: auto;
+            font-family: Tahoma, Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        .btn-modal-close:hover {
+            background: #e5e5e5;
+            border-color: #000;
+        }
+
+        /* FIX ACCOUNT TABLE ALIGNMENT */
+        #account-list-container {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        .account-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .account-table th {
+            background: #f1f5f9;
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 11px;
+            font-weight: bold;
+            color: #475569;
+            text-transform: uppercase;
+            border-bottom: 2px solid #cbd5e1;
+            white-space: nowrap;
+        }
+
+        .account-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .user-info-cell {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar-sm {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 4px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .user-name-bold {
+            font-weight: bold;
+            color: #1e3a8a;
+            font-size: 13px;
+            line-height: 1.2;
+        }
+
+        .user-email-dim {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .status-pill {
+            padding: 4px 8px;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 2px;
+            text-transform: uppercase;
+            border: 1px solid;
+            display: inline-block;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .status-pill.approved {
+            background: #f0fdf4;
+            color: #166534;
+            border-color: #bbf7d0;
+        }
+
+        .status-pill.pending {
+            background: #fffbeb;
+            color: #854d0e;
+            border-color: #fef3c7;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 4px;
+            justify-content: flex-end;
+        }
+
+        .btn-round-action {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            border: 1px solid #d1d5db;
+            background: white;
+            cursor: pointer;
+        }
+
+        .btn-round-action i {
+            font-size: 12px;
+        }
+
+        .btn-round-action.edit {
+            color: #2563eb;
+        }
+
+        .btn-round-action.print {
+            color: #334155;
+        }
+
+        .btn-round-action.delete {
+            color: #dc2626;
+            border-color: #fecaca;
+            background: #fff1f2;
+        }
+
+        /* FOLDER VIEW STYLES */
+        .folder-item {
+            background: white;
+            border: 2px solid #d9e9f6;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            min-height: 140px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .folder-item:hover {
+            border-color: #2b579a;
+            background: #f8fbfe;
+            box-shadow: 0 4px 12px rgba(43, 87, 154, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .folder-item i {
+            font-size: 32px;
+            color: #2b579a;
+        }
+
+        .folder-item-name {
+            font-weight: bold;
+            color: #1a3a6e;
+            font-size: 14px;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+
+        .folder-item-count {
+            font-size: 12px;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .folder-item-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: auto;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .folder-item-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            border: 1px solid #cbd5e1;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+            transition: 0.2s;
+        }
+
+        .folder-item-btn:hover {
+            background: #f1f5f9;
+            border-color: #2b579a;
+            color: #2b579a;
+        }
+
+        .employee-list-item {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            transition: 0.2s;
+        }
+
+        .employee-list-item:hover {
+            border-color: #a3c1e8;
+            background: #f9fbff;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .employee-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .employee-info {
+            flex: 1;
+        }
+
+        .employee-name {
+            font-weight: bold;
+            color: #1a3a6e;
+            font-size: 13px;
+        }
+
+        .employee-position {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .employee-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #2b579a;
+            font-weight: bold;
+            font-size: 12px;
+            transition: 0.2s;
+            margin-bottom: 15px;
+        }
+
+        .back-btn:hover {
+            background: #e2e8f0;
+            border-color: #2b579a;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- LOADING SCREEN -->
+    <div id="loading-screen" class="loading-screen">
+        <div class="loading-spinner"></div>
+        <p style="margin-top: 15px; color: #666; font-weight: bold;">Xác thực quyền quản trị...</p>
+    </div>
+
+    <div class="admin-layout" id="admin-layout">
+        <!-- SIDEBAR -->
+        <div class="admin-sidebar">
+            <div class="sidebar-branding"
+                style="padding: 25px 20px; text-align: center; background: #1a3a6e; border-bottom: 2px solid #ffcc00; margin-bottom: 10px;">
+                <img src="https://lh3.googleusercontent.com/pw/AP1GczPU69TVpCvfr9Sc8Q-xfiPOKQkYoKffYiJ0rHZNcrP699bqiWJWNpR1MD7_Byewp7lIKZY_0epoQXz-k9PNj3sdk7fRgNSVwfT2tkVurGGgVYrpYSk7IYsiyksyBKqUBPJTTZbHG8tf7fgbES8MYm6m5g=w848-h859-s-no-gm?authuser=0"
+                    style="height: 60px; margin-bottom: 12px;">
+                <div style="font-size: 11px; color: #a3c1e8; margin-bottom: 5px; font-weight: bold; line-height: 1.4;">
+                    ĐẢNG ỦY - HĐND - UBND<br>UBMTTQ PHƯỜNG BA ĐÌNH</div>
+                <div
+                    style="font-size: 13px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 8px;">
+                    Địa bàn dân cư số 21</div>
+            </div>
+
+            <div class="menu-item active" onclick="switchView('view-dashboard', this)">
+                <i class="fa-solid fa-gauge-high"></i> <span>Bảng điều khiển</span>
+            </div>
+            <div class="menu-item" onclick="switchView('view-articles', this)">
+                <i class="fa-solid fa-newspaper"></i> <span>Tin bài & Tin tức</span>
+            </div>
+            <div class="menu-item" onclick="switchView('view-pages', this)">
+                <i class="fa-solid fa-file-lines"></i> <span>Trang nội dung</span>
+            </div>
+            <div class="menu-item" onclick="switchView('view-feedback', this)">
+                <i class="fa-solid fa-envelope-open-text"></i> <span>Hộp thư góp ý</span>
+            </div>
+            <div class="menu-item" onclick="switchView('view-accounts', this)">
+                <i class="fa-solid fa-user-shield"></i> <span>Quản lý Tài khoản</span>
+            </div>
+            <div class="menu-item" onclick="switchView('view-settings', this)">
+                <i class="fa-solid fa-gear"></i> <span>Cấu hình hệ thống</span>
+            </div>
+
+            <div style="margin-top: auto; padding: 20px; background: rgba(0,0,0,0.1);">
+                <a href="index.html" target="_blank"
+                    style="color: #ffcc00; text-decoration: none; font-size: 13px; display: flex; align-items: center; gap: 8px; margin-bottom: 15px; font-weight: bold;">
+                    <i class="fa-solid fa-external-link-alt"></i> Xem Trang Chủ
+                </a>
+                <div onclick="logout()"
+                    style="color: #ff9999; cursor: pointer; font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất hệ thống
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN AREA -->
+        <div class="admin-main">
+            <header class="admin-header"
+                style="height: 60px; padding: 0 25px; background: #fff; border-bottom: 2px solid #a3c1e8;">
+                <div style="display: flex; align-items: center;">
+                    <button class="toggle-sidebar-btn" onclick="toggleSidebar()" title="Thu gọn / Mở rộng Menu">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <h2
+                        style="margin:0; font-size: 16px; color: #1a3a6e; font-weight: 900; text-transform: uppercase; letter-spacing: 0.5px;">
+                        Trung tâm điều hành dữ liệu dân cư</h2>
+                </div>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="text-align: right;">
+                        <div id="admin-welcome"
+                            style="font-weight: 800; color: #1a3a6e; font-size: 13px; text-transform: uppercase;">Xin
+                            chào, Quản trị viên</div>
+                        <div style="font-size: 11px; color: #666; font-weight: bold;">Phiên làm việc an toàn (V11)</div>
+                    </div>
+                    <img id="admin-avatar-img"
+                        src="https://ui-avatars.com/api/?name=Admin&background=1a3a6e&color=fff&bold=true"
+                        style="height: 40px; width: 40px; border: 2px solid #1a3a6e; border-radius: 4px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                </div>
+            </header>
+
+            <div class="admin-content-area">
+                <!-- VIEW: DASHBOARD -->
+                <div id="view-dashboard" class="tab-view active">
+                    <!-- DASHBOARD HEADER (SIMPLIFIED RETRO) -->
+                    <div class="section-box"
+                        style="margin-bottom: 25px; padding: 20px; background: #fff; border-top: 4px solid #1a3a6e;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h1
+                                    style="margin: 0; font-size: 20px; font-weight: 900; color: #1a3a6e; text-transform: uppercase; letter-spacing: 0.5px;">
+                                    BẢNG ĐIỀU HÀNH HỆ THỐNG</h1>
+                                <p style="margin: 5px 0 0 0; color: #666; font-size: 13px; font-weight: bold;">
+                                    <i class="fa-solid fa-calendar-check"></i> <span id="current-date-vn">...</span> |
+                                    <span id="current-time-vn">...</span>
+                                </p>
+                            </div>
+                            <div style="text-align: right;">
+                                <span
+                                    style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 5px 15px; font-size: 11px; font-weight: bold; text-transform: uppercase;">
+                                    <span class="status-dot"
+                                        style="box-shadow: none; animation: none; background: #22c55e;"></span> MÁY CHỦ:
+                                    TRỰC TUYẾN
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STATS GRID (RETRO BOXES) -->
+                    <div
+                        style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:20px; margin-bottom:25px;">
+                        <fieldset class="section-box" style="margin:0; padding: 15px; background: #fff;">
+                            <legend
+                                style="color: #2b579a; font-weight: 900; padding: 0 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                                Bài viết hệ thống</legend>
+                            <div class="stat-value" id="stat-articles-new"
+                                style="font-size: 36px; text-align: center; color: #1a3a6e;">0</div>
+                        </fieldset>
+
+                        <fieldset class="section-box" style="margin:0; padding: 15px; background: #fff;">
+                            <legend
+                                style="color: #059669; font-weight: 900; padding: 0 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                                Tổng số Cán bộ</legend>
+                            <div class="stat-value" id="stat-members-new"
+                                style="font-size: 36px; text-align: center; color: #059669;">0</div>
+                        </fieldset>
+
+                        <fieldset class="section-box" style="margin:0; padding: 15px; background: #fff;">
+                            <legend
+                                style="color: #d97706; font-weight: 900; padding: 0 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                                Phản hồi mới</legend>
+                            <div class="stat-value" id="stat-feedback-new"
+                                style="font-size: 36px; text-align: center; color: #d97706;">0</div>
+                        </fieldset>
+
+                        <fieldset class="section-box" style="margin:0; padding: 15px; background: #fff;">
+                            <legend
+                                style="color: #dc2626; font-weight: 900; padding: 0 10px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px;">
+                                Cán bộ chờ duyệt</legend>
+                            <div class="stat-value" id="stat-pending-accounts"
+                                style="font-size: 36px; text-align: center; color: #dc2626;">0</div>
+                        </fieldset>
+                    </div>
+
+                    <!-- TWO COLUMN LAYOUT -->
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 25px;">
+                        <!-- LEFT COLUMN -->
+                        <div style="display: flex; flex-direction: column; gap: 25px;">
+                            <!-- RECENT ARTICLES -->
+                            <div class="section-box" style="margin: 0; padding: 0;">
+                                <div
+                                    style="padding: 10px 15px; background: #d9e9f6; border-bottom: 2px solid #a3c1e8; display: flex; justify-content: space-between; align-items: center;">
+                                    <span
+                                        style="font-weight: 900; color: #1a3a6e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Cập
+                                        nhật tin bài mới nhất</span>
+                                    <button class="btn btn-sm btn-secondary" onclick="switchView('view-articles')"
+                                        style="padding: 2px 10px; font-size: 11px;">Chi tiết</button>
+                                </div>
+                                <table class="admin-table" style="margin: 0; border: none;">
+                                    <thead>
+                                        <tr>
+                                            <th style="background: #f1f5f9; color: #1a3a6e;">Tiêu đề bài viết</th>
+                                            <th style="background: #f1f5f9; color: #1a3a6e; width: 120px;">Ngày đăng
+                                            </th>
+                                            <th style="background: #f1f5f9; color: #1a3a6e; width: 140px;">Chuyên mục
+                                            </th>
+                                            <th style="background: #f1f5f9; color: #1a3a6e; width: 100px;">Trạng thái
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashboard-recent-news">
+                                        <!-- Loaded by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- RECENT FEEDBACK -->
+                            <div class="section-box" style="margin: 0; padding: 0;">
+                                <div
+                                    style="padding: 10px 15px; background: #d9e9f6; border-bottom: 2px solid #a3c1e8; display: flex; justify-content: space-between; align-items: center;">
+                                    <span
+                                        style="font-weight: 900; color: #1a3a6e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Ý
+                                        kiến đóng góp gần đây</span>
+                                    <button class="btn btn-sm btn-secondary" onclick="switchView('view-feedback')"
+                                        style="padding: 2px 10px; font-size: 11px;">Hộp thư</button>
+                                </div>
+                                <div id="dashboard-recent-feedback">
+                                    <!-- Loaded by JS -->
+                                    <div style="text-align: center; padding: 30px; color: #64748b; font-size: 13px;">
+                                        Đang tải dữ liệu...</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT COLUMN -->
+                        <div style="display: flex; flex-direction: column; gap: 25px;">
+                            <!-- QUICK ACTIONS -->
+                            <div class="section-box" style="margin: 0; padding: 0;">
+                                <div style="padding: 10px 15px; background: #d9e9f6; border-bottom: 2px solid #a3c1e8;">
+                                    <span
+                                        style="font-weight: 900; color: #1a3a6e; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Lối
+                                        tắt quản trị</span>
+                                </div>
+                                <div style="padding: 15px; display: flex; flex-direction: column; gap: 8px;">
+                                    <button class="btn btn-primary"
+                                        style="justify-content: flex-start; text-transform: uppercase; font-size: 11px;"
+                                        onclick="window.location.hash='articles-new'">
+                                        <i class="fa-solid fa-plus-square"></i> Soạn bài viết mới
+                                    </button>
+                                    <button class="btn btn-success"
+                                        style="justify-content: flex-start; text-transform: uppercase; font-size: 11px;"
+                                        onclick="switchView('view-accounts')">
+                                        <i class="fa-solid fa-user-check"></i> Phê duyệt cán bộ
+                                    </button>
+                                    <button class="btn btn-info"
+                                        style="justify-content: flex-start; text-transform: uppercase; font-size: 11px;"
+                                        onclick="switchView('view-feedback')">
+                                        <i class="fa-solid fa-reply"></i> Phản hồi công dân
+                                    </button>
+                                    <button class="btn btn-secondary"
+                                        style="justify-content: flex-start; text-transform: uppercase; font-size: 11px;"
+                                        onclick="switchView('view-settings')">
+                                        <i class="fa-solid fa-cogs"></i> Cài đặt hệ thống
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- SYSTEM INFO -->
+                            <fieldset class="section-box"
+                                style="margin: 0; padding: 15px; background: #fffbeb; border: 1px solid #fde68a;">
+                                <legend
+                                    style="color: #92400e; font-weight: 900; padding: 0 10px; font-size: 11px; text-transform: uppercase;">
+                                    Thông số kỹ thuật</legend>
+                                <div
+                                    style="font-size: 12px; color: #92400e; display: flex; flex-direction: column; gap: 8px;">
+                                    <div
+                                        style="display: flex; justify-content: space-between; border-bottom: 1px dotted #fde68a; padding-bottom: 4px;">
+                                        <span>Phiên bản:</span>
+                                        <span style="font-weight: bold;">E-Portal V11.5</span>
+                                    </div>
+                                    <div
+                                        style="display: flex; justify-content: space-between; border-bottom: 1px dotted #fde68a; padding-bottom: 4px;">
+                                        <span>Bộ nhớ:</span>
+                                        <span style="font-weight: bold;">850 MB / 5 GB</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between;">
+                                        <span>Kết nối:</span>
+                                        <span style="font-weight: bold; color: #166534;"><i
+                                                class="fa-solid fa-link"></i> Đang kết nối</span>
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: ARTICLES -->
+                <div id="view-articles" class="tab-view">
+                    <div class="articles-header"
+                        style="margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between; background: #fff; padding: 15px; border: 1px solid #a3c1e8;">
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn btn-primary" onclick="window.location.hash='articles-new'">
+                                <i class="fa-solid fa-plus"></i> Soạn bài mới
+                            </button>
+                            <div id="bulk-actions-bar"
+                                style="display: none; align-items: center; gap: 10px; background: #fff8e1; border: 1px solid #ffe082; padding: 5px 15px; border-radius: 4px;">
+                                <span id="selected-count"
+                                    style="font-weight: bold; color: #856404; font-size: 13px; white-space: nowrap;">0
+                                    mục đã chọn</span>
+                                <div style="height: 20px; width: 1px; background: #ffe082;"></div>
+                                <button class="btn btn-success btn-sm" onclick="bulkUpdateStatus('Công khai')"
+                                    style="padding: 4px 10px; font-size: 11px;">
+                                    <i class="fa-solid fa-globe"></i> CÔNG KHAI
+                                </button>
+                                <button class="btn btn-secondary btn-sm" onclick="bulkUpdateStatus('draft')"
+                                    style="padding: 4px 10px; font-size: 11px;">
+                                    <i class="fa-solid fa-eye-slash"></i> GỠ BÀI
+                                </button>
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <select id="bulk-cat-select" class="form-control"
+                                        style="width: 140px; height: 26px; font-size: 11px; padding: 0 5px;">
+                                        <option value="">-- Đổi chuyên mục --</option>
+                                        <option value="TIN_TUC">Tin tức chung</option>
+                                        <option value="PHU_NU">Hội Phụ Nữ</option>
+                                        <option value="TN">Đoàn Thanh Niên</option>
+                                        <option value="MT">Mặt Trận</option>
+                                        <option value="CB">Chi Bộ</option>
+                                        <option value="CCB">Cựu Chiến Binh</option>
+                                        <option value="NCT">Người Cao Tuổi</option>
+                                    </select>
+                                    <button class="btn btn-primary btn-sm" onclick="bulkChangeCategory()"
+                                        style="padding: 4px 8px; font-size: 11px;">ÁP DỤNG</button>
+                                </div>
+                                <button class="btn btn-danger btn-sm" onclick="deleteBulk()"
+                                    style="padding: 4px 12px; font-size: 11px; margin-left: auto;">
+                                    <i class="fa-solid fa-trash-can"></i> XÓA
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px; flex: 1; max-width: 600px;">
+                            <div style="position: relative; flex: 1;">
+                                <i class="fa-solid fa-search"
+                                    style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #64748b;"></i>
+                                <input type="text" id="article-search" class="form-control"
+                                    placeholder="Tìm kiếm theo tiêu đề bài viết..." style="padding-left: 35px;"
+                                    oninput="applyFilters()">
+                            </div>
+                            <select id="article-filter-cat" class="form-control" style="width: 160px;"
+                                onchange="applyFilters()">
+                                <option value="ALL">Tất cả chuyên mục</option>
+                                <option value="TIN_TUC">Tin tức chung</option>
+                                <option value="CB">Chi Bộ</option>
+                                <option value="MT">Mặt Trận</option>
+                                <option value="PHU_NU">Hội Phụ Nữ</option>
+                                <option value="CCB">Cựu Chiến Binh</option>
+                                <option value="TN">Thanh Niên</option>
+                                <option value="NCT">Người Cao Tuổi</option>
+                                <option value="KH">Khuyến Học</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="section-box" style="padding: 0;">
+                        <div
+                            style="padding: 10px 15px; background: #f8fafc; border-bottom: 1px solid #a3c1e8; display: flex; justify-content: space-between; align-items: center;">
+                            <span
+                                style="font-weight: 800; color: #1a3a6e; font-size: 12px; text-transform: uppercase;">DANH
+                                SÁCH BÀI VIẾT HỆ THỐNG</span>
+                            <span id="pagination-info" style="font-size: 12px; color: #64748b; font-weight: bold;">Đang
+                                tải...</span>
+                        </div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;"><input type="checkbox" onchange="toggleSelectAll(this)">
+                                    </th>
+                                    <th>Thông tin tin bài</th>
+                                    <th style="width: 150px;">Ngày đăng</th>
+                                    <th style="width: 150px;">Chuyên mục</th>
+                                    <th style="width: 120px;">Trạng thái</th>
+                                    <th style="width: 100px; text-align:right;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="article-list">
+                                <!-- Loaded by JS -->
+                            </tbody>
+                        </table>
+                        <div id="article-pagination"
+                            style="padding: 15px; background: #f8fafc; border-top: 1px solid #a3c1e8; display: flex; justify-content: center; gap: 5px;">
+                            <!-- Pagination buttons injected by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: PAGES -->
+                <div id="view-pages" class="tab-view">
+                    <div class="actions-bar" style="margin-bottom: 15px;">
+                        <button type="button" class="btn btn-primary" onclick="openPageEditor()">
+                            <i class="fa-solid fa-plus"></i> Thêm trang thông tin mới
+                        </button>
+                    </div>
+                    <div class="section-box">
+                        <span class="section-title">Danh sách các trang thông tin</span>
+                        <table class="gov-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 200px;">Đường dẫn (Slug)</th>
+                                    <th>Tiêu đề trang</th>
+                                    <th style="width: 100px;">Thứ tự</th>
+                                    <th style="width: 120px;">Menu</th>
+                                    <th style="width: 100px; text-align:right;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="page-list">
+                                <!-- Loaded by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- VIEW: ACCOUNTS (NEW) -->
+                <div id="view-accounts" class="tab-view">
+                    <div class="box-header" style="margin-bottom:20px;">
+                        <h3 style="margin:0; color: #2b579a;"><i class="fa-solid fa-user-check"></i> Duyệt & Phân quyền
+                            Cán bộ</h3>
+                    </div>
+                    <div class="section-box">
+                        <!-- BREADCRUMB NAVIGATION -->
+                        <div id="accounts-breadcrumb" style="padding: 12px 15px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 8px; font-size: 13px;">
+                            <i class="fa-solid fa-folder-open" style="color: #2b579a;"></i>
+                            <a href="#" onclick="navigateToAccountsRoot(); return false;" style="color: #2b579a; text-decoration: none; font-weight: bold; cursor: pointer;">Cán bộ</a>
+                            <span id="breadcrumb-path" style="color: #64748b;"></span>
+                        </div>
+
+                        <!-- FOLDER VIEW CONTAINER -->
+                        <div id="account-folder-view" style="padding: 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; min-height: 250px; background: #fff;">
+                            <div style="text-align:center; padding:30px; color:#64748b; font-size: 13px; grid-column: 1/-1;">Đang tải danh sách...</div>
+                        </div>
+
+                        <!-- TABLE VIEW FOR SELECTED FOLDER (HIDDEN BY DEFAULT) -->
+                        <div id="account-table-view" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                                <button class="back-btn" onclick="navigateToAccountsRoot()" style="margin-bottom: 0;" id="account-back-btn">
+                                    <i class="fa-solid fa-arrow-left"></i> Quay lại danh mục
+                                </button>
+                                
+                                <div id="account-org-actions" style="display: flex; gap: 8px;">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="renameCurrentOrg()" title="Đổi tên đơn vị/thư mục">
+                                        <i class="fa-solid fa-pen-to-square"></i> Đổi tên
+                                    </button>
+                                    <button class="btn btn-sm btn-success" onclick="addSingleUserToCurrentOrg()" title="Thêm cán bộ mới vào đơn vị này">
+                                        <i class="fa-solid fa-user-plus"></i> Thêm cán bộ
+                                    </button>
+                                    <button class="btn btn-sm btn-primary" onclick="triggerCSVImport()" title="Nhập danh sách từ file CSV">
+                                        <i class="fa-solid fa-file-import"></i> Nhập từ CSV
+                                    </button>
+                                    <input type="file" id="account-csv-import" accept=".csv" style="display: none;" onchange="handleCSVImport(this)">
+                                </div>
+                            </div>
+
+                            <!-- BULK ACTION BAR FOR ACCOUNTS -->
+                            <div id="account-bulk-actions" style="display: none; background: #fff8e1; border: 1px solid #ffe082; padding: 10px 15px; margin-bottom: 15px; align-items: center; gap: 12px; border-radius: 4px;">
+                                <span id="account-selected-count" style="font-weight: bold; color: #856404; font-size: 13px;">0 cán bộ đã chọn</span>
+                                <div style="height: 20px; width: 1px; background: #ffe082;"></div>
+                                <button class="btn btn-sm btn-success" onclick="bulkApproveAccounts()">
+                                    <i class="fa-solid fa-check-circle"></i> DUYỆT HÀNG LOẠT
+                                </button>
+                                <button class="btn btn-sm btn-warning" onclick="bulkLockAccounts()">
+                                    <i class="fa-solid fa-lock"></i> KHÓA TÀI KHOẢN
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="bulkDeleteAccounts()">
+                                    <i class="fa-solid fa-trash-can"></i> XÓA ĐÃ CHỌN
+                                </button>
+                            </div>
+                            <table class="account-table">
+                                <thead>
+                                    <tr>
+                                        <th>Cán bộ</th>
+                                        <th>Chức vụ / Đơn vị</th>
+                                        <th style="width:120px;">Vai trò</th>
+                                        <th style="width:130px;">Trạng thái</th>
+                                        <th style="text-align:right">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="account-list">
+                                    <tr>
+                                        <td colspan="5" style="text-align:center; padding:30px;">Đang tải danh sách tài
+                                            khoản...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- VIEW: FEEDBACK -->
+                <div id="view-feedback" class="tab-view">
+                    <div class="section-box" style="padding: 0;">
+                        <div
+                            style="padding: 10px 15px; background: #f8fafc; border-bottom: 1px solid #a3c1e8; display: flex; justify-content: space-between; align-items: center;">
+                            <span
+                                style="font-weight: 800; color: #1a3a6e; font-size: 12px; text-transform: uppercase;">Ý
+                                KIẾN ĐÓNG GÓP & PHẢN HỒI NHÂN DÂN</span>
+                            <span id="feedback-pagination-info"
+                                style="font-size: 12px; color: #64748b; font-weight: bold;"></span>
+                        </div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 120px;">Ngày gửi</th>
+                                    <th style="width: 200px;">Người gửi</th>
+                                    <th>Nội dung ý kiến</th>
+                                    <th style="width: 150px; text-align: center;">Trạng thái</th>
+                                    <th style="width: 100px; text-align:right;">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feedback-list">
+                                <tr>
+                                    <td colspan="5" style="text-align:center; padding: 30px;">Đang tải dữ liệu...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- VIEW: ACCOUNTS (DUPLICATE REMOVED) -->
+
+                <!-- VIEW: SETTINGS -->
+                <div id="view-settings" class="tab-view">
+                    <div class="actions-bar"
+                        style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin:0; color: #2b579a;">Cấu hình thông tin hệ thống</h3>
+                        <button type="button" class="btn btn-primary" onclick="saveAllSettings()">
+                            <i class="fa-solid fa-save"></i> Lưu toàn bộ cấu hình
+                        </button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <fieldset class="section-box">
+                            <legend style="font-weight: bold; color: #2b579a; padding: 0 10px;">THÔNG TIN CHUNG</legend>
+                            <div class="form-group">
+                                <label>Tiêu đề Website</label>
+                                <input type="text" id="set-website_title" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Mô tả ngắn</label>
+                                <textarea id="set-website_desc" class="form-control" rows="2"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Đường dẫn Logo</label>
+                                <input type="text" id="set-logo_url" class="form-control">
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="section-box">
+                            <legend style="font-weight: bold; color: #2b579a; padding: 0 10px;">THÔNG TIN LIÊN HỆ
+                            </legend>
+                            <div class="form-group">
+                                <label>Số điện thoại Hotline</label>
+                                <input type="text" id="set-hotline" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Email liên hệ</label>
+                                <input type="text" id="set-email" class="form-control">
+                            </div>
+                            <div class="form-group">
+                                <label>Địa chỉ văn phòng</label>
+                                <input type="text" id="set-address" class="form-control">
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="section-box">
+                            <legend style="font-weight: bold; color: #cc0000; padding: 0 10px;">CẤU HÌNH GOOGLE PHOTOS
+                                API</legend>
+                            <div class="form-group">
+                                <label>Google Client ID</label>
+                                <input type="text" id="set-google_client_id" class="form-control"
+                                    placeholder="Mã định danh khách hàng Google...">
+                                <small style="display:block; margin-top:5px; color:#666;">Dùng để xác thực tài khoản
+                                    Google.</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Google API Key</label>
+                                <input type="password" id="set-google_api_key" class="form-control"
+                                    placeholder="Khóa API Google...">
+                                <small style="display:block; margin-top:5px; color:#666;">Dùng để truy cập Google Picker
+                                    API (Bắt đầu bằng AIza...).</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Google Client Secret</label>
+                                <input type="password" id="set-google_client_secret" class="form-control"
+                                    placeholder="Mã bí mật khách hàng Google...">
+                            </div>
+                            <div
+                                style="background: #fff8e1; padding: 10px; border-radius: 4px; border: 1px solid #ffe082; font-size: 12px; margin-top: 10px;">
+                                <i class="fa-solid fa-circle-info"></i> <strong>Lưu ý:</strong> Bạn cần bật "Google
+                                Photos Library API" và "Google Picker API" trong Google Cloud Console.
+                            </div>
+                        </fieldset>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: ARTICLE EDITOR - SIMPLIFIED & NEAT -->
+    <div id="article-modal" class="modal-overlay"
+        style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; padding: 20px;">
+        <div class="section-box"
+            style="background: white; max-width: 960px; margin: 0 auto; height: 90vh; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 2px solid #2b579a;">
+            <div class="box-header" style="background: #2b579a; color: white; padding: 12px 20px;">
+                <span id="article-modal-title" class="box-title"
+                    style="color: white; font-weight: bold; font-size: 15px;">
+                    <i class="fa-solid fa-pen-to-square"></i> BIÊN TẬP TIN BÀI
+                </span>
+                <div class="box-tools">
+                    <button class="btn btn-sm" onclick="closeModal('article-modal')"
+                        style="background: #1a3a6e; color: white; border: 1px solid #fff; cursor: pointer; padding: 3px 10px;">
+                        <i class="fa-solid fa-xmark"></i> ĐÓNG
+                    </button>
+                </div>
+            </div>
+
+            <div class="box-body" style="flex: 1; overflow-y: auto; padding: 20px;">
+                <input type="hidden" id="edit-id">
+
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 15px;">
+                    <tr>
+                        <td style="padding: 8px; width: 140px; font-weight: bold; color: #444;">Tiêu đề bài viết:</td>
+                        <td colspan="3" style="padding: 8px;">
+                            <input type="text" id="edit-title" class="form-control"
+                                style="width: 100%; border: 1px solid #ccc; padding: 8px;"
+                                placeholder="Nhập tiêu đề...">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; font-weight: bold; color: #444;">Chuyên mục:</td>
+                        <td style="padding: 8px;">
+                            <select id="edit-category" class="form-control"
+                                style="width: 100%; border: 1px solid #ccc; padding: 8px;">
+                                <option value="TIN_TUC">Tin tức chung</option>
+                                <option value="CB">Chi Bộ</option>
+                                <option value="MT">Mặt Trận Tổ Quốc</option>
+                                <option value="PHU_NU">Hội Phụ Nữ</option>
+                                <option value="CCB">Hội Cựu Chiến Binh</option>
+                                <option value="TN">Đoàn Thanh Niên</option>
+                                <option value="NCT">Hội Người Cao Tuổi</option>
+                                <option value="KH">Khuyến Học</option>
+                            </select>
+                        </td>
+                        <td style="padding: 8px; width: 120px; font-weight: bold; color: #444;">Ảnh bài viết:</td>
+                        <td style="padding: 8px;">
+                            <div style="display: flex; gap: 10px; align-items: flex-start;">
+                                <div id="image-preview-container"
+                                    style="width: 100px; height: 100px; background: #f1f5f9; border: 1px solid #ddd; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0;">
+                                    <img id="edit-image-preview" src=""
+                                        style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                    <i id="edit-image-icon" class="fa-solid fa-image"
+                                        style="font-size: 30px; color: #cbd5e1;"></i>
+                                </div>
+                                <div style="flex: 1; display: flex; gap: 8px; flex-direction: column;">
+                                    <input type="text" id="edit-image" class="form-control"
+                                        style="width: 100%; border: 1px solid #ccc; padding: 8px;"
+                                        placeholder="Dán link ảnh (https://...)"
+                                        oninput="updateImagePreview(this.value)">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 11px; color: #666;">Hoặc:</span>
+                                        <input type="file" id="edit-image-file" accept="image/*"
+                                            style="font-size: 12px;" onchange="previewLocalFile(this)">
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- VIDEO UPLOAD ROW -->
+                    <tr>
+                        <td style="padding: 8px; font-weight: bold; color: #444;"><i class="fa-solid fa-video"
+                                style="color: #dc2626;"></i> Video:</td>
+                        <td colspan="3" style="padding: 8px;">
+                            <div style="display: flex; gap: 12px; align-items: flex-start;">
+                                <div id="video-preview-container"
+                                    style="width: 180px; height: 110px; background: #0f172a; border: 2px dashed #334155; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; position: relative;">
+                                    <video id="edit-video-preview"
+                                        style="width: 100%; height: 100%; object-fit: cover; display: none;"
+                                        muted></video>
+                                    <div id="edit-video-icon" style="text-align: center; color: #475569;">
+                                        <i class="fa-solid fa-film"
+                                            style="font-size: 28px; display: block; margin-bottom: 4px;"></i>
+                                        <span style="font-size: 10px;">Chưa có video</span>
+                                    </div>
+                                    <button type="button" id="video-play-btn" onclick="toggleVideoPreview()"
+                                        style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); background:rgba(255,255,255,0.9); border:none; width:36px; height:36px; border-radius:50%; cursor:pointer; font-size:16px; box-shadow:0 2px 8px rgba(0,0,0,0.3);">▶</button>
+                                    <button type="button" id="video-remove-btn" onclick="removeVideo()"
+                                        style="display:none; position:absolute; top:4px; right:4px; background:rgba(220,38,38,0.9); color:white; border:none; width:22px; height:22px; border-radius:50%; cursor:pointer; font-size:12px; line-height:22px;"
+                                        title="Xóa video">✕</button>
+                                </div>
+                                <div style="flex: 1; display: flex; gap: 8px; flex-direction: column;">
+                                    <input type="text" id="edit-video-url" class="form-control"
+                                        style="width: 100%; border: 1px solid #ccc; padding: 8px;"
+                                        placeholder="Dán link video (https://...) hoặc upload từ máy"
+                                        oninput="updateVideoPreview(this.value)">
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 11px; color: #666;">Tải lên:</span>
+                                        <input type="file" id="edit-video-file"
+                                            accept="video/mp4,video/webm,video/ogg,video/*" style="font-size: 12px;"
+                                            onchange="previewLocalVideoFile(this)">
+                                    </div>
+                                    <div
+                                        style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; padding: 6px 10px; font-size: 11px; color: #166534;">
+                                        <i class="fa-solid fa-circle-info"></i> Video sẽ được phát trực tiếp bằng HTML5.
+                                        Hỗ trợ MP4, WebM, OGG — <strong>KHÔNG giới hạn dung lượng</strong> (tải lên theo
+                                        chunk).
+                                    </div>
+                                    <!-- PROGRESS BAR -->
+                                    <div id="video-upload-progress" style="display:none; margin-top:6px;">
+                                        <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
+                                            <i class="fa-solid fa-cloud-arrow-up" style="color:#2b579a;"></i>
+                                            <span id="video-progress-text"
+                                                style="font-size:11px; font-weight:bold; color:#1e3a8a;">Đang tải
+                                                lên...</span>
+                                        </div>
+                                        <div
+                                            style="width:100%; height:8px; background:#e2e8f0; border-radius:4px; overflow:hidden;">
+                                            <div id="video-progress-bar"
+                                                style="width:0%; height:100%; background:linear-gradient(90deg,#2563eb,#3b82f6); border-radius:4px; transition:width 0.3s;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; font-weight: bold; color: #444;">Tóm tắt ngắn:</td>
+                        <td colspan="3" style="padding: 8px;">
+                            <input type="text" id="edit-summary" class="form-control"
+                                style="width: 100%; border: 1px solid #ccc; padding: 8px;"
+                                placeholder="Mô tả tóm lược bài viết...">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; font-weight: bold; color: #444;">Chủ bài viết:</td>
+                        <td style="padding: 8px;">
+                            <input type="text" id="edit-author" class="form-control"
+                                style="width: 100%; border: 1px solid #ccc; padding: 8px;"
+                                placeholder="Tên tác giả/nguồn tin...">
+                        </td>
+                        <td style="padding: 8px; width: 120px; font-weight: bold; color: #444;">Ngày giờ đăng:</td>
+                        <td style="padding: 8px;">
+                            <div style="display: flex; gap: 8px; align-items: center;">
+                                <input type="datetime-local" id="edit-publish-date" class="form-control"
+                                    style="flex: 1; border: 1px solid #ccc; padding: 8px;">
+                                <button type="button" class="btn btn-sm btn-secondary" onclick="setPublishDateNow()"
+                                    style="white-space: nowrap; padding: 6px 10px; font-size: 11px;">Hiện tại</button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; font-weight: bold; color: #444;">Thẻ (Tags):</td>
+                        <td colspan="3" style="padding: 8px;">
+                            <input type="text" id="edit-tags" class="form-control"
+                                style="width: 100%; border: 1px solid #ccc; padding: 8px;"
+                                placeholder="Nhập các thẻ, cách nhau bởi dấu phẩy (ví dụ: Tin tức, Hoạt động, Đoàn thanh niên)">
+                        </td>
+                    </tr>
+                </table>
+
+                <div
+                    style="font-weight: bold; color: #2b579a; margin-bottom: 8px; padding-left: 8px; border-left: 4px solid #2b579a;">
+                    NỘI DUNG CHI TIẾT</div>
+                <div style="border: 1px solid #ccc; background: #fff;">
+                    <textarea id="article-editor"></textarea>
+                </div>
+            </div>
+
+            <div class="box-footer"
+                style="padding: 12px 20px; background: #f4f4f4; border-top: 1px solid #ccc; text-align: right;">
+                <button type="button" class="btn btn-secondary" onclick="closeModal('article-modal')"
+                    style="padding: 8px 20px;">Hủy bỏ</button>
+                <button type="button" class="btn btn-primary" onclick="saveArticle()"
+                    style="padding: 8px 25px; font-weight: bold; margin-left: 10px;">
+                    <i class="fa-solid fa-save"></i> Cập nhật bài viết
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- NOTIFICATION TOAST -->
+    <style>
+        .required { color: #dc2626; margin-left: 2px; }
+
+        /* LOADING TOAST & OVERLAY */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-card {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            width: 400px;
+            text-align: center;
+        }
+
+        .progress-ring {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            border: 6px solid #f1f5f9;
+            border-top: 6px solid #2563eb;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* VIDEO WRAPPER FOR EDITOR */
+        .video-wrapper {
+            position: relative;
+            margin: 20px auto;
+            max-width: 100%;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            line-height: 0;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            height: auto;
+            max-height: 500px;
+            display: block;
+            object-fit: contain;
+        }
+
+        .video-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+        }
+    </style>
+    <div id="toast-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;"></div>
+
+    <!-- SCRIPTS -->
+    <!-- STATUS MODAL (SUCCESS/ERROR) -->
+    <!-- ADD USER MODAL -->
+    <div id="add-user-modal" class="status-modal-overlay">
+        <div class="status-modal" style="width: 500px; text-align: left;">
+            <div class="modal-classic-header">
+                <i class="fa-solid fa-user-plus" style="color: #1e3a8a; font-size: 14px;"></i>
+                <span>THÊM CÁN BỘ MỚI</span>
+            </div>
+            <div class="status-modal-body" style="padding: 20px;">
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">Họ và tên <span class="required">*</span></label>
+                    <input type="text" id="add-user-name" class="form-control" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #707070;" placeholder="Ví dụ: Nguyễn Văn A">
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">Email / Tên đăng nhập <span class="required">*</span></label>
+                    <input type="email" id="add-user-email" class="form-control" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #707070;" placeholder="Ví dụ: vana@gmail.com">
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">Chức vụ</label>
+                    <input type="text" id="add-user-position" class="form-control" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #707070;" placeholder="Ví dụ: Chuyên viên">
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">Mật khẩu truy cập <span class="required">*</span></label>
+                    <input type="password" id="add-user-password" class="form-control" style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #707070;" placeholder="Nhập mật khẩu ít nhất 8 ký tự">
+                </div>
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-weight: bold; font-size: 12px; margin-bottom: 5px;">Đơn vị / Phòng ban</label>
+                    <input type="text" id="add-user-org" class="form-control" readonly style="width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #707070; background: #f1f5f9; color: #64748b;" value="">
+                </div>
+                
+                <div style="margin-top: 25px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn-modal-close" style="padding: 6px 20px;"
+                        onclick="closeModal('add-user-modal')">HỦY BỎ</button>
+                    <button type="button" class="btn-modal-close"
+                        style="background: #1e3a8a; color: #fff; border-color: #1e3a8a; padding: 6px 20px;"
+                        onclick="submitNewUser()">
+                        <i class="fa-solid fa-check"></i> XÁC NHẬN THÊM
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FEEDBACK RESPONSE MODAL (MATCHING CLASSIC SYSTEM STYLE) -->
+    <div id="feedback-modal" class="status-modal-overlay">
+        <div class="status-modal" style="width: 550px; text-align: left;">
+            <div class="modal-classic-header">
+                <i class="fa-solid fa-reply" style="color: #1e3a8a; font-size: 14px;"></i>
+                <span>PHẢN HỒI Ý KIẾN CÔNG DÂN</span>
+            </div>
+            <div class="status-modal-body" style="padding: 20px;">
+                <div
+                    style="background: #f8fafc; padding: 12px; border: 1px solid #ddd; margin-bottom: 15px; font-size: 13px;">
+                    <div
+                        style="font-weight: bold; color: #64748b; margin-bottom: 5px; text-transform: uppercase; font-size: 10px;">
+                        Nội dung phản ánh:</div>
+                    <div id="fb-original-content" style="color: #334155; font-style: italic; line-height: 1.5;"></div>
+                </div>
+
+                <input type="hidden" id="fb-res-id">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="font-weight: bold; font-size: 12px; margin-bottom: 8px;">Nội dung phản hồi chính thức
+                        <span class="required">*</span></label>
+                    <textarea id="fb-res-content" class="form-control" rows="6"
+                        style="width: 100%; box-sizing: border-box; font-family: Tahoma, Arial, sans-serif; padding: 10px; border: 1px solid #707070;"
+                        placeholder="Nhập nội dung phản hồi..."></textarea>
+                </div>
+
+                <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px;">
+                    <button type="button" class="btn-modal-close" style="padding: 6px 20px;"
+                        onclick="closeModal('feedback-modal')">HỦY BỎ</button>
+                    <button type="button" class="btn-modal-close"
+                        style="background: #1e3a8a; color: #fff; border-color: #1e3a8a; padding: 6px 20px;"
+                        onclick="submitFeedbackResponse()">
+                        <i class="fa-solid fa-paper-plane"></i> GỬI PHẢN HỒI
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATUS MODAL (IMAGE 2 FORMAT) -->
+    <div id="status-modal-overlay" class="status-modal-overlay">
+        <div class="status-modal">
+            <div class="modal-classic-header">
+                <i class="fa-solid fa-circle-info" style="color:#1e3a8a"></i>
+                <span>Thông báo hệ thống</span>
+            </div>
+            <div class="status-modal-body">
+                <div id="modal-status-title" class="status-modal-title">CẬP NHẬT THÀNH CÔNG</div>
+                <div class="status-modal-msg">
+                    <i id="modal-status-icon" class="fa-solid fa-circle-check"
+                        style="font-size: 24px; display: block; margin-bottom: 10px;"></i>
+                    <span id="modal-status-text">Nội dung đã được lưu vào hệ thống dữ liệu.</span>
+                </div>
+                <button class="btn-modal-close" onclick="closeStatusModal()">ĐÓNG THÔNG BÁO</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <!-- LOADING OVERLAY FOR LARGE UPLOADS -->
+    <div id="upload-overlay" class="loading-overlay">
+        <div class="loading-card">
+            <div class="progress-ring" id="overlay-ring"></div>
+            <h3 id="overlay-title" style="margin: 0 0 10px 0; color: #1e293b;">Đang xử lý video...</h3>
+            <p id="overlay-msg" style="margin: 0 0 20px 0; color: #64748b; font-size: 14px;">Vui lòng không đóng cửa sổ
+                này</p>
+            <div style="width: 100%; height: 10px; background: #f1f5f9; border-radius: 5px; overflow: hidden;">
+                <div id="overlay-bar" style="width: 0%; height: 100%; background: #2563eb; transition: width 0.3s;">
+                </div>
+            </div>
+            <div id="overlay-pct" style="margin-top: 10px; font-weight: bold; color: #2563eb; font-size: 18px;">0%</div>
+        </div>
+    </div>
+
+    <script src="pocketbase-adapter.js?v=V1.60"></script>
+    <script src="admin.js?v=V1.39"></script>
+    <script>
+        // --- CONNECTION FAIL-SAFE ---
+        setTimeout(() => {
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen && loadingScreen.style.display !== 'none') {
+                loadingScreen.innerHTML = `
+                    <div style="text-align:center; padding:20px; background:#fff; border:2px solid #cc0000; border-radius:8px; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+                        <i class="fa-solid fa-triangle-exclamation" style="font-size:40px; color:#cc0000; margin-bottom:15px;"></i>
+                        <h3 style="color:#cc0000; margin-bottom:10px;">LỖI KẾT NỐI MÁY CHỦ</h3>
+                        <p style="font-size:14px; color:#666; margin-bottom:20px;">Không thể kết nối tới máy chủ dữ liệu (ngrok).<br>Vui lòng kiểm tra xem <b>START_TUNNEL.bat</b> đã chạy chưa.</p>
+                        <button onclick="location.reload()" class="btn btn-primary">THỬ LẠI</button>
+                        <button onclick="location.href='index.html'" class="btn btn-secondary" style="margin-left:10px;">VỀ TRANG CHỦ</button>
+                    </div>
+                `;
+            }
+        }, 8000); // 8 seconds timeout
+    </script>
+    <script>
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+            if (id === 'article-modal') {
+                window.location.hash = 'articles';
+            }
+        }
+        function closeStatusModal() {
+            document.getElementById('status-modal-overlay').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

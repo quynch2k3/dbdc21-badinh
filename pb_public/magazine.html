@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Bản tin điện tử - Địa Bàn Dân Cư Số 21, Phường Ba Đình">
+    <title>Bản Tin Điện Tử - Địa Bàn Dân Cư Số 21</title> <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2family=Be+Vietnam+Pro:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --nay: #001233;
+            --nay-light: #002855;
+            --red: #DA2128;
+            --gold: #D4AF37;
+            --bg: #0d1117;
+            --bg-2: #161b22;
+            --surface: rgba(22, 27, 34, 0.9);
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --primary: #1f6feb;
+            --radius: 14px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100dvh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        /* ===== LOADER ===== */
+        #loader {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+
+        .loader-logo {
+            width: 70px;
+            margin-bottom: 20px;
+            opacity: 0.9;
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+        }
+
+        .loader-ring {
+            width: 56px;
+            height: 56px;
+            border: 3px solid rgba(255, 255, 255, 0.08);
+            border-top-color: var(--gold);
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-text {
+            margin-top: 18px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* ===== TOP HEADER BAR ===== */
+        .top-header {
+            height: 56px;
+            background: rgba(13, 17, 23, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            position: relative;
+            z-index: 200;
+            flex-shrink: 0;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .btn-back-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .btn-back-header:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .header-title-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header-mag-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+            max-width: 300px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-mag-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 15px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-icon.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+
+        /* ===== MAIN READING AREA ===== */
+        #mag-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            padding: 20px 16px 100px 16px;
+        }
+
+        /* Background pattern */
+        #mag-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 20% 50%, rgba(0, 40, 85, 0.25) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 80% 50%, rgba(218, 33, 40, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        #flipbook-wrapper {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .flip-book {
+            background: #fff;
+        }
+
+        .page {
+            background-color: #fff;
+            overflow: hidden;
+            display: none;
+        }
+
+        .page img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #fff;
+            display: block;
+        }
+
+        /* Book spine shadow */
+        .page.--left::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(to left, rgba(0, 0, 0, 0.2) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        .page.--right::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 30px;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.2) 0%, transparent 100%);
+            pointer-events: none;
+        }
+
+        /* ===== SIDE NAV ARROWS ===== */
+        .side-overlay {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            width: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .side-overlay.left {
+            left: 0;
+        }
+
+        .side-overlay.right {
+            right: 0;
+        }
+
+        #mag-container:hover .side-overlay {
+            opacity: 1;
+        }
+
+        .side-arrow {
+            width: 44px;
+            height: 44px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .side-overlay:hover .side-arrow {
+            background: rgba(0, 18, 51, 0.85);
+            border-color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        /* ===== BOTTOM CONTROL BAR ===== */
+        .bottom-bar {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(700px, calc(100vw - 32px));
+            height: 64px;
+            background: rgba(22, 27, 34, 0.92);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 12px;
+            z-index: 300;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .page-badge {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            min-width: 80px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .page-badge span {
+            color: var(--gold);
+        }
+
+        /* Slider */
+        .slider-track {
+            flex: 1;
+            position: relative;
+            padding: 10px 0;
+        }
+
+        input[type=range] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--gold);
+            cursor: pointer;
+            border: 2px solid var(--bg);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.4);
+            transition: transform 0.2s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.3);
+        }
+
+        input[type=range]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--gold);
+            cursor: pointer;
+            border: 2px solid var(--bg);
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            border-radius: 2px;
+        }
+
+        /* ===== THUMBNAIL PANEL ===== */
+        #tumb-panel {
+            position: fixed;
+            top: 56px;
+            right: 0;
+            width: 220px;
+            height: calc(100vh - 56px);
+            background: rgba(13, 17, 23, 0.97);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid var(--border);
+            z-index: 150;
+            transform: translateX(100%);
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #tumb-panel.open {
+            transform: translateX(0);
+        }
+
+        .tumb-panel-header {
+            padding: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .tumb-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .tumb-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .tumb-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .tumb-list::-webkit-scrollbar-tumb {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 2px;
+        }
+
+        .tumb-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1px solid transparent;
+        }
+
+        .tumb-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .tumb-item.active {
+            background: rgba(31, 111, 235, 0.15);
+            border-color: rgba(31, 111, 235, 0.4);
+        }
+
+        .tumb-img {
+            width: 50px;
+            height: 68px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #1a1f2e;
+            flex-shrink: 0;
+            border: 1px solid var(--border);
+        }
+
+        .tumb-item.active .tumb-img {
+            border-color: var(--primary);
+        }
+
+        .tumb-page-num {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .tumb-item.active .tumb-page-num {
+            color: var(--primary);
+        }
+
+        /* ===== FULLSCREEN/ZOOM MODE UI HIDING ===== */
+        body.zoomed-mode .top-header,
+        body.zoomed-mode .bottom-bar,
+        body.zoomed-mode .dev-badge,
+        body.zoomed-mode #tumb-panel {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            transition: opacity 0.4s ease;
+        }
+
+        /* Ensure side arrows are ALWAYS accessible and visible during zoom */
+        body.zoomed-mode .side-overlay {
+            opacity: 1 !important;
+            z-index: 1000;
+        }
+
+        body.zoomed-mode .side-arrow {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid var(--gold);
+            width: 50px;
+            height: 50px;
+        }
+
+        /* Exit Zoom Button */
+        #btn-zoom-close {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            width: 44px;
+            height: 44px;
+            background: rgba(218, 33, 40, 0.9);
+            color: #fff;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1100;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            transition: transform 0.2s;
+        }
+
+        body.zoomed-mode #btn-zoom-close {
+            display: flex;
+        }
+
+        #btn-zoom-close:hover {
+            transform: scale(1.1);
+            background: #fff;
+            color: #d32f2f;
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 768px) {
+            .header-title-group {
+                display: none;
+            }
+
+            .side-overlay {
+                display: none;
+            }
+
+            .bottom-bar {
+                bottom: 12px;
+                height: 58px;
+                border-radius: 16px;
+                padding: 0 12px;
+                gap: 8px;
+            }
+
+            .slider-track {
+                display: none;
+            }
+
+            .page-badge {
+                font-size: 12px;
+                min-width: 68px;
+            }
+
+            #mag-container {
+                padding: 12px 8px 90px 8px;
+            }
+
+            #tumb-panel {
+                width: 180px;
+            }
+        }
+
+        /* ===== TOAST NOTIFICATION ===== */
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: rgba(22, 27, 34, 0.95);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 9000;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ===== PAGE COUNTER ANIMATION ===== */
+        @keyframes pageFlipEffect {
+            0% {
+                transform: scale(0.95);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .page-badge.flip-anim {
+            animation: pageFlipEffect 0.3s ease;
+        }
+
+        /* Re-sizing / Rebuilding State */
+        .rebuilding #mag-container {
+            opacity: 0.2;
+            pointer-events: none;
+        }
+
+        .rebuilding #flipbook-wrapper::after {
+            content: '⚙ Đang tối ưu hiển thị...';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 1px;
+            white-space: nowrap;
+        }
+
+        /* ===== WATERMARK BADGE ===== */
+        .dev-badge {
+            position: fixed;
+            bottom: 25px;
+            left: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(13, 17, 23, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px 8px 10px;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 400;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .dev-badge img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 5px rgba(2, 136, 209, 0.4));
+        }
+
+        .dev-badge-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dev-badge-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .dev-badge-name {
+            font-size: 12px;
+            color: #fff;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+            .dev-badge {
+                bottom: 85px;
+                /* Above bottom bar on mobile */
+                left: 12px;
+                padding: 6px 12px 6px 8px;
+                transform: scale(0.9);
+                transform-origin: bottom left;
+                background: rgba(13, 17, 23, 0.8);
+            }
+        }
+    </style>
+</head>
+
+<body> <!-- LOADER -->
+    <div id="loader"> <img class="loader-logo"
+            src="" alt="Logo" id="loader-logo-img">
+        <div class="loader-ring"></div>
+        <div class="loader-text">Đang tải bản tin...</div>
+    </div> <!-- TOP HEADER -->
+    <!-- Header will be injected by shared-ui.js -->
+    <div class="header-actions-fixed"> 
+        <button class="btn-icon" id="btn-tumbs" onclick="toggleTumbs()" title="Danh sách trang"> <i class="fa-solid fa-table-cells"></i> </button> 
+        <button class="btn-icon" id="btn-zoom" onclick="toggleZoom()" title="Phóng to / Tu nhỏ"> <i class="fa-solid fa-magnifying-glass-plus"></i> </button> 
+        <button class="btn-icon" onclick="toggleFullscreen()" id="btn-fs" title="Toàn màn hình"> <i class="fa-solid fa-expand"></i> </button> 
+    </div> <!-- THUMBNAIL PANEL -->
+    <div id="tumb-panel">
+        <div class="tumb-panel-header">Danh sách trang</div>
+        <div class="tumb-list" id="tumb-list"></div>
+    </div> <!-- MAIN MAGAZINE AREA -->
+    <div id="mag-container">
+        <div class="side-overlay left" id="btn-prev-side" onclick="navPrev()">
+            <div class="side-arrow"><i class="fa-solid fa-chevron-left"></i></div>
+        </div>
+        <div class="side-overlay right" id="btn-next-side" onclick="navNext()">
+            <div class="side-arrow"><i class="fa-solid fa-chevron-right"></i></div>
+        </div>
+        <div id="btn-zoom-close" onclick="toggleZoom()" title="Đóng chế độ phóng to"> <i class="fa-solid fa-xmark"></i>
+        </div>
+        <div id="flipbook-wrapper">
+            <div id="flipbook" class="flip-book"></div>
+        </div>
+    </div> <!-- BOTTOM CONTROL BAR -->
+    <div class="bottom-bar"> <button class="nav-btn" id="nav-first" onclick="navFirst()" title="Trang đầu"> <i
+                class="fa-solid fa-backward-step"></i> </button> <button class="nav-btn" id="nav-prev"
+            onclick="navPrev()" title="Trang trước"> <i class="fa-solid fa-chevron-left"></i> </button>
+        <div class="page-badge" id="page-badge"> <span id="current-page">1</span> / <span id="total-pages">0</span>
+        </div>
+        <div class="slider-track"> <input type="range" id="page-slider" min="0" max="0" value="0"> </div> <button
+            class="nav-btn" id="nav-next" onclick="navNext()" title="Trang sau"> <i
+                class="fa-solid fa-chevron-right"></i> </button> <button class="nav-btn" id="nav-last"
+            onclick="navLast()" title="Trang cuối"> <i class="fa-solid fa-forward-step"></i> </button>
+    </div> <!-- WATERMARK BADGE -->
+    <div class="dev-badge"> <img
+            src="https://cdn.haitrieu.com/wp-content/uploads/2021/11/Logo-Doan-Thanh-NIen-Cong-San-Ho-Chi-Minh-1.png"
+            alt="Logo Đoàn">
+        <div class="dev-badge-text"> <span class="dev-badge-title">Sản phẩm bởi</span> <span class="dev-badge-name">Chi
+                Đoàn 21 phát triển và vận hành</span> </div>
+    </div> <!-- TOAST -->
+    <div class="toast" id="toast"></div> <!-- SCRIPTS -->
+    <script src="security.js?v=ULTRA_SHIELD_V10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=FIXED_V2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/page-flip@2.0.7/dist/js/page-flip.browser.js"></script>
+    <script>
+        // ===== STATE ===== 
+        let pageFlip = null;
+        let isZoomed = false;
+        let totalPages = 0;
+        let currentPageIdx = 0;
+        let currentData = null;
+        let currentImgs = [];
+        let currentId = null;
+        let tumbsOpen = false;
+
+        // ===== INIT ===== 
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (!id) return (window.location.href = 'index.html');
+            currentId = id;
+
+            try {
+                let data = null;
+                let imgs = [];
+
+                try {
+                    // Try to get from magazines collection first
+                    data = await pb.collection('magazines').getOne(id);
+                    imgs = data.pages || [];
+                    if (data.cover_image && (imgs.length === 0 || imgs[0] !== data.cover_image)) {
+                        imgs.unshift(data.cover_image);
+                    }
+                } catch (err) {
+                    // Fallback to articles collection
+                    data = await pb.collection('articles').getOne(id);
+                    if (!data) throw new Error('404');
+
+                    const tmp = document.createElement('div');
+                    tmp.innerHTML = data.content;
+                    imgs = Array.from(tmp.querySelectorAll('img')).map(i => i.src);
+
+                    // Fallback to item.image if no images in content
+                    if (data.image && !imgs.includes(data.image)) {
+                        imgs.unshift(data.image);
+                    }
+                }
+
+                currentData = data;
+                currentImgs = imgs;
+                document.title = data.title + ' — Bản Tin Điện Tử TDP21';
+                const titleEl = document.querySelector('.header-mag-title');
+                if (titleEl) titleEl.textContent = data.title;
+
+                if (!imgs.length) {
+                    hideLoader();
+                    return showToast('Không có trang ảnh nào trong bản tin này.');
+                }
+
+                buildFlipbook(data, imgs, id);
+
+                // --- ROBUST RESIZE HANDLER --- 
+                let resizeTimer;
+                window.addEventListener('resize', () => {
+                    document.body.classList.add('rebuilding');
+                    clearTimeout(resizeTimer);
+                    resizeTimer = setTimeout(() => {
+                        if (pageFlip && currentData) {
+                            const savedPage = currentPageIdx;
+                            isZoomed = false;
+                            const wrapper = document.getElementById('flipbook-wrapper');
+                            if (wrapper) {
+                                wrapper.style.transform = 'scale(1)';
+                                wrapper.innerHTML = '<div id="flipbook" class="flip-book"></div>';
+                            }
+                            document.getElementById('btn-zoom').classList.remove('active');
+                            if (pageFlip.destroy) {
+                                try {
+                                    pageFlip.destroy();
+                                } catch (e) {}
+                            }
+                            buildFlipbook(currentData, currentImgs, currentId);
+                            setTimeout(() => {
+                                if (pageFlip) {
+                                    try {
+                                        pageFlip.turnToPage(savedPage);
+                                        updateUI(savedPage);
+                                    } catch (e) {}
+                                }
+                                document.body.classList.remove('rebuilding');
+                            }, 400);
+                        } else {
+                            document.body.classList.remove('rebuilding');
+                        }
+                    }, 300);
+                });
+            } catch (e) {
+                console.error(e);
+                hideLoader();
+                showToast('⚠ Không thể tải bản tin. Vui lòng thử lại.');
+            }
+        });
+
+        // ===== BUILD FLIPBOOK ===== 
+        function buildFlipbook(data, imgs, id) {
+            if (!data || !imgs.length) return;
+            const isMobile = window.innerWidth <= 768;
+            const vh = window.innerHeight;
+            const vw = window.innerWidth;
+            const headerH = 56;
+            const bottomH = isMobile ? 80 : 100;
+            const availH = Math.max(200, vh - headerH - bottomH - 20);
+            const availW = Math.max(200, vw - (isMobile ? 20 : 80));
+            const pageRatio = 0.707;
+            let pageW, pageH;
+            if (isMobile) {
+                pageW = Math.min(availW, availH * pageRatio);
+                pageH = pageW / pageRatio;
+            } else {
+                const maxPageW = (availW / 2) - 20;
+                const maxPageH = availH - 40;
+                pageW = Math.min(maxPageW, maxPageH * pageRatio);
+                pageH = pageW / pageRatio;
+            }
+            pageW = Math.floor(pageW);
+            pageH = Math.floor(pageH);
+
+            let pagesHtml = '';
+            let tumbsHtml = (document.getElementById('tumb-list').innerHTML === '') ? '' : null;
+
+            const PB_URL = pb.baseUrl;
+
+            imgs.forEach((src, idx) => {
+                let fullSrc = src;
+                if (!src.startsWith('data:') && !src.startsWith('http') && !src.startsWith('/') && !src.startsWith('.')) {
+                    const col = data.collectionId || 'magazines';
+                    fullSrc = `${PB_URL}/api/files/${col}/${id}/${src}`;
+                }
+                const isHard = (idx === 0 || idx === imgs.length - 1) ? 'hard' : 'soft';
+                pagesHtml += `<div class="page" data-density="${isHard}"> <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#fff; overflow:hidden;"> <img src="${fullSrc}" alt="Trang ${idx + 1}" style="width:100%; height:100%; object-fit:contain; pointer-events:none;"> </div> </div>`;
+            });
+
+            if (tumbsHtml === '') {
+                let tHtml = '';
+                imgs.forEach((src, idx) => {
+                    let fullSrc = src;
+                    if (!src.startsWith('data:') && !src.startsWith('http') && !src.startsWith('/') && !src.startsWith('.')) {
+                        const col = data.collectionId || 'magazines';
+                        fullSrc = `${PB_URL}/api/files/${col}/${id}/${src}`;
+                    }
+                    tHtml += `<div class="tumb-item" id="tumb-${idx}" onclick="goToPage(${idx})"> <img class="tumb-img" src="${fullSrc}" alt="P${idx + 1}" loading="${idx < 8 ? 'eager' : 'lazy'}"> <div class="tumb-page-num">Trang ${idx + 1}</div> </div>`;
+                });
+                document.getElementById('tumb-list').innerHTML = tHtml;
+            }
+
+            const flipElement = document.getElementById('flipbook');
+            if (!flipElement) return;
+            flipElement.innerHTML = pagesHtml;
+
+            try {
+                pageFlip = new St.PageFlip(flipElement, {
+                    width: pageW,
+                    height: pageH,
+                    size: 'fixed',
+                    minWidth: 150,
+                    maxWidth: 1800,
+                    minHeight: 200,
+                    maxHeight: 2500,
+                    showCover: !isMobile,
+                    mobileScrollSupport: false,
+                    usePortrait: isMobile,
+                    flippingTime: 600,
+                    startPage: 0,
+                    autoSize: false,
+                    drawShadow: true,
+                    maxShadowOpacity: 0.2,
+                    clickEventForward: false,
+                    useMouseEvents: true,
+                    swipeDistance: 30,
+                    showPageCorners: true
+                });
+                pageFlip.loadFromHTML(document.querySelectorAll('.page'));
+                totalPages = pageFlip.getPageCount();
+                document.getElementById('total-pages').textContent = totalPages;
+                document.getElementById('page-slider').max = Math.max(0, totalPages - 1);
+                pageFlip.on('flip', (e) => updateUI(e.data));
+                flipElement.style.margin = '0 auto';
+                updateUI(pageFlip.getCurrentPageIndex() || 0);
+                if (document.getElementById('loader')) hideLoader();
+            } catch (err) {
+                console.error("Flipbook Force Re-Init Error:", err);
+                hideLoader();
+            }
+        }
+
+        // ===== UPDATE UI ===== 
+        function updateUI(idx) {
+            currentPageIdx = idx;
+            const badge = document.getElementById('page-badge');
+            document.getElementById('current-page').textContent = idx + 1;
+            document.getElementById('page-slider').value = idx;
+            badge.classList.remove('flip-anim');
+            void badge.offsetWidth;
+            badge.classList.add('flip-anim');
+            document.querySelectorAll('.tumb-item').forEach((el, i) => {
+                el.classList.toggle('active', i === idx);
+            });
+            const activeTumb = document.getElementById(`tumb-${idx}`);
+            if (activeTumb) {
+                activeTumb.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
+                });
+            }
+        }
+
+        // ===== NAVIGATION ===== 
+        function navPrev() {
+            if (pageFlip) pageFlip.flipPrev();
+        }
+
+        function navNext() {
+            if (pageFlip) pageFlip.flipNext();
+        }
+
+        function navFirst() {
+            if (pageFlip) pageFlip.turnToPage(0);
+        }
+
+        function navLast() {
+            if (pageFlip) pageFlip.turnToPage(totalPages - 1);
+        }
+
+        function goToPage(idx) {
+            if (pageFlip) {
+                pageFlip.turnToPage(idx);
+                if (tumbsOpen && window.innerWidth <= 768) toggleTumbs();
+            }
+        }
+        document.getElementById('page-slider').addEventListener('input', (e) => {
+            if (pageFlip) pageFlip.turnToPage(parseInt(e.target.value));
+        });
+        document.addEventListener('keydown', (e) => {
+            if (!pageFlip) return;
+            if (e.key === 'ArrowLeft' || e.key === 'PageUp') navPrev();
+            if (e.key === 'ArrowRight' || e.key === 'PageDown') navNext();
+            if (e.key === 'Home') navFirst();
+            if (e.key === 'End') navLast();
+            if (e.key === 'Escape' && tumbsOpen) toggleTumbs();
+        });
+
+        // ===== THUMBNAIL PANEL ===== 
+        function toggleTumbs() {
+            tumbsOpen = !tumbsOpen;
+            document.getElementById('tumb-panel').classList.toggle('open', tumbsOpen);
+            document.getElementById('btn-tumbs').classList.toggle('active', tumbsOpen);
+        }
+
+        // ===== ZOOM ===== 
+        function toggleZoom() {
+            isZoomed = !isZoomed;
+            const wrapper = document.getElementById('flipbook-wrapper');
+            if (isZoomed) {
+                document.body.classList.add('zoomed-mode');
+                wrapper.style.transform = 'scale(1.35)';
+                wrapper.style.zIndex = '900';
+            } else {
+                document.body.classList.remove('zoomed-mode');
+                wrapper.style.transform = 'scale(1)';
+                wrapper.style.zIndex = '10';
+            }
+            wrapper.style.transition = 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+            document.getElementById('btn-zoom').classList.toggle('active', isZoomed);
+            showToast(isZoomed ? '🔍 Chế độ tập trung' : '🔎 Thoát phóng to');
+        }
+
+        // ===== FULLSCREEN ===== 
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+                document.getElementById('btn-fs').innerHTML = '<i class="fa-solid fa-compress"></i>';
+            } else {
+                document.exitFullscreen();
+                document.getElementById('btn-fs').innerHTML = '<i class="fa-solid fa-expand"></i>';
+            }
+        }
+
+        // ===== LOADER ===== 
+        function hideLoader() {
+            const loader = document.getElementById('loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                loader.style.visibility = 'hidden';
+                setTimeout(() => loader.remove(), 600);
+            }
+        }
+
+        // ===== TOAST ===== 
+        function showToast(msg, duration = 2500) {
+            const t = document.getElementById('toast');
+            if (t) {
+                t.textContent = msg;
+                t.classList.add('show');
+                clearTimeout(t._timer);
+                t._timer = setTimeout(() => t.classList.remove('show'), duration);
+            }
+        }
+    </script><script src="pocketbase-adapter.js"></script>
+    <script src="shared-ui.js?v=V1.21"></script>
+    <script>
+        // Sync Branding
+        window.addEventListener('SharedUIReady', (e) => {
+            const config = e.detail;
+            const loaderImg = document.getElementById('loader-logo-img');
+            if (loaderImg) loaderImg.src = config.logo;
+        });
+    </script>
+</body>
+</html>

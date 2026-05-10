@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <script src="security.js?v=ULTRA_SHIELD_V10"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang cá nhân - Địa bàn dân cư số 21</title>
+    
+    <link rel="stylesheet" href="retro.css?v=V1.20">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <style>
+        .profile-container { display: grid; grid-template-columns: 280px 1fr; gap: 25px; }
+        .profile-sidebar { background: #f8fbfd; border: 1px solid var(--border-color); padding: 20px; text-align: center; height: fit-content; }
+        .profile-avatar-big { width: 150px; height: 150px; margin: 0 auto 20px; background: #fff; border: 4px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 60px; color: #cbd5e1; overflow: hidden; cursor: pointer; position: relative; }
+        .profile-avatar-big img { width: 100%; height: 100%; object-fit: cover; }
+        .avatar-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 20px; opacity: 0; transition: 0.2s; }
+        .profile-avatar-big:hover .avatar-overlay { opacity: 1; }
+        
+        .info-row { display: grid; grid-template-columns: 180px 1fr; padding: 12px 0; border-bottom: 1px dashed #eee; align-items: center; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-weight: 800; color: #475569; font-size: 11px; text-transform: uppercase; }
+        .info-value { color: var(--text-primary); font-weight: 700; font-size: 14px; }
+        .info-input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 4px; font-family: inherit; font-size: 14px; display: none; }
+        .info-input:focus { border-color: #1e3a8a; outline: none; box-shadow: 0 0 0 2px rgba(30,58,138,0.1); }
+
+        #loading-overlay { position: fixed; inset: 0; background: #f1f5f9; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10000; transition: 0.5s; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #cbd5e1; border-top-color: #1e3a8a; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .edit-mode .info-value { display: none; }
+        .edit-mode .info-input { display: block; }
+    </style>
+</head>
+<body>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <p style="margin-top: 15px; color: #1e3a8a; font-weight: 900; letter-spacing: 1px;">ĐANG TẢI HỒ SƠ...</p>
+    </div>
+
+    <!-- SHARED HEADER -->
+    <div id="shared-header"></div>
+
+    <div class="main-wrapper">
+        <div class="page-content">
+            <div class="profile-container" id="profile-area">
+                <!-- CỘT TRÁI -->
+                <div class="profile-sidebar">
+                    <div class="profile-avatar-big" id="avatar-container" onclick="document.getElementById('avatar-input').click()" title="Nhấn để đổi ảnh">
+                        <i class="fa-solid fa-user"></i>
+                        <div class="avatar-overlay"><i class="fa-solid fa-camera"></i></div>
+                    </div>
+                    <input type="file" id="avatar-input" style="display:none" accept="image/*">
+                    
+                    <h3 id="sidebar-name" style="margin-bottom: 5px; color: var(--text-primary); font-weight: 900;">---</h3>
+                    <div id="sidebar-role" style="font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase;">Cán bộ cơ sở</div>
+                    
+                    <div style="margin-top: 20px; display: inline-block; padding: 5px 15px; background: #dcfce7; color: #166534; border: 1px solid #166534; font-size: 10px; font-weight: 900; border-radius: 20px;">
+                        <i class="fa-solid fa-circle-check"></i> ĐANG HOẠT ĐỘNG
+                    </div>
+
+                    <div style="margin-top: 30px; text-align: left; background: #fff; padding: 15px; border: 1px solid #e2e8f0; border-radius: 4px;">
+                        <div style="font-size: 11px; font-weight: 900; color: #94a3b8; margin-bottom: 10px; text-transform: uppercase;">Giới thiệu bản thân</div>
+                        <div id="val-bio" style="font-size: 13px; color: #475569; font-style: italic; line-height: 1.5;">Chưa có thông tin giới thiệu.</div>
+                        <textarea id="input-bio" class="info-input" style="height: 100px; font-size: 12px; margin-top: 10px; resize: none;" placeholder="Viết vài dòng giới thiệu về bạn..."></textarea>
+                    </div>
+                </div>
+
+                <!-- CỘT PHẢI -->
+                <div class="profile-main">
+                    <fieldset class="retro-fieldset">
+                        <legend>THÔNG TIN ĐỊNH DANH</legend>
+                        <div class="info-row">
+                            <div class="info-label">Họ và tên:</div>
+                            <div class="info-value" id="val-name">---</div>
+                            <input type="text" class="info-input" id="input-name">
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Tên người dùng:</div>
+                            <div class="info-value" id="val-username">---</div>
+                            <input type="text" class="info-input" id="input-username">
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Địa chỉ Email:</div>
+                            <div class="info-value" id="val-email">---</div>
+                            <div class="info-input" style="color:#94a3b8; font-size:12px;">(Không thể thay đổi email tại đây)</div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="retro-fieldset" style="margin-top: 25px;">
+                        <legend>THÔNG TIN LIÊN HỆ & CÔNG TÁC</legend>
+                        <div class="info-row">
+                            <div class="info-label">Số điện thoại:</div>
+                            <div class="info-value" id="val-phone">---</div>
+                            <input type="text" class="info-input" id="input-phone" placeholder="Ví dụ: 0912.xxx.xxx">
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Chức vụ:</div>
+                            <div class="info-value" id="val-position">---</div>
+                            <input type="text" class="info-input" id="input-position" placeholder="Ví dụ: Bí thư chi bộ">
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Cơ quan:</div>
+                            <div class="info-value" id="val-org">---</div>
+                            <input type="text" class="info-input" id="input-org" placeholder="Ví dụ: Phường Ba Đình">
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Địa chỉ cư trú:</div>
+                            <div class="info-value" id="val-address">---</div>
+                            <input type="text" class="info-input" id="input-address" placeholder="Địa chỉ thường trú/tạm trú">
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Ngày sinh:</div>
+                            <div class="info-value" id="val-dob">---</div>
+                            <input type="date" class="info-input" id="input-dob">
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="retro-fieldset" style="margin-top: 25px;">
+                        <legend>THÔNG TIN HỆ THỐNG</legend>
+                        <div class="info-row">
+                            <div class="info-label">Ngày tham gia:</div>
+                            <div class="info-value" id="val-created">---</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Mã định danh (ID):</div>
+                            <div class="info-value" id="val-id" style="font-family: monospace;">---</div>
+                        </div>
+                    </fieldset>
+
+                    <div style="margin-top: 25px; display: flex; gap: 10px; justify-content: flex-end; position: sticky; bottom: 20px; background: rgba(255,255,255,0.9); padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; backdrop-filter: blur(5px);">
+                        <button id="btn-edit" class="btn-retro primary" onclick="toggleEdit(true)">
+                            <i class="fa-solid fa-user-pen"></i> CHỈNH SỬA HỒ SƠ
+                        </button>
+                        <button id="btn-save" class="btn-retro primary" style="display:none; background:#166534;" onclick="saveProfile()">
+                            <i class="fa-solid fa-check"></i> LƯU THAY ĐỔI
+                        </button>
+                        <button id="btn-cancel" class="btn-retro" style="display:none;" onclick="toggleEdit(false)">
+                            HỦY
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SHARED FOOTER -->
+    <div id="shared-footer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=V1.30"></script>
+    <script src="shared-ui.js?v=V1.30"></script>
+    
+    <script>
+        let isEditMode = false;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            if (!pb.authStore.isValid) {
+                window.location.href = 'dang-nhap.html';
+                return;
+            }
+            loadUserData();
+            
+            document.getElementById('avatar-input').onchange = e => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = f => {
+                        document.getElementById('avatar-container').innerHTML = `<img src="${f.target.result}">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            };
+        });
+
+        function loadUserData() {
+            const user = pb.authStore.model;
+            const isAdmin = !user.collectionName; // Admins don't have collectionName
+            
+            if (isAdmin) {
+                const warnBox = document.createElement('div');
+                warnBox.style.cssText = "background: #fffbeb; border: 1px solid #f59e0b; padding: 15px; margin-bottom: 20px; color: #b45309; font-size: 13px; border-radius: 4px;";
+                warnBox.innerHTML = `
+                    <i class="fa-solid fa-triangle-exclamation"></i> 
+                    <b>Lưu ý:</b> Bạn đang đăng nhập bằng tài khoản <b>Quản trị viên (Admin)</b>. 
+                    Tài khoản Admin chỉ dùng để cấu hình hệ thống và không hỗ trợ các trường thông tin mở rộng.
+                    <br><br>Để cập nhật đầy đủ hồ sơ, vui lòng sử dụng tài khoản <b>Cán bộ</b>.
+                `;
+                document.querySelector('.profile-main').prepend(warnBox);
+                document.getElementById('btn-edit').style.display = 'none';
+                document.getElementById('sidebar-role').innerText = 'Quản trị viên hệ thống';
+                document.getElementById('sidebar-role').style.color = '#b45309';
+            }
+
+            const name = user.name || user.username || (isAdmin ? 'Quản trị viên' : 'CÁN BỘ');
+            document.getElementById('sidebar-name').innerText = name.toUpperCase();
+            
+            // Populate fields
+            document.getElementById('val-name').innerText = user.name || 'Chưa cập nhật';
+            document.getElementById('input-name').value = user.name || '';
+            document.getElementById('val-username').innerText = user.username || (isAdmin ? 'admin' : user.id);
+            document.getElementById('input-username').value = user.username || '';
+            document.getElementById('val-email').innerText = user.email;
+            document.getElementById('val-id').innerText = user.id;
+
+            document.getElementById('val-phone').innerText = user.phone || (isAdmin ? 'N/A' : 'Chưa cập nhật');
+            document.getElementById('input-phone').value = user.phone || '';
+            document.getElementById('val-position').innerText = user.position || (isAdmin ? 'Hệ thống' : 'Chưa cập nhật');
+            document.getElementById('input-position').value = user.position || '';
+            document.getElementById('val-org').innerText = user.org || (isAdmin ? 'TDP21' : 'Chưa cập nhật');
+            document.getElementById('input-org').value = user.org || '';
+            document.getElementById('val-address').innerText = user.address || 'Chưa cập nhật';
+            document.getElementById('input-address').value = user.address || '';
+            document.getElementById('val-dob').innerText = user.dob ? new Date(user.dob).toLocaleDateString('vi-VN') : 'Chưa cập nhật';
+            document.getElementById('input-dob').value = user.dob ? user.dob.split(' ')[0] : '';
+            document.getElementById('val-bio').innerText = user.bio || 'Chưa có thông tin giới thiệu.';
+            document.getElementById('input-bio').value = user.bio || '';
+            
+            if (user.avatar) {
+                const url = pb.getFileUrlCustom(user, user.avatar);
+                document.getElementById('avatar-container').innerHTML = `<img src="${url}">`;
+            } else if (user.avatar_url) {
+                document.getElementById('avatar-container').innerHTML = `<img src="${user.avatar_url}">`;
+            }
+            document.getElementById('val-created').innerText = new Date(user.created).toLocaleDateString('vi-VN');
+
+            setTimeout(() => {
+                const overlay = document.getElementById('loading-overlay');
+                if (overlay) { overlay.style.opacity = '0'; setTimeout(() => overlay.style.display = 'none', 500); }
+            }, 300);
+        }
+
+        function toggleEdit(mode) {
+            if (!pb.authStore.model.collectionName) {
+                alert("Tài khoản Quản trị viên không thể chỉnh sửa thông tin hồ sơ mở rộng.");
+                return;
+            }
+            isEditMode = mode;
+            const container = document.getElementById('profile-area');
+            if (mode) container.classList.add('edit-mode');
+            else container.classList.remove('edit-mode');
+
+            document.getElementById('btn-edit').style.display = mode ? 'none' : 'block';
+            document.getElementById('btn-save').style.display = mode ? 'block' : 'none';
+            document.getElementById('btn-cancel').style.display = mode ? 'block' : 'none';
+        }
+
+        async function saveProfile() {
+            const user = pb.authStore.model;
+            if (!user.collectionName) return;
+
+            const overlay = document.getElementById('loading-overlay');
+            overlay.style.display = 'flex'; overlay.style.opacity = '1';
+            
+            try {
+                const formData = new FormData();
+                formData.append('name', document.getElementById('input-name').value);
+                formData.append('username', document.getElementById('input-username').value);
+                formData.append('phone', document.getElementById('input-phone').value);
+                formData.append('position', document.getElementById('input-position').value);
+                formData.append('org', document.getElementById('input-org').value);
+                formData.append('address', document.getElementById('input-address').value);
+                
+                const dobVal = document.getElementById('input-dob').value;
+                if (dobVal) formData.append('dob', dobVal);
+                
+                formData.append('bio', document.getElementById('input-bio').value);
+                
+                const avatarFile = document.getElementById('avatar-input').files[0];
+                if (avatarFile) formData.append('avatar', avatarFile);
+
+                const updatedUser = await pb.collection(user.collectionName).update(user.id, formData);
+                pb.authStore.save(pb.authStore.token, updatedUser);
+                
+                alert("Đã lưu thay đổi hồ sơ thành công!");
+                location.reload();
+            } catch (e) {
+                console.error(e);
+                let msg = e.message;
+                if (e.data && e.data.data) {
+                    msg += "\nChi tiết:";
+                    for (const [k, v] of Object.entries(e.data.data)) {
+                        msg += `\n- ${k}: ${v.message || v}`;
+                    }
+                }
+                alert("Lỗi: " + msg);
+                overlay.style.display = 'none';
+            }
+        }
+
+        function logout() {
+            if (confirm("Xác nhận đăng xuất?")) { pb.authStore.clear(); window.location.href = "dang-nhap.html"; }
+        }
+    </script>
+</body>
+</html>

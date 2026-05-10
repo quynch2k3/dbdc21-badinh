@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <script src="security.js?v=ULTRA_SHIELD_V10"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sơ yếu lý lịch - Địa Bàn Dân Cư Số 21</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gov-blue: #003087;
+            --gov-red: #da251d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background: #f1f5f9;
+            color: #000;
+            line-height: 1.5;
+            padding: 40px 0;
+        }
+
+        .dossier-paper {
+            background: #fff;
+            width: 210mm;
+            /* Cun A4 */
+            min-height: 297mm;
+            margin: 0 auto;
+            padding: 25mm 20mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            display: none; /* PREVENT FLICKER */
+        }
+
+        /* HEADER */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header .national {
+            font-weight: bold;
+            font-size: 13pt;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .header .slogan {
+            font-weight: bold;
+            font-size: 14pt;
+            margin-top: 5px;
+        }
+
+        .header .slogan::after {
+            content: "";
+            display: block;
+            width: 160px;
+            height: 1.5px;
+            background: #000;
+            margin: 8px auto 0;
+        }
+
+        .header .org-name {
+            font-size: 12pt;
+            margin-top: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .form-title {
+            text-align: center;
+            font-size: 20pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 40px 0 50px;
+        }
+
+        /* MAIN CONTENT */
+        .profile-section {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 30px;
+        }
+
+        .avatar-area {
+            width: 4cm;
+            text-align: center;
+        }
+
+        .avatar-box {
+            width: 4cm;
+            height: 6cm;
+            border: 1px solid #000;
+            background: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .avatar-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .info-area {
+            flex: 1;
+        }
+
+        .info-line {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: baseline;
+        }
+
+        .label {
+            font-weight: bold;
+            white-space: nowrap;
+            margin-right: 8px;
+        }
+
+        .val {
+            flex: 1;
+            border-bottom: 1px dotted #666;
+            min-height: 1.2em;
+            padding-bottom: 2px;
+        }
+
+        .section-h {
+            font-weight: bold;
+            font-size: 13pt;
+            text-transform: uppercase;
+            margin: 30px 0 15px;
+            display: block;
+            border-bottom: none;
+        }
+
+        /* TABLE STYLES - TRADITIONAL PRINT STYLE */
+        .gov-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .gov-table td {
+            border: none;
+            padding: 8px 0;
+            vertical-align: top;
+            font-size: 12pt;
+        }
+
+        .gov-table .cell-wrap {
+            display: flex;
+            align-items: baseline;
+        }
+
+        /* WORK HISTORY TABLE - KEPT WITH BORDERS AS PER NORM */
+        .work-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .work-table th,
+        .work-table td {
+            border: 1px solid #000;
+            padding: 10px;
+            text-align: left;
+        }
+
+        .work-table th {
+            text-align: center;
+            font-weight: bold;
+            background: #f9f9f9;
+        }
+
+        .footer {
+            margin-top: 60px;
+            display: grid;
+            grid-template-columns: 1fr 1.3fr;
+            text-align: center;
+        }
+
+        .footer-date {
+            font-style: italic;
+            margin-bottom: 5px;
+        }
+
+        .footer-sign {
+            font-weight: bold;
+        }
+
+        /* BOXES FOR LARGE TEXT AREAS - ADMINISTRATIVE STYLE (NO BORDERS) */
+        .text-area-formal {
+            text-align: justify;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            padding: 10px 15px;
+            background: #fff;
+            font-size: 12pt;
+            border-left: 2px solid #eee;
+            white-space: pre-line;
+        }
+
+        .bio-sub {
+            font-weight: bold;
+            font-size: 12pt;
+            margin-bottom: 8px;
+            display: block;
+            text-decoration: underline;
+        }
+
+        /* TRADITIONAL TABLE STYLES */
+        .work-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            border: 1px solid #000;
+        }
+
+        .work-table th,
+        .work-table td {
+            border: 1px solid #000;
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 12pt;
+            vertical-align: top;
+        }
+
+        .work-table th {
+            text-align: center;
+            font-weight: bold;
+            background: #f8fafc;
+            text-transform: uppercase;
+            font-size: 11pt;
+        }
+
+        .text-area-formal {
+            text-align: justify;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            padding: 10px 0;
+            background: #fff;
+            font-size: 12pt;
+            white-space: pre-line;
+            border-bottom: 1px dotted #ccc;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+                padding: 0;
+            }
+
+            .dossier-paper {
+                box-shadow: none;
+                margin: 0;
+                border: none;
+                width: 100%;
+                padding: 15mm 10mm;
+            }
+
+            .no-print {
+                display: none;
+            }
+        }
+
+        .no-print-bar {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 500;
+        }
+
+        .btn-p {
+            padding: 12px 25px;
+            background: #000;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-family: sans-serif;
+        }
+
+        .btn-p:hover {
+            background: #333;
+        }
+
+        .scan-log {
+            height: 120px;
+            overflow: hidden;
+            font-size: 11px;
+            color: #0b0;
+            line-height: 1.8;
+        }
+
+        /* SILENT OVERLAY - ONLY SHOW ON BLOCK */
+        #blocking-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: #da251d;
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="blocking-overlay">
+        <div> <i class="fa-solid fa-shield-slash" style="font-size:80px; margin-bottom:20px"></i>
+            <h1 style="font-size:24px; margin-bottom:15px">TRUY CẬP BỊ CHẶN</h1>
+            <p id="blocking-reason" style="color:#64748b; margin-bottom:30px; font-size:16px"></p>
+            <p style="font-size:14px">Hệ thống phát hiện thiết bị không an toàn hoặc đang dùng trình duyệt ẩn danh/VPN.</p> <button
+                onclick="window.close()"
+                style="margin-top:30px; padding:12px 30px; background:#da251d; color:#fff; border:none; cursor:pointer; font-weight:bold">QUAY
+                LẠI</button>
+        </div>
+    </div> <!-- PASSCODE CHALLENGE -->
+    <div id="passcode-overlay"
+        style="position:fixed; inset:0; background:#f8fafc; z-index:9998; display:none; align-items:center; justify-content:center; flex-direction:column; font-family:sans-serif;">
+        <div
+            style="background:#fff; padding:40px; border:1px solid #e2e8f0; width:400px; text-align:center; box-shadow:0 10px 25px rgba(0,0,0,0.05)">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczPU69TVpCvfr9Sc8Q-xfiPOKQkYoKffYiJ0rHZNcrP699bqiWJWNpR1MD7_Byewp7lIKZY_0epoQXz-k9PNj3sdk7fRgNSVwfT2tkVurGGgVYrpYSk7IYsiyksyBKqUBPJTTZbHG8tf7fgbES8MYm6m5g=w848-h859-s-no-gm?authuser=0"
+                style="width:60px; margin-bottom:20px">
+            <h2 style="font-size:18px; color:#0f172a; margin-bottom:10px">XÁC MINH QUYỀN TRUY CẬP</h2>
+            <p style="font-size:13px; color:#64748b; margin-bottom:25px">Vui lòng nhập 4 số cuối của CCCD để mở hồ sơ điện tử.</p>
+            <input type="password" id="access-pin" maxlength="4"
+                style="width:100%; padding:15px; text-align:center; font-size:24px; letter-spacing:10px; border:2px solid #e2e8f0; margin-bottom:20px; outline:none">
+            <button id="btn-verify"
+                style="width:100%; padding:15px; background:#003087; color:#fff; border:none; cursor:pointer; font-weight:bold; letter-spacing:1px">MỞ
+                HỒ SƠ</button>
+            <div id="pin-error" style="color:#da251d; font-size:12px; margin-top:15px; display:none">Mã xác minh không chính xác.</div>
+        </div>
+    </div>
+    <div class="no-print-bar no-print"> <button class="btn-p" onclick="window.print()"><i class="fa-solid fa-print"></i>
+            IN LÝ LỊCH</button> <button class="btn-p" style="background:#64748b"
+            onclick="handleCloseDossier()">ĐÓNG</button> </div>
+    <div class="dossier-paper" id="d-content">
+        <div class="header">
+            <div class="national">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+            <div class="slogan">Độc lập - Tự do - Hạnh phúc</div>
+            <div class="org-name">Địa bàn dân cư số 21 - Phường Ba Đình - Thành phố Hà Nội</div>
+        </div>
+        <h1 class="form-title">SƠ YẾU LÝ LỊCH THÀNH VIÊN</h1>
+        <div class="profile-section">
+            <div class="avatar-area">
+                <div class="avatar-box"> <img id="d-avatar" src="" alt="Avatar"> </div>
+                <div style="margin-top:10px; font-size:10pt; font-weight:bold">nh 4x6</div>
+            </div>
+            <div class="info-area">
+                <div class="info-line"><span class="label">1. H v tn:</span> <span class="val"
+                        style="text-transform:uppercase; font-size:16pt; font-weight:bold;" id="d-name">---</span></div>
+                <div class="info-line"><span class="label">2. Tn gi khc:</span> <span class="val"
+                        id="d-alias">---</span></div>
+                <div class="info-line"><span class="label">3. Ngy sinh:</span> <span class="val" id="d-dob">---</span>
+                </div>
+                <div class="info-line"><span class="label">4. Gii tnh:</span> <span class="val" id="d-gender">---</span>
+                </div>
+                <div class="info-line"><span class="label">5. Qu qun:</span> <span class="val"
+                        id="d-hometown">---</span></div>
+                <div class="info-line"><span class="label">6. Noi hin nay:</span> <span class="val"
+                        id="d-address">---</span></div>
+                <div class="info-line"><span class="label">7. S CCCD:</span> <span class="val" id="d-id-num">---</span>
+                </div>
+                <div class="info-line"> <span class="label">8. Ngy cp:</span> <span class="val" id="d-id-date"
+                        style="flex:0.6">---</span> <span class="label" style="margin-left:20px">9. Noi cp:</span> <span
+                        class="val" id="d-id-place">---</span> </div>
+            </div>
+        </div>
+        <div class="section-h">I. TRNH D V QU TRNH CHNH TR</div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 0 40px">
+            <div class="info-line"><span class="label">1. Do to cuyn mn:</span> <span class="val" id="d-edu">---</span>
+            </div>
+            <div class="info-line"><span class="label">2. Ngy vo Don:</span> <span class="val" id="d-doan">---</span>
+            </div>
+            <div class="info-line"><span class="label">3. L lun cuẩnh tr:</span> <span class="val"
+                    id="d-political">---</span></div>
+            <div class="info-line"><span class="label">4. Ngy vo Dng:</span> <span class="val" id="d-dang">---</span>
+            </div>
+            <div class="info-line"><span class="label">5. Ngoi ng:</span> <span class="val" id="d-lang">---</span>
+            </div>
+            <div class="info-line"><span class="label">6. Ngui giời thiu:</span> <span class="val"
+                    id="d-introducer">---</span></div>
+            <div class="info-line"><span class="label">7. Tin hc:</span> <span class="val" id="d-it">---</span></div>
+            <div class="info-line"><span class="label">8. T chc/Don v:</span> <span class="val" id="d-org">---</span>
+            </div>
+            <div class="info-line"><span class="label">9. Chc v hin ti:</span> <span class="val" id="d-pos">---</span>
+            </div>
+        </div>
+        <div class="section-h">II. QU TRNH CNG TC</div>
+        <table class="work-table">
+            <thead>
+                <tr>
+                    <th style="width:180px">T thng, nam dn thng, nam</th>
+                    <th>Chc danh, chc v, don v cng tc (dng, cuẩnh quyn, don th)</th>
+                </tr>
+            </thead>
+            <tbody id="d-work-table-body"> <!-- Data will be injected here --> </tbody>
+        </table>
+        <div class="section-h">III. THNG TIN GIA DNH & DA PHUONG</div>
+        <div class="info-line"><span class="label">- Loi tr qun:</span> <span class="val" id="d-res-type">---</span>
+        </div>
+        <div class="info-line"><span class="label">- H tn ch h:</span> <span class="val" id="d-owner">---</span> </div>
+        <div class="info-line"><span class="label">- Quan h vi ch h:</span> <span class="val"
+                id="d-owner-rel">---</span></div>
+        <div class="info-line"><span class="label">- Din thoi lin lc:</span> <span class="val" id="d-phone">---</span>
+        </div>
+        <div class="section-h">IV. KHEN THUNG & K LUT</div>
+        <div class="text-area-formal" style="background:#fdfcf0; border:1px solid #f1e4b8">
+            <div id="d-awards">---</div>
+        </div>
+        <div class="section-h">V. TM TT TIU S & QU TRNH BN THN</div>
+        <div style="margin-bottom:15px; font-weight:bold">1. Qu trnh hot dng, cng tc ca bn thn:</div>
+        <table class="work-table" style="margin-bottom:25px">
+            <thead>
+                <tr>
+                    <th style="width:180px">Thi gian</th>
+                    <th>Ni dung hot dng, cng tc</th>
+                </tr>
+            </thead>
+            <tbody id="d-bio-self-table-body"> <!-- Data will be injected here --> </tbody>
+        </table>
+        <div style="margin-bottom:15px; font-weight:bold">2. Tnh hnh kinh t, cuẩnh tr ca gia dnh:</div>
+        <table class="work-table">
+            <tr>
+                <td id="d-bio-family" style="padding:15px; line-height:1.8; text-align:justify; white-space:pre-line">
+                    ---</td>
+            </tr>
+        </table>
+        <div class="section-h">VI. DC DIM BN THN & SC KHE</div>
+        <div class="info-line"><span class="label">1. Tnh trng sc khe:</span> <span class="val" id="d-health">---</span>
+        </div>
+        <div class="info-line"><span class="label">2. Nhm mu:</span> <span class="val" id="d-blood">---</span></div>
+        <div class="footer">
+            <div style="padding-top:20px">
+                <div class="footer-sign">NGUI KHAI L LCH</div>
+                <div style="margin-top:20px; font-style:italic; font-size:10pt">(K v ghi r h tn)</div>
+                <div style="margin-top:80px; font-weight:bold; font-size:13pt" id="d-footer-name">---</div>
+            </div>
+            <div>
+                <div class="footer-date" id="d-current-date">H Ni, ngy .... thng .... nam 20...</div>
+                <div class="footer-sign">XC NHN CA BAN QUN TR DBDC S 21</div>
+                <div style="margin-top:20px; font-style:italic; font-size:10pt">(K tn v dng du)</div>
+                <div style="margin-top:60px; font-weight:bold; color:red">
+                    <div
+                        style="border:3px double red; display:inline-block; padding:15px; transform:rotate(-5deg); font-family: 'Be Vietnam Pro', sans-serif; font-weight: 900; background: rgba(255,0,0,0.05); letter-spacing: 1px;">
+                        H THNG D XC THC </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pocketbase/0.21.1/pocketbase.umd.min.js"></script>
+    <script src="pocketbase-adapter.js?v=FIXED_V2"></script>
+    <script src="security-scanner.js?v=V2.0"></script>
+    <script> const params = new URLSearchParams(window.location.search); let secureId = params.get('v'); // URL MASKING: Che giấu mã định danh trên thanh địa chỉ để chống copy/share function maskSecureUrl() { if (window.history.replaceState && params.has('v')) { const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + "session=SECURE_VERIFIED_" + Math.random().toString(36).substring(7).toUpperCase(); window.history.replaceState({ path: newUrl }, '', newUrl); } } window.handleCloseDossier = function() { if (window.opener) { window.close(); } else { window.location.href = 'tra-cuu.html'; } }; document.addEventListener("DOMContentLoaded", async () => { const isAdminView = localStorage.getItem('pb_admin_token') !== null; // Update UI: Add Share button for admins if (isAdminView) { const header = document.querySelector('.no-print-bar'); if (header) { const btn = document.createElement('button'); btn.className = 'btn-p'; btn.style.marginLeft = '10px'; btn.style.background = '#003087'; btn.innerHTML = '<i class="fa-solid fa-share-nodes"></i> CHIA SẺ'; btn.onclick = () => { const url = window.location.href; navigator.clipboard.writeText(url).then(() => alert("LINK HÀNH CHÍNH ĐÃ ĐƯỢC SAO CHÉP.\nLink này yêu cầu thiết bị người xem phải an toàn.")); }; header.appendChild(btn); } } // Security Scan Logic (Invisible Background) const runScan = async () => { const result = await window.SecurityScanner.runFullScan(); if (isAdminView) { loadDossier(true); // Bypass PIN for admin return; } if (result.score >= 50) { let reason = "Môi trường truy cập không an toàn."; if (result.isIncognito) reason = "Phát hiện trình duyệt ẩn danh."; if (result.isVpnProxy) reason = "Phát hiện mạng ảo/VPN/Proxy (Latency issue)."; if (result.isAutomated) reason = "Phát hiện tác nhân tự động."; document.getElementById('blocking-reason').innerText = reason; document.getElementById('blocking-overlay').style.display = 'flex'; } else { // Safe environment -> Ask for Passcode loadDossier(false); } }; runScan(); async function loadDossier(isAuthorized) { // Initial visibility hide document.getElementById('d-content').style.display = 'none'; if (!secureId) { alert("TRUY CẬP BỊ TỪ CHỐI: Thiếu mã định danh an toàn."); window.close(); return; } const id = pb.parseSecureId(secureId); if (!id) { alert("LỖI AN NINH: Mã định danh không hợp lệ hoặc đã hết hạn."); window.close(); return; } try { const raw = await pb.collection('members').getOne(id); if (!raw) throw new Error("Hồ sơ không tồn tại"); const m = pb.normalizeMember(raw); if (!isAuthorized) { // User needs to provide custom PIN const overlay = document.getElementById('passcode-overlay'); const input = document.getElementById('access-pin'); const btn = document.getElementById('btn-verify'); const err = document.getElementById('pin-error'); // Change text to be generic overlay.querySelector('p').innerText = "Vui lòng nhập mã xác minh để mở hồ sơ điện tử."; overlay.style.display = 'flex'; let attempts = 0; btn.onclick = () => { const pin = input.value; const realPin = m.share_pin || (m.id_number || "").slice(-4); if (pin === realPin) { overlay.style.display = 'none'; renderData(m); } else { attempts++; input.style.borderColor = 'var(--tdp-red)'; input.style.background = '#fff1f0'; input.value = ''; input.focus(); err.style.display = 'block'; err.innerHTML = ` <div style="background:#fff1f0; border:1px solid #ff4d4f; padding:15px; margin-top:15px; text-align:left; font-family:'Roboto', sans-serif;"> <div style="color:#cf1322; font-weight:900; font-size:13px; margin-bottom:6px; text-transform:uppercase;"> <i class="fa-solid fa-circle-exclamation"></i> THÔNG BÁO: PHƯƠNG THỨC ĐỊNH DANH KHÔNG KHỚP </div> <div style="color:#3f3f3f; font-size:14px; line-height:1.5;"> Hệ thống phát hiện mã xác minh không trùng khớp với cơ sở dữ liệu (Lần ${attempts}). Vui lòng liên hệ quản trị viên cơ sở dữ liệu để được cấp quyền mở hồ sơ điện tử này. </div> </div> `; } }; } else { renderData(m); } } catch (e) { console.error(e); alert("Lỗi tải dữ liệu!"); } } function renderData(m) { try { document.getElementById('d-avatar').src = m.avatar || 'https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-High-Quality-Image.png'; document.getElementById('d-name').innerText = m.name || '---'; document.getElementById('d-alias').innerText = m.alias || 'Không'; document.getElementById('d-dob').innerText = formatDate(m.dob); document.getElementById('d-gender').innerText = m.gender || '---'; document.getElementById('d-hometown').innerText = m.hometown || '---'; document.getElementById('d-address').innerText = m.address || '---'; document.getElementById('d-id-num').innerText = m.id_number || '---'; document.getElementById('d-id-date').innerText = formatDate(m.id_date); document.getElementById('d-id-place').innerText = m.id_place || '---'; document.getElementById('d-edu').innerText = m.academic_level || '---'; document.getElementById('d-doan').innerText = formatDate(m.join_date); document.getElementById('d-political').innerText = m.political_level || '---'; document.getElementById('d-dang').innerText = formatDate(m.party_join_date_official); document.getElementById('d-lang').innerText = m.foreign_language || '---'; document.getElementById('d-introducer').innerText = m.party_introducer || '---'; document.getElementById('d-it').innerText = m.it_level || '---'; document.getElementById('d-org').innerText = formatOrgName(m.organization || '---'); document.getElementById('d-pos').innerText = m.position || '---'; document.getElementById('d-owner-rel').innerText = m.house_owner_relation || '---'; document.getElementById('d-phone').innerText = m.phone || '---'; document.getElementById('d-res-type').innerText = m.residence_type || '---'; document.getElementById('d-owner').innerText = m.house_owner_name || '---'; // Narratives document.getElementById('d-awards').innerText = (m.awards || '') + (m.disciplinary ? '\nKỷ luật: ' + m.disciplinary : '') || '---'; document.getElementById('d-bio-family').innerText = m.biography_family || '---'; document.getElementById('d-health').innerText = m.health_status || '---'; document.getElementById('d-blood').innerText = m.blood_type || '---'; document.getElementById('d-footer-name').innerText = (m.name || '').toUpperCase() || '---'; // Render Work History Table (Section II) const workBody = document.getElementById('d-work-table-body'); workBody.innerHTML = ''; try { const history = JSON.parse(m.work_history_json || '[]'); if (history.length > 0) { history.forEach(item => { const start = item.from || item.start || ''; const end = item.to || item.end || ''; const txt = item.text || item.content || ''; workBody.innerHTML += ` <tr> <td style="text-align:center">${start} - ${end}</td> <td>${txt}</td> </tr> `; }); } else { workBody.innerHTML = '<tr><td colspan="2" style="text-align:center; font-style:italic">Chưa có dữ liệu</td></tr>'; } } catch(e) { workBody.innerHTML = '<tr><td colspan="2" style="text-align:center; color:red">Lỗi xử lý bảng công tác</td></tr>'; } // Render Biography Table (Section V.1) via Smart Parsing into Table Rows const bioBody = document.getElementById('d-bio-self-table-body'); const bioText = m.biography_self || ''; if (!bioText || bioText === '---') { bioBody.innerHTML = '<tr><td colspan="2" style="text-align:center; font-style:italic">Chưa có thông tin</td></tr>'; } else { const lines = bioText.split(/\n+/).filter(l => l.trim().length > 0); let bioHtml = ''; lines.forEach(line => { // Detect "Date: Content" or "Date - Date: Content" const dateMatch = line.match(/^([^:-]{3,25})[:|-](.*)/); if (dateMatch) { bioHtml += ` <tr> <td style="text-align:center; font-weight:bold">${dateMatch[1].trim()}</td> <td>${dateMatch[2].trim()}</td> </tr> `; } else { bioHtml += ` <tr> <td style="text-align:center; color:#999">-</td> <td>${line.trim()}</td> </tr> `; } }); bioBody.innerHTML = bioHtml; } document.getElementById('d-bio-family').innerText = m.biography_family || '---'; // Current date const now = new Date(); document.getElementById('d-current-date').innerText = `Hà Nội, ngày ${now.getDate()} tháng ${now.getMonth() + 1} năm ${now.getFullYear()}`; document.getElementById('d-content').style.display = 'block'; // Thực hiện che giấu URL sau khi dữ liệu đã nạp xong maskSecureUrl(); } catch (e) { console.error("Render error", e); } } }); function formatOrgName(code) { const orgs = { 'MT': 'Ban công tác Mặt trận Địa bàn dân cư số 21', 'PHU_NU': 'Chi hội Phụ nữ số 21, Phường Ba Đình', 'CCB': 'Chi hội Cựu chiến binh số 21, Phường Ba Đình', 'TN': 'Chi đoàn Thanh niên số 21, Phường Ba Đình', 'DOAN_TN': 'Chi đoàn Thanh niên số 21, Phường Ba Đình', 'NCT': 'Chi hội Người cao tuổi số 21, Phường Ba Đình', 'CB': 'Chi bộ Đảng số 21, Đảng bộ Phường Ba Đình', 'KH': 'Ban Khuyến học Địa bàn dân cư số 21' }; return orgs[code] || code; } function formatDate(str) { if (!str) return '---'; try { const d = new Date(str); if (isNaN(d)) return str; const day = String(d.getDate()).padStart(2, '0'); const month = String(d.getMonth() + 1).padStart(2, '0'); const year = d.getFullYear(); return `${day}/${month}/${year}`; } catch (e) { return str; } } </script>
+</body>
+
+</html>
