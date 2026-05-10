@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v5"
+	"github.com/labstack/echo/v5/middleware"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
@@ -44,32 +45,18 @@ func main() {
 	// 1. BẮT SỰ KIỆN TRƯỚC KHI KHỞI ĐỘNG SERVER
 	app.OnBeforeServe().Add(func(e *core.ServeEvent) error {
 
-		// === SIÊU ĐÁNH CHẶN CORS (PRE-MIDDLEWARE) ===
-		e.Router.Pre(func(next echo.HandlerFunc) echo.HandlerFunc {
+		// 1. CẤU HÌNH CORS CHUẨN (Official Echo Middleware)
+		e.Router.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+			AllowOrigins: []string{"*"},
+			AllowMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "HEAD"},
+			AllowHeaders: []string{"*"},
+			MaxAge:       86400,
+		}))
+
+		// 2. MIDDLEWARE ĐÓNG DẤU NGROK BYPASS CHO MỌI PHẢN HỒI
+		e.Router.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
 			return func(c echo.Context) error {
-				req := c.Request()
-				res := c.Response()
-				
-				origin := req.Header.Get("Origin")
-				if origin == "" { origin = "*" }
-
-				// Thiết lập Header ngay lập tức cho TẤT CẢ phản hồi
-				res.Header().Set("Access-Control-Allow-Origin", origin)
-				res.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD")
-				res.Header().Set("Access-Control-Allow-Headers", "*")
-				res.Header().Set("Access-Control-Allow-Credentials", "true")
-				res.Header().Set("Access-Control-Max-Age", "86400")
-				res.Header().Set("Vary", "Origin")
-
-				// Xử lý lệnh OPTIONS (Preflight)
-				if req.Method == "OPTIONS" {
-					res.Header().Set("Access-Control-Allow-Origin", origin)
-					res.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD")
-					res.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-PocketBase-Auth, ngrok-skip-browser-warning")
-					res.Header().Set("Access-Control-Max-Age", "86400")
-					return c.NoContent(204)
-				}
-
+				c.Response().Header().Set("ngrok-skip-browser-warning", "true")
 				return next(c)
 			}
 		})
