@@ -32,21 +32,32 @@ self.addEventListener('fetch', (e) => {
     e.respondWith(addNgrokHeader(e.request));
 });
 
+// Bộ nhớ tạm để tránh "phá băng" quá nhiều lần
+const warmedUpUrls = new Set();
+
 async function addNgrokHeader(originalRequest) {
     const urlObj = new URL(originalRequest.url);
+    const originUrl = urlObj.origin;
+
+    // Chỉ thêm bypass query param
     if (!urlObj.searchParams.has('ngrok-skip-browser-warning')) {
         urlObj.searchParams.set('ngrok-skip-browser-warning', 'true');
     }
 
-    const headers = new Headers(originalRequest.headers);
-    // headers.set('ngrok-skip-browser-warning', 'true'); // Đã có query param, bỏ header để tránh preflight
-
     try {
+        // KỸ THUẬT PHÁ BĂNG: Nếu chưa "warm up" origin này, thực hiện một fetch no-cors để lấy cookie
+        if (!warmedUpUrls.has(originUrl)) {
+            console.log('[SW V6] Warming up ngrok tunnel:', originUrl);
+            await fetch(urlObj.toString(), { mode: 'no-cors', cache: 'no-cache' });
+            warmedUpUrls.add(originUrl);
+        }
+
+        // Thực hiện request thật
         const fetchOptions = {
             method: originalRequest.method,
-            headers: headers,
+            headers: new Headers(originalRequest.headers),
             mode: 'cors',
-            credentials: 'omit',
+            credentials: 'omit', // Ngrok free không hỗ trợ credentials
             redirect: 'follow'
         };
 
@@ -55,22 +66,25 @@ async function addNgrokHeader(originalRequest) {
         }
 
         const response = await fetch(urlObj.toString(), fetchOptions);
+        
+        // Nếu vẫn gặp 503 hoặc 403 từ ngrok, thử lại một lần nữa với chế độ xóa cache
+        if (response.status === 503 || response.status === 403) {
+            console.warn('[SW V6] Ngrok blocked (503/403), retrying with bypass...');
+            return await fetch(urlObj.toString(), fetchOptions);
+        }
+
         return response;
     } catch (err) {
-        console.error('[SW V6] Fetch critical error:', err);
-        
-        // TRẢ VỀ PHẢN HỒI CÓ CORS HEADER ĐỂ TRÌNH DUYỆT KHÔNG BÁO LỖI CORS GIẢ
+        console.error('[SW V6] Critical Fetch Error:', err);
         return new Response(JSON.stringify({ 
             code: 503, 
-            message: 'Service Worker Bridge Error: ' + err.message,
-            tip: 'Vui lòng kiểm tra ngrok và server đang chạy.'
+            message: 'Bridge Error: ' + err.message 
         }), {
             status: 503,
             headers: { 
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-                'Access-Control-Allow-Headers': '*'
+                'Access-Control-Allow-Methods': '*'
             }
         });
     }

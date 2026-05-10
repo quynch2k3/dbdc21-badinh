@@ -63,6 +63,10 @@ func main() {
 
 				// Xử lý lệnh OPTIONS (Preflight)
 				if req.Method == "OPTIONS" {
+					res.Header().Set("Access-Control-Allow-Origin", origin)
+					res.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD")
+					res.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, X-PocketBase-Auth, ngrok-skip-browser-warning")
+					res.Header().Set("Access-Control-Max-Age", "86400")
 					return c.NoContent(204)
 				}
 

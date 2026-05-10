@@ -3,6 +3,9 @@ setlocal enabledelayedexpansion
 title TDP21 - HE THONG QUAN LY DBDC SO 21
 color 0B
 
+:START_ALL_TOP
+:MAIN_MENU
+cls
 echo ====================================================
 echo     HE THONG DBDC SO 21 - PHUONG DIEN BIEN
 echo ====================================================
@@ -16,9 +19,9 @@ set /p CHOICE="Chon chuc nang (1-3): "
 if "%CHOICE%"=="1" goto BUILD_AND_RUN
 if "%CHOICE%"=="2" goto SYNC_AND_PUSH
 if "%CHOICE%"=="3" exit /b
-echo Lua chon khong hop le, thoat.
+echo Invalid choice, try again.
 pause
-exit /b
+goto :MAIN_MENU
 
 REM =====================================================
 :BUILD_AND_RUN
@@ -98,62 +101,79 @@ pause
 exit /b
 
 
-:L_BUILD_FAIL
-echo [LOI] Khong the tao file thuc thi!
-pause
-exit /b
-
-REM =====================================================
 :SYNC_AND_PUSH
 echo.
 echo ====================================================
-echo  BUOC 1: DONG BO URL NGROK TU DONG...
+echo  STEP 1: SYNCING NGROK URL...
 echo ====================================================
-powershell -ExecutionPolicy Bypass -File SYNC_NGROK_URL.ps1
+REM Su dung call powershell de dam bao khong thoat ngang
+call powershell -ExecutionPolicy Bypass -File SYNC_NGROK_URL.ps1
 if %errorlevel% neq 0 (
-    echo [CANH BAO] Khong the lay URL ngrok. Hay dam bao ban dang chay Option [1].
-    echo Co the day code len GitHub voi URL cu.
+    echo.
+    echo [WARNING] Could not get ngrok URL. 
+    echo Please make sure Option [1] is running in another window!
+    echo.
     pause
 )
-
+echo [OK] Sync complete. Preparing to push to GitHub...
+timeout /t 2 >nul
 goto PUSH_GITHUB
 
 :PUSH_GITHUB
 echo.
 echo ====================================================
-echo  DAY CODE LEN GITHUB...
+echo  STEP 2: PUSHING TO GITHUB...
 echo ====================================================
 set REPO_URL=https://github.com/quynch2k3/dbdc21-badinh.git
 set BRANCH=main
 set USER_NAME=quynch2k3
 set USER_EMAIL=quynch2k3@example.com
 
-if exist .git (
-    rd /s /q .git
+if not exist .git (
+    echo Initializing new Git repository...
+    git init
+    git remote add origin %REPO_URL%
 )
-git init
+
 git config user.name "%USER_NAME%"
 git config user.email "%USER_EMAIL%"
-git config --global user.name "%USER_NAME%"
-git config --global user.email "%USER_EMAIL%"
-git remote add origin %REPO_URL%
+
+echo.
+echo [1/3] Adding files...
 git add .
 git rm --cached client_secret_*.json >nul 2>&1
 git rm --cached pb_data >nul 2>&1
 git rm --cached *.exe >nul 2>&1
 
+echo [2/3] Creating commit...
 set TIMESTAMP=%date% %time%
 git commit -m "Auto Sync: %TIMESTAMP%"
-git branch -M %BRANCH%
+
+echo [3/3] Pushing to origin...
 git push -u origin %BRANCH% --force
 
 if %errorlevel% equ 0 (
     echo.
-    echo [THANH CONG] Da dong bo len Github!
+    echo ====================================================
+    echo  [SUCCESS] Everything updated on GitHub!
+    echo ====================================================
 ) else (
     echo.
-    echo [LOI] Khong the push. Kiem tra lai dang nhap GitHub.
+    echo [ERROR] Push failed. Please check:
+    echo  1. Internet connection.
+    echo  2. GitHub Credentials (Token/Username).
+    echo  3. If any other window is locking files.
 )
 echo.
+echo Press any key to return to Menu...
 pause
-exit /b
+goto :MAIN_MENU
+
+:MAIN_MENU_LOOP
+cls
+goto START_ALL_TOP
+
+:L_BUILD_FAIL
+echo [ERROR] Could not build executable!
+pause
+goto :MAIN_MENU
