@@ -311,32 +311,21 @@ function renderArticles(data) {
         const isChecked = articleSelectedIds.has(item.id);
         const imgId = `img-thumb-${item.id}`;
 
-        // TẢI ẢNH BẢO MẬT (FIX TRIỆT ĐỂ)
+        // Tải ảnh bảo mật (Async)
         setTimeout(async () => {
             const imgEl = document.getElementById(imgId);
-            if (!imgEl) return;
-
-            if (item.image && item.image.startsWith('http')) {
-                imgEl.src = item.image;
-            } else if (item.image) {
-                // Sử dụng hàm đặc biệt để vượt qua Ngrok
-                try {
-                    const url = pb.getFileUrlCustom(item, item.image);
-                    const targetUrl = url.includes('ngrok-skip-browser-warning')
-                        ? url
-                        : url + (url.includes('?') ? '&' : '?') + 'ngrok-skip-browser-warning=true';
-                    const response = await fetch(targetUrl);
-                    if (response.ok) {
-                        const blob = await response.blob();
-                        imgEl.src = URL.createObjectURL(blob);
-                    } else {
-                        imgEl.src = url;
-                    }
-                } catch (e) {
-                    imgEl.src = pb.getFileUrlCustom(item, item.image);
+            if (!imgEl || !item.image) return;
+            try {
+                const url = pb.getFileUrlCustom(item, item.image);
+                const response = await fetch(url);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    imgEl.src = URL.createObjectURL(blob);
+                } else {
+                    imgEl.src = url;
                 }
-            } else {
-                imgEl.src = 'https://placehold.co/120x80?text=No+Image';
+            } catch (e) {
+                imgEl.src = pb.getFileUrlCustom(item, item.image);
             }
         }, 50);
 

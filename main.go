@@ -55,18 +55,11 @@ func main() {
 				echo.HeaderAccept,
 				echo.HeaderAuthorization,
 				echo.HeaderXRequestedWith,
-				"ngrok-skip-browser-warning",
 			},
 			MaxAge: 86400,
 		}))
 
-		// 2. MIDDLEWARE ĐÓNG DẤU NGROK BYPASS CHO MỌI PHẢN HỒI
-		e.Router.Use(func(next echo.HandlerFunc) echo.HandlerFunc {
-			return func(c echo.Context) error {
-				c.Response().Header().Set("ngrok-skip-browser-warning", "true")
-				return next(c)
-			}
-		})
+
 
 		// API Health Check
 		e.Router.GET("/api/health", func(c echo.Context) error {

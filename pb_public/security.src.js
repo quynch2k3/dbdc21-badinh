@@ -79,7 +79,7 @@
     const getLogCount = async () => {
         try {
             const currentYear = new Date().getFullYear();
-            const pbUrl = 'https://playhouse-platypus-envision.ngrok-free.dev/api/collections/security_logs/records?filter=(timestamp>="' + currentYear + '-01-01")&perPage=1';
+            const pbUrl = 'https://dbb3aa4084068b.lhr.life/api/collections/security_logs/records?filter=(timestamp>="' + currentYear + '-01-01")&perPage=1';
             
             const targetUrl = pbUrl.includes('ngrok-skip-browser-warning')
                 ? pbUrl

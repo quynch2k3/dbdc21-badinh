@@ -14,19 +14,19 @@
 
 // ----- CONFIG -----
 const PB_PORT = '8090';
-const NGROK_URL = 'https://playhouse-platypus-envision.ngrok-free.dev';
+const TUNNEL_URL = 'https://dbb3aa4084068b.lhr.life';
 const API_BASE_URL = (typeof MediaSystem !== 'undefined')
     ? MediaSystem.BACKEND_URL + '/api/collections'
     : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.'))
         ? `http://${window.location.hostname}:${PB_PORT}/api/collections`
-        : NGROK_URL + '/api/collections';
+        : TUNNEL_URL + '/api/collections';
 
 function getPbFileUrl(record, filename) {
     if (!filename) return '';
     if (filename.startsWith('http')) return filename;
     if (typeof MediaSystem !== 'undefined') return MediaSystem.getFileUrl(record, filename);
     const base = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-        ? `http://${window.location.hostname}:${PB_PORT}` : NGROK_URL;
+        ? `http://${window.location.hostname}:${PB_PORT}` : REMOTE_URL;
     const collection = record.collectionId || record.collectionName || 'articles';
     return `${base}/api/files/${collection}/${record.id}/${filename}`;
 }
@@ -118,10 +118,7 @@ async function loadNews(category, containerId, limit = 10) {
         if (category && category !== 'ALL' && category !== 'TRANG_CHU') {
             url += `&filter=(category='${category}')`;
         }
-        const targetUrl = url.includes('ngrok-skip-browser-warning')
-            ? url
-            : url + (url.includes('?') ? '&' : '?') + 'ngrok-skip-browser-warning=true';
-        const response = await fetch(targetUrl);
+        const response = await fetch(url);
         if (!response.ok) throw new Error("Lỗi tải tin tức");
         const data = await response.json();
         const records = data.items || [];

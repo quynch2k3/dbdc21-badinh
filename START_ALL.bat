@@ -11,7 +11,7 @@ echo     HE THONG DBDC SO 21 - PHUONG DIEN BIEN
 echo ====================================================
 echo.
 echo [1] Khoi dong He Thong (Build + Run + Tunnel)
-echo [2] Cap nhat Link ngrok + Day len GitHub
+echo [2] Cap nhat Link Tunnel + Day len GitHub
 echo [3] Thoat
 echo.
 set /p CHOICE="Chon chuc nang (1-3): "
@@ -86,16 +86,14 @@ start http://localhost:8090/_/
 
 echo.
 echo ====================================================
-echo  DANG KHOI CHAY NGROK TUNNEL (PORT 8090)...
+echo  DANG KHOI CHAY LOCALHOST.RUN TUNNEL (PORT 8090)...
 echo  (Giu cua so nay mo de tunnel hoat dong)
 echo ====================================================
 echo.
-echo Dang thu khoi dong ngrok...
-ngrok http 8090 --host-header="localhost:8090" --request-header-add="ngrok-skip-browser-warning:true" --response-header-add="Access-Control-Allow-Origin:*"
-if %errorlevel% neq 0 (
-    echo [WARN] Lenh nang cao that bai. Dang dung ngrok co ban...
-    ngrok http 8090
-)
+echo Luu y: He thong dang thiet lap tunnel bao mat...
+echo Dang khoi tao tunnel...
+if exist tunnel.log del /f /q tunnel.log
+ssh -o StrictHostKeyChecking=no -R 80:localhost:8090 nokey@localhost.run > tunnel.log 2>&1
 
 pause
 exit /b
@@ -104,9 +102,9 @@ exit /b
 :SYNC_AND_PUSH
 echo.
 echo ====================================================
-echo  STEP 1: SYNCING NGROK URL...
+echo  STEP 1: SYNCING TUNNEL URL...
 echo ====================================================
-call powershell -ExecutionPolicy Bypass -File SYNC_NGROK_URL.ps1
+call powershell -ExecutionPolicy Bypass -File SYNC_TUNNEL.ps1
 if errorlevel 1 echo [WARNING] Sync failed, but continuing...
 echo.
 echo [OK] Sync process finished.

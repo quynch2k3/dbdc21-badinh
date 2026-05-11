@@ -33,15 +33,11 @@ window.GovSecure = {
     const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const backendUrl = (typeof MediaSystem !== 'undefined' && MediaSystem.BACKEND_URL)
         ? MediaSystem.BACKEND_URL
-        : (isLocal ? 'http://localhost:8090' : 'https://playhouse-platypus-envision.ngrok-free.dev');
+        : (isLocal ? 'http://localhost:8090' : 'https://dbb3aa4084068b.lhr.life');
 
     window.pb = new PocketBase(backendUrl);
 
     window.pb.beforeSend = function(url, options) {
-        // Chỉ thêm query param, KHÔNG thêm custom header để tránh OPTIONS preflight dư thừa
-        if (!url.includes('ngrok-skip-browser-warning')) {
-            url += (url.includes('?') ? '&' : '?') + 'ngrok-skip-browser-warning=true';
-        }
         return { url, options };
     };
 
@@ -54,7 +50,6 @@ window.GovSecure = {
         if (filename.startsWith('http')) return filename;
         const col = record.collectionId || record.collectionName || 'articles';
         let url = `${backendUrl}/api/files/${col}/${record.id}/${filename}`;
-        url += (url.includes('?') ? '&' : '?') + 'ngrok-skip-browser-warning=true';
         return url;
     };
 
@@ -109,15 +104,9 @@ window.GovSecure = {
 
     // Middleware xử lý request
     pb.beforeSend = async (url, options) => {
-        // Đợi SW sẵn sàng để xử lý CORS/Bypass
+        // Đợi SW sẵn sàng để xử lý CORS
         await waitForServiceWorker();
-
-        const urlObj = new URL(url);
-        if (urlObj.hostname.includes('ngrok')) {
-            urlObj.searchParams.set('ngrok-skip-browser-warning', 'true');
-        }
-        
-        return { url: urlObj.toString(), options };
+        return { url, options };
     };
 
     // Khởi động SW

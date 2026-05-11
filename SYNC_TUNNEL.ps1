@@ -1,8 +1,8 @@
-# Script to automatically sync current ngrok URL to the codebase
+# Script to automatically sync current tunnel URL (Localhost.run) to the codebase
 $ErrorActionPreference = "Stop"
 
 Write-Host "================================================"
-Write-Host " SYNCING NGROK URL TO CODEBASE"
+Write-Host " SYNCING TUNNEL URL TO CODEBASE"
 Write-Host "================================================"
 
 try {
@@ -17,17 +17,7 @@ try {
     if ($logContent -match $urlRegex) {
         $publicUrl = $matches[0]
     } else {
-        # Fallback to ngrok API if tunnel.log doesn't have a URL yet
-        try {
-            $tunnels = Invoke-RestMethod -Uri "http://localhost:4040/api/tunnels" -ErrorAction SilentlyContinue
-            $publicUrl = $tunnels.tunnels[0].public_url
-        } catch {
-            throw "Could not find active tunnel URL in tunnel.log or ngrok API."
-        }
-    }
-
-    if (-not $publicUrl) {
-        throw "Could not find active tunnel URL. Please wait a few seconds and try again!"
+        throw "Could not find active tunnel URL in tunnel.log. Wait 5s and try again."
     }
 
     Write-Host "Found active tunnel: $publicUrl"
@@ -36,8 +26,8 @@ try {
     $jsFiles = Get-ChildItem -Path "pb_public" -Filter "*.js" -Recurse
     foreach ($file in $jsFiles) {
         $content = Get-Content $file.FullName -Raw
-        # Updated regex to match BOTH ngrok and localhost.run URLs
-        $replaceRegex = "https?://[a-z0-9\-]+\.(ngrok-free\.dev|ngrok\.io|lhr\.life|lhr\.rocks)"
+        # Match any previous tunnel URL (localhost.run or ngrok legacy)
+        $replaceRegex = "https?://[a-z0-9\-]+\.(lhr\.life|lhr\.rocks|ngrok-free\.dev|ngrok\.io)"
         if ($content -match $replaceRegex) {
             $newContent = $content -replace $replaceRegex, $publicUrl
             Set-Content -Path $file.FullName -Value $newContent -NoNewline
@@ -47,14 +37,15 @@ try {
 
     # 3. Update HTML versions
     Write-Host "Updating HTML versions to force cache refresh..."
-    & ".\UPDATE_HTML_VERSIONS.bat"
+    if (Test-Path ".\UPDATE_HTML_VERSIONS.bat") {
+        & ".\UPDATE_HTML_VERSIONS.bat"
+    }
 
     Write-Host "================================================"
-    Write-Host " SUCCESS: URL synced. Now you can PUSH to GitHub."
+    Write-Host " SUCCESS: Tunnel URL synced."
     Write-Host "================================================"
 } catch {
     Write-Host " [ERROR] $($_.Exception.Message)"
-    Write-Host " Make sure START_ALL.bat (Option 1) is running in another window!"
 }
 
 pause
