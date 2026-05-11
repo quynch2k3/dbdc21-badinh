@@ -33,7 +33,7 @@ window.GovSecure = {
     const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
     const backendUrl = (typeof MediaSystem !== 'undefined' && MediaSystem.BACKEND_URL)
         ? MediaSystem.BACKEND_URL
-        : (isLocal ? 'http://localhost:8090' : 'https://dbb3aa4084068b.lhr.life');
+        : (isLocal ? 'http://localhost:8090' : 'https://e9a8c7177c3eca.lhr.life');
 
     window.pb = new PocketBase(backendUrl);
 
@@ -112,7 +112,7 @@ window.GovSecure = {
     // Khởi động SW
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js?v=V7')
+            navigator.serviceWorker.register('sw.js?v=V7.2')
                 .then(reg => {
                     console.log('[PB Adapter] SW Registered.');
                     // Ép SW chiếm quyền kiểm tra ngay lập tức

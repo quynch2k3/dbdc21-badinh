@@ -4,7 +4,7 @@
 
 window.MediaSystem = (function() {
 
-    const TUNNEL_URL = 'https://dbb3aa4084068b.lhr.life';
+    const TUNNEL_URL = 'https://e9a8c7177c3eca.lhr.life';
     const LOCAL_DOMAINS = ['localhost', '127.0.0.1'];
 
     function detectBackendUrl() {

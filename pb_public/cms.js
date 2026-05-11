@@ -14,7 +14,7 @@
 
 // ----- CONFIG -----
 const PB_PORT = '8090';
-const TUNNEL_URL = 'https://dbb3aa4084068b.lhr.life';
+const TUNNEL_URL = 'https://e9a8c7177c3eca.lhr.life';
 const API_BASE_URL = (typeof MediaSystem !== 'undefined')
     ? MediaSystem.BACKEND_URL + '/api/collections'
     : (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.hostname.startsWith('192.168.'))

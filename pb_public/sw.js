@@ -1,6 +1,6 @@
 /**
- * SERVICE WORKER - TUNNEL STABILIZER V7.1
- * Tối ưu hóa cho Localhost.run và tránh lỗi EMPTY_RESPONSE
+ * SERVICE WORKER - TUNNEL STABILIZER V7.2 (FINAL FIX)
+ * Tự động chèn CORS Header để vượt qua rào cản bảo mật của trình duyệt
  */
 
 const TUNNEL_PATTERNS = ['lhr.life', 'lhr.rocks', 'ngrok'];
@@ -15,16 +15,14 @@ self.addEventListener('activate', (e) => {
 
 self.addEventListener('fetch', (e) => {
     const url = e.request.url;
-    
-    // Chỉ xử lý các yêu cầu tới Tunnel
     const isTunnel = TUNNEL_PATTERNS.some(p => url.includes(p));
+    
     if (!isTunnel) return;
 
-    // Bỏ qua các yêu cầu Realtime (SSE) để tránh treo Tunnel
-    const accept = e.request.headers.get('Accept') || '';
-    if (accept.includes('text/event-stream') || url.includes('/api/realtime')) return;
+    // Bỏ qua SSE Realtime để tránh treo
+    if (url.includes('/api/realtime')) return;
 
-    // Tự động xử lý Preflight (OPTIONS) để tránh lỗi CORS
+    // Xử lý Preflight (OPTIONS)
     if (e.request.method === 'OPTIONS') {
         e.respondWith(new Response(null, {
             status: 204,
@@ -38,12 +36,27 @@ self.addEventListener('fetch', (e) => {
         return;
     }
 
-    // Chuyển tiếp các yêu cầu khác
+    // Xử lý các request khác và TỰ CHÈN CORS
     e.respondWith(
-        fetch(e.request).catch(err => {
-            return new Response(JSON.stringify({ error: 'Tunnel Connection Error', detail: err.message }), {
+        fetch(e.request).then(response => {
+            // Tạo một bản sao của response để có thể sửa đổi header
+            const newHeaders = new Headers(response.headers);
+            newHeaders.set('Access-Control-Allow-Origin', '*');
+            newHeaders.set('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS, HEAD');
+            newHeaders.set('Access-Control-Allow-Headers', '*');
+
+            return new Response(response.body, {
+                status: response.status,
+                statusText: response.statusText,
+                headers: newHeaders
+            });
+        }).catch(err => {
+            return new Response(JSON.stringify({ error: 'Connection Failed', detail: err.message }), {
                 status: 502,
-                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+                headers: { 
+                    'Content-Type': 'application/json', 
+                    'Access-Control-Allow-Origin': '*' 
+                }
             });
         })
     );

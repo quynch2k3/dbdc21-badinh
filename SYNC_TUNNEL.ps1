@@ -11,13 +11,19 @@ try {
         throw "Could not find tunnel.log. Please start Option 1 in START_ALL.bat first!"
     }
 
-    $logContent = Get-Content "tunnel.log" -Raw
-    # Regex to find the https URL from Localhost.run output
-    $urlRegex = "https://[a-z0-9\-]+\.(lhr\.life|lhr\.rocks)"
-    if ($logContent -match $urlRegex) {
-        $publicUrl = $matches[0]
-    } else {
-        throw "Could not find active tunnel URL in tunnel.log. Wait 5s and try again."
+    $publicUrl = ""
+    for ($i = 1; $i -le 10; $i++) {
+        $logContent = Get-Content "tunnel.log" -Raw
+        if ($logContent -match "https://[a-z0-9\-]+\.(lhr\.life|lhr\.rocks)") {
+            $publicUrl = $matches[0]
+            break
+        }
+        Write-Host "Waiting for tunnel URL ($i/10)..."
+        Start-Sleep -Seconds 2
+    }
+
+    if ($publicUrl -eq "") {
+        throw "Could not find active tunnel URL in tunnel.log after 20s. Please check if START_ALL.bat (Option 1) is still running."
     }
 
     Write-Host "Found active tunnel: $publicUrl"
