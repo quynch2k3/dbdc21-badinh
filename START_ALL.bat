@@ -93,7 +93,7 @@ echo.
 echo Luu y: He thong dang thiet lap tunnel bao mat...
 echo Dang khoi tao tunnel...
 if exist tunnel.log del /f /q tunnel.log
-ssh -o StrictHostKeyChecking=no -R 80:localhost:8090 nokey@localhost.run > tunnel.log 2>&1
+ssh -o StrictHostKeyChecking=no -R 80:127.0.0.1:8090 nokey@localhost.run > tunnel.log 2>&1
 
 pause
 exit /b

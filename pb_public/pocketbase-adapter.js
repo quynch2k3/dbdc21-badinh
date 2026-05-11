@@ -92,13 +92,13 @@ window.GovSecure = {
 
         console.log('[PB Adapter] Waiting for Service Worker to take control...');
         return new Promise((resolve) => {
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                console.log('[PB Adapter] Service Worker is now controlling the page.');
-                resolve();
-            }, { once: true });
+            let resolved = false;
+            const done = () => { if(!resolved) { resolved = true; resolve(); } };
+
+            navigator.serviceWorker.addEventListener('controllerchange', done, { once: true });
             
-            // Timeout sau 3 giây để tránh treo trang
-            setTimeout(resolve, 3000);
+            // Timeout sau 1.5 giây để tránh treo trang nếu SW không thể chiếm quyền ngay
+            setTimeout(done, 1500);
         });
     }
 
@@ -112,7 +112,7 @@ window.GovSecure = {
     // Khởi động SW
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('sw.js?v=V6')
+            navigator.serviceWorker.register('sw.js?v=V7')
                 .then(reg => {
                     console.log('[PB Adapter] SW Registered.');
                     // Ép SW chiếm quyền kiểm tra ngay lập tức

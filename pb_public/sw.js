@@ -1,37 +1,32 @@
 /**
- * SERVICE WORKER - TUNNEL STABILIZER V7.0
- * 
- * Nhiệm vụ: Xử lý CORS và ổn định kết nối cho Tunnel (Localhost.run / ngrok).
+ * SERVICE WORKER - TUNNEL STABILIZER V7.1
+ * Tối ưu hóa cho Localhost.run và tránh lỗi EMPTY_RESPONSE
  */
 
-const TUNNEL_PATTERNS = ['lhr.life', 'lhr.rocks', 'ngrok-free.dev', 'ngrok.io'];
+const TUNNEL_PATTERNS = ['lhr.life', 'lhr.rocks', 'ngrok'];
 
 self.addEventListener('install', (e) => {
-    console.log('[SW V7] Installing Tunnel Stabilizer...');
     self.skipWaiting();
 });
 
 self.addEventListener('activate', (e) => {
-    console.log('[SW V7] Activated.');
     e.waitUntil(self.clients.claim());
 });
 
 self.addEventListener('fetch', (e) => {
     const url = e.request.url;
+    
+    // Chỉ xử lý các yêu cầu tới Tunnel
     const isTunnel = TUNNEL_PATTERNS.some(p => url.includes(p));
     if (!isTunnel) return;
 
-    // Don't intercept SSE/EventSource
+    // Bỏ qua các yêu cầu Realtime (SSE) để tránh treo Tunnel
     const accept = e.request.headers.get('Accept') || '';
-    if (accept.includes('text/event-stream')) return;
+    if (accept.includes('text/event-stream') || url.includes('/api/realtime')) return;
 
-    e.respondWith(stabilizeTunnelRequest(e.request));
-});
-
-async function stabilizeTunnelRequest(originalRequest) {
-    // Tự động trả lời OPTIONS preflight để tăng tốc độ và tránh lỗi CORS browser
-    if (originalRequest.method === 'OPTIONS') {
-        return new Response(null, {
+    // Tự động xử lý Preflight (OPTIONS) để tránh lỗi CORS
+    if (e.request.method === 'OPTIONS') {
+        e.respondWith(new Response(null, {
             status: 204,
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -39,27 +34,17 @@ async function stabilizeTunnelRequest(originalRequest) {
                 'Access-Control-Allow-Headers': '*',
                 'Access-Control-Max-Age': '86400'
             }
-        });
+        }));
+        return;
     }
 
-    try {
-        const fetchOptions = {
-            method: originalRequest.method,
-            headers: new Headers(originalRequest.headers),
-            mode: 'cors',
-            credentials: 'omit',
-            redirect: 'follow'
-        };
-
-        if (originalRequest.method !== 'GET' && originalRequest.method !== 'HEAD') {
-            fetchOptions.body = await originalRequest.clone().arrayBuffer();
-        }
-
-        return await fetch(originalRequest.url, fetchOptions);
-    } catch (err) {
-        return new Response(JSON.stringify({ error: err.message }), {
-            status: 503,
-            headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json' }
-        });
-    }
-}
+    // Chuyển tiếp các yêu cầu khác
+    e.respondWith(
+        fetch(e.request).catch(err => {
+            return new Response(JSON.stringify({ error: 'Tunnel Connection Error', detail: err.message }), {
+                status: 502,
+                headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+            });
+        })
+    );
+});
